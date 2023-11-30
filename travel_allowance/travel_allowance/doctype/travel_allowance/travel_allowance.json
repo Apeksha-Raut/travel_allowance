@@ -5,17 +5,23 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "section_break_y49q"
+  "section_break_y49q",
+  "employee_id"
  ],
  "fields": [
   {
    "fieldname": "section_break_y49q",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "employee_id",
+   "fieldtype": "Data",
+   "label": "Employee ID"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-30 11:53:40.709552",
+ "modified": "2023-11-30 16:53:25.522660",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",
