@@ -5,23 +5,112 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "section_break_y49q",
-  "employee_id"
+  "employee_details_section",
+  "employee_id",
+  "name1",
+  "column_break_iket",
+  "designation",
+  "department",
+  "column_break_fo0a",
+  "branch",
+  "region",
+  "travel_allowance_details_section",
+  "from_column",
+  "date_and_time_from",
+  "from_location",
+  "purpose",
+  "to_column",
+  "date_and_time_to",
+  "to_location"
  ],
  "fields": [
-  {
-   "fieldname": "section_break_y49q",
-   "fieldtype": "Section Break"
-  },
   {
    "fieldname": "employee_id",
    "fieldtype": "Data",
    "label": "Employee ID"
+  },
+  {
+   "fieldname": "name1",
+   "fieldtype": "Data",
+   "label": "Name"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "label": "Designation"
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Data",
+   "label": "Department"
+  },
+  {
+   "fieldname": "column_break_iket",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_fo0a",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Data",
+   "label": "Branch"
+  },
+  {
+   "fieldname": "region",
+   "fieldtype": "Data",
+   "label": "Region"
+  },
+  {
+   "fieldname": "employee_details_section",
+   "fieldtype": "Section Break",
+   "label": "Employee Details"
+  },
+  {
+   "fieldname": "travel_allowance_details_section",
+   "fieldtype": "Section Break",
+   "label": "Travel Allowance Details"
+  },
+  {
+   "fieldname": "from_column",
+   "fieldtype": "Column Break",
+   "label": "From"
+  },
+  {
+   "fieldname": "to_column",
+   "fieldtype": "Column Break",
+   "label": "To "
+  },
+  {
+   "fieldname": "date_and_time_from",
+   "fieldtype": "Datetime",
+   "label": "Date And Time (From)"
+  },
+  {
+   "fieldname": "date_and_time_to",
+   "fieldtype": "Datetime",
+   "label": "Date And Time (To)"
+  },
+  {
+   "fieldname": "from_location",
+   "fieldtype": "Data",
+   "label": "From Location"
+  },
+  {
+   "fieldname": "to_location",
+   "fieldtype": "Data",
+   "label": "To Location"
+  },
+  {
+   "fieldname": "purpose",
+   "fieldtype": "Small Text",
+   "label": "Purpose"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-30 16:53:25.522660",
+ "modified": "2023-12-01 13:20:09.616796",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",
