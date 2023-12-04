@@ -26,9 +26,16 @@
   "date_and_time_to",
   "to_location",
   "class_city",
+  "haltinglodging",
   "tab_3_tab",
-  "ocal_conv_and_other_exp_details_section",
-  "data_ehot"
+  "data_ehot",
+  "from",
+  "mode_of_travel",
+  "amount",
+  "column_break_gnjd",
+  "date_glfz",
+  "to",
+  "purposelocalconveyance"
  ],
  "fields": [
   {
@@ -111,7 +118,7 @@
   },
   {
    "fieldname": "purpose",
-   "fieldtype": "Data",
+   "fieldtype": "Small Text",
    "label": "Purpose"
   },
   {
@@ -131,10 +138,8 @@
   },
   {
    "fieldname": "class_city",
-   "fieldtype": "Select",
-   "hidden": 1,
-   "label": "Class City",
-   "options": "A\nB\nC\nBase Office"
+   "fieldtype": "Data",
+   "label": "Class City"
   },
   {
    "fieldname": "tab_3_tab",
@@ -142,18 +147,56 @@
    "label": "Local Convenience & Other Expense"
   },
   {
-   "fieldname": "ocal_conv_and_other_exp_details_section",
-   "fieldtype": "Section Break",
-   "label": "ocal Conv. and Other Exp Details"
+   "fieldname": "data_ehot",
+   "fieldtype": "Select",
+   "label": "Select type of Expenses",
+   "options": "Local Expense\nOther Expense"
   },
   {
-   "fieldname": "data_ehot",
-   "fieldtype": "Data"
+   "fieldname": "date_glfz",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "column_break_gnjd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "from",
+   "fieldtype": "Data",
+   "label": "From"
+  },
+  {
+   "fieldname": "to",
+   "fieldtype": "Data",
+   "label": "To"
+  },
+  {
+   "fieldname": "mode_of_travel",
+   "fieldtype": "Select",
+   "label": "Mode of Travel",
+   "options": "\nAuto\nBike\nCar\nPublic Transport\nTaxi"
+  },
+  {
+   "fieldname": "purposelocalconveyance",
+   "fieldtype": "Data",
+   "label": "Purpose"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount"
+  },
+  {
+   "fieldname": "haltinglodging",
+   "fieldtype": "Select",
+   "label": "Halting/Lodging",
+   "options": "\nHalting\nLodging"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-04 11:08:59.940688",
+ "modified": "2023-12-04 16:02:21.036232",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",
