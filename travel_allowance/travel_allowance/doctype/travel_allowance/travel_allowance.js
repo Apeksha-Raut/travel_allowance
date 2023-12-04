@@ -3,7 +3,7 @@
 
 frappe.ui.form.on("Travel Allowance", {
 	refresh(frm) {
-
+		frappe.msgprint("Welcome")
 	},
 });
 
