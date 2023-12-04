@@ -7,13 +7,16 @@
  "field_order": [
   "employee_details_section",
   "employee_id",
-  "name1",
-  "column_break_iket",
-  "designation",
   "department",
-  "column_break_fo0a",
+  "division",
+  "column_break_iket",
+  "name1",
   "branch",
+  "date",
+  "column_break_fo0a",
+  "designation",
   "region",
+  "phone",
   "travel_allowance_details_section",
   "from_column",
   "date_and_time_from",
@@ -21,7 +24,11 @@
   "purpose",
   "to_column",
   "date_and_time_to",
-  "to_location"
+  "to_location",
+  "class_city",
+  "tab_3_tab",
+  "ocal_conv_and_other_exp_details_section",
+  "data_ehot"
  ],
  "fields": [
   {
@@ -69,7 +76,7 @@
   },
   {
    "fieldname": "travel_allowance_details_section",
-   "fieldtype": "Section Break",
+   "fieldtype": "Tab Break",
    "label": "Travel Allowance Details"
   },
   {
@@ -104,13 +111,49 @@
   },
   {
    "fieldname": "purpose",
-   "fieldtype": "Small Text",
+   "fieldtype": "Data",
    "label": "Purpose"
+  },
+  {
+   "fieldname": "division",
+   "fieldtype": "Data",
+   "label": "Division"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Phone",
+   "label": "Phone"
+  },
+  {
+   "fieldname": "class_city",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Class City",
+   "options": "A\nB\nC\nBase Office"
+  },
+  {
+   "fieldname": "tab_3_tab",
+   "fieldtype": "Tab Break",
+   "label": "Local Convenience & Other Expense"
+  },
+  {
+   "fieldname": "ocal_conv_and_other_exp_details_section",
+   "fieldtype": "Section Break",
+   "label": "ocal Conv. and Other Exp Details"
+  },
+  {
+   "fieldname": "data_ehot",
+   "fieldtype": "Data"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-01 13:20:09.616796",
+ "modified": "2023-12-04 11:08:59.940688",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",
