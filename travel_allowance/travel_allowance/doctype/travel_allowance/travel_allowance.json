@@ -5,6 +5,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "employee_details_tab",
   "employee_details_section",
   "employee_id",
   "department",
@@ -22,11 +23,16 @@
   "date_and_time_from",
   "from_location",
   "purpose",
+  "halting_lodging_select",
+  "halting",
+  "lodging",
   "to_column",
   "date_and_time_to",
   "to_location",
   "class_city",
-  "haltinglodging",
+  "da_claim",
+  "daily_allowance",
+  "total_visit_time",
   "tab_3_tab",
   "data_ehot",
   "from",
@@ -133,13 +139,14 @@
   },
   {
    "fieldname": "phone",
-   "fieldtype": "Phone",
+   "fieldtype": "Data",
    "label": "Phone"
   },
   {
    "fieldname": "class_city",
    "fieldtype": "Data",
-   "label": "Class City"
+   "label": "Class City",
+   "read_only": 1
   },
   {
    "fieldname": "tab_3_tab",
@@ -150,7 +157,7 @@
    "fieldname": "data_ehot",
    "fieldtype": "Select",
    "label": "Select type of Expenses",
-   "options": "Local Expense\nOther Expense"
+   "options": "\nLocal Expense\nOther Expense"
   },
   {
    "fieldname": "date_glfz",
@@ -188,15 +195,49 @@
    "label": "Amount"
   },
   {
-   "fieldname": "haltinglodging",
+   "fieldname": "da_claim",
+   "fieldtype": "Select",
+   "label": "DA Claim",
+   "options": "\n0.50\n1.00"
+  },
+  {
+   "fieldname": "halting",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Halting"
+  },
+  {
+   "fieldname": "lodging",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Lodging"
+  },
+  {
+   "fieldname": "halting_lodging_select",
    "fieldtype": "Select",
    "label": "Halting/Lodging",
    "options": "\nHalting\nLodging"
+  },
+  {
+   "fieldname": "daily_allowance",
+   "fieldtype": "Data",
+   "label": "Daily Allowance"
+  },
+  {
+   "fieldname": "employee_details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Employee Details"
+  },
+  {
+   "description": "(Day:HH:MM)",
+   "fieldname": "total_visit_time",
+   "fieldtype": "Data",
+   "label": "Total Visit Time"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-04 16:02:21.036232",
+ "modified": "2023-12-05 16:43:12.819267",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",
