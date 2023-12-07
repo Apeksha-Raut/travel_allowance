@@ -44,7 +44,7 @@ frappe.ui.form.on("Travel Allowance", {
 // Function to determine the city class based on the destination
 function getCityClass(lowerDestination) {
     // Define the lists of cities for each class
-    let classA = ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Kolkata', /* Add more metro cities */];
+    let classA = ['Mumbai', 'Pune','Delhi', 'Bangalore', 'Chennai', 'Kolkata', /* Add more metro cities */];
     let classB = ['Nagpur', 'Amravati', 'Aurangabad', 'Nashik', 'Kolhapur', 'Solapur', 'Gondia'];
 
    

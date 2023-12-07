@@ -33,6 +33,7 @@
   "da_claim",
   "daily_allowance",
   "total_visit_time",
+  "total",
   "tab_3_tab",
   "data_ehot",
   "from",
@@ -233,11 +234,16 @@
    "fieldname": "total_visit_time",
    "fieldtype": "Data",
    "label": "Total Visit Time"
+  },
+  {
+   "fieldname": "total",
+   "fieldtype": "Data",
+   "label": "Total"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-05 16:43:12.819267",
+ "modified": "2023-12-06 15:51:00.719809",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",
