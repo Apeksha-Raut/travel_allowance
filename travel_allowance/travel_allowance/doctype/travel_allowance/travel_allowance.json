@@ -8,32 +8,38 @@
   "employee_details_tab",
   "employee_details_section",
   "employee_id",
-  "department",
+  "designation",
   "division",
   "column_break_iket",
-  "name1",
-  "branch",
+  "first_name",
+  "department",
+  "region",
   "date",
   "column_break_fo0a",
-  "designation",
-  "region",
+  "last_name",
+  "branch",
   "phone",
+  "category",
   "travel_allowance_details_section",
   "from_column",
   "date_and_time_from",
   "from_location",
-  "purpose",
-  "halting_lodging_select",
-  "halting",
-  "lodging",
   "to_column",
   "date_and_time_to",
   "to_location",
-  "class_city",
-  "da_claim",
-  "daily_allowance",
-  "total_visit_time",
+  "other_to_location",
+  "section_break_urtb",
+  "purpose",
   "total",
+  "column_break_8kud",
+  "da_claim",
+  "halting_lodging_select",
+  "class_city",
+  "column_break_bjkj",
+  "daily_allowance",
+  "lodging",
+  "halting",
+  "total_visit_time",
   "tab_3_tab",
   "data_ehot",
   "from",
@@ -47,23 +53,24 @@
  "fields": [
   {
    "fieldname": "employee_id",
-   "fieldtype": "Data",
-   "label": "Employee ID"
+   "fieldtype": "Link",
+   "label": "Employee ID",
+   "options": "Employee",
+   "read_only": 1
   },
   {
-   "fieldname": "name1",
-   "fieldtype": "Data",
-   "label": "Name"
-  },
-  {
+   "fetch_from": "employee_id.designation",
    "fieldname": "designation",
    "fieldtype": "Data",
-   "label": "Designation"
+   "label": "Designation",
+   "read_only": 1
   },
   {
+   "fetch_from": "employee_id.department",
    "fieldname": "department",
    "fieldtype": "Data",
-   "label": "Department"
+   "label": "Department",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_iket",
@@ -74,11 +81,13 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "employee_id.branch",
    "fieldname": "branch",
    "fieldtype": "Data",
    "label": "Branch"
   },
   {
+   "fetch_from": "employee_id.region",
    "fieldname": "region",
    "fieldtype": "Data",
    "label": "Region"
@@ -120,8 +129,9 @@
   },
   {
    "fieldname": "to_location",
-   "fieldtype": "Data",
-   "label": "To Location"
+   "fieldtype": "Select",
+   "label": "To Location",
+   "options": "\nOther\nMumbai\nDelhi\nChennai\nKolkata\nPune\nHyderabad\nNagpur\nAmravati\nAurangabad\nNashik\nKolhapur\nSolapur\nGondia"
   },
   {
    "fieldname": "purpose",
@@ -129,9 +139,11 @@
    "label": "Purpose"
   },
   {
+   "fetch_from": "employee_id.division",
    "fieldname": "division",
    "fieldtype": "Data",
-   "label": "Division"
+   "label": "Division",
+   "read_only": 1
   },
   {
    "fieldname": "date",
@@ -142,12 +154,6 @@
    "fieldname": "phone",
    "fieldtype": "Data",
    "label": "Phone"
-  },
-  {
-   "fieldname": "class_city",
-   "fieldtype": "Data",
-   "label": "Class City",
-   "read_only": 1
   },
   {
    "fieldname": "tab_3_tab",
@@ -199,18 +205,16 @@
    "fieldname": "da_claim",
    "fieldtype": "Select",
    "label": "DA Claim",
-   "options": "\n0.50\n1.00"
+   "options": "\nHalf Day\nFull Day"
   },
   {
    "fieldname": "halting",
    "fieldtype": "Data",
-   "hidden": 1,
    "label": "Halting"
   },
   {
    "fieldname": "lodging",
    "fieldtype": "Data",
-   "hidden": 1,
    "label": "Lodging"
   },
   {
@@ -239,11 +243,51 @@
    "fieldname": "total",
    "fieldtype": "Data",
    "label": "Total"
+  },
+  {
+   "fetch_from": "employee_id.first_name",
+   "fieldname": "first_name",
+   "fieldtype": "Data",
+   "label": "First Name"
+  },
+  {
+   "fetch_from": "employee_id.last_name",
+   "fieldname": "last_name",
+   "fieldtype": "Data",
+   "label": "Last Name"
+  },
+  {
+   "fieldname": "section_break_urtb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_8kud",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_bjkj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Data",
+   "label": "Category"
+  },
+  {
+   "fieldname": "class_city",
+   "fieldtype": "Data",
+   "label": "Class City"
+  },
+  {
+   "fieldname": "other_to_location",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Other:"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-06 15:51:00.719809",
+ "modified": "2023-12-09 15:57:25.129884",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",
@@ -258,6 +302,18 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee",
    "share": 1,
    "write": 1
   }
