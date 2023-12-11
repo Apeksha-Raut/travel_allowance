@@ -37,8 +37,7 @@
   "class_city",
   "column_break_bjkj",
   "daily_allowance",
-  "lodging",
-  "halting",
+  "halting_lodging_amount",
   "total_visit_time",
   "tab_3_tab",
   "data_ehot",
@@ -208,16 +207,6 @@
    "options": "\nHalf Day\nFull Day"
   },
   {
-   "fieldname": "halting",
-   "fieldtype": "Data",
-   "label": "Halting"
-  },
-  {
-   "fieldname": "lodging",
-   "fieldtype": "Data",
-   "label": "Lodging"
-  },
-  {
    "fieldname": "halting_lodging_select",
    "fieldtype": "Select",
    "label": "Halting/Lodging",
@@ -283,11 +272,16 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Other:"
+  },
+  {
+   "fieldname": "halting_lodging_amount",
+   "fieldtype": "Data",
+   "label": "Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-09 15:57:25.129884",
+ "modified": "2023-12-11 10:21:19.643864",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",

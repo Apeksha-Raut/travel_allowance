@@ -9,6 +9,7 @@ let globalTaCategory;
 let daAllowance;
 
 frappe.ui.form.on("Travel Allowance", {
+  // handle the destination field
   to_location: function (frm) {
     let destination = frm.doc.to_location;
     // Convert destination to lowercase for case-insensitive comparison
@@ -85,10 +86,11 @@ frappe.ui.form.on("Travel Allowance", {
       console.log("Old Form");
     }
   },
+  //handle the DA Claim Allowance
   da_claim: function (frm) {
     let da_category = frm.doc.da_claim; // Full Day or Half Day
-    let category = frm.doc.category;
-    let cityClass = frm.doc.class_city;
+    let category = frm.doc.category; // Designation category(level 1/2/3/4/5/6/7/8/)
+    let cityClass = frm.doc.class_city; // Category of city a,b,c
 
     frm.call({
       method: "findAllowance",
@@ -109,37 +111,36 @@ frappe.ui.form.on("Travel Allowance", {
             frm.set_value("daily_allowance", amount);
           }
         }
+        console.log(frm.doc.daily_allowance);
+        console.log(frm.doc.halting_lodging_amount);
+        console.log(frm.doc.other_expenses_amount);
+        let total_amount =
+          frm.doc.daily_allowance +
+          frm.doc.halting_lodging_amount +
+          frm.doc.other_expenses_amount;
+        console.log("Total Allowance:", total_amount);
+        frm.set_value("total_amount", total_amount);
+        frm.refresh_field("total_amount");
       },
     });
   },
+  //handle halting Lodging Allowances
   halting_lodging_select: function (frm) {
-    // let halt_lodg = frm.doc.halting_lodging_select;
-    // console.log(halt_lodg);
-
-    // if (halt_lodg == "Halting") {
-    //   frm.toggle_display("lodging", false);
-    //   frm.toggle_display("halting", true);
-    //   //handleHalting(halt_lodg);
-    // } else if (halt_lodg === "Lodging") {
-    //   frm.toggle_display("halting", false);
-    //   frm.toggle_display("lodging", true);
-    //   //handleHalting(halt_lodg);
-    // } else {
-    //   frm.toggle_display("lodging", false);
-    //   frm.toggle_display("halting", false);
-    // }
-
     //<Taking Parameters to fetch Amount for Halting and Lodging>
     // let category = frm.doc.category;
     // let cityClass = frm.doc.class_city;
     // let haltLodge = frm.doc.halting_lodging_select;
     //<Taking Parameters to fetch Amount for Halting and Lodging>
-    let category = frm.doc.category;
-    let cityClass = frm.doc.class_city;
-    let haltLodge = frm.doc.halting_lodging_select;
-    getDaHaltingLodging(haltLodge, category, cityClass);
 
-    function getDaHaltingLodging(haltLodge, category, cityClass) {
+    let category = frm.doc.category; // Designation category(level 1/2/3/4/5/6/7/8/)
+    let cityClass = frm.doc.class_city; //Category of city a,b,c
+    let haltLodge = frm.doc.halting_lodging_select;
+
+    if (!cityClass) {
+      frappe.msgprint("Please Select To Location");
+
+      frm.set_value("halting_lodging_select", null);
+    } else {
       frm.call({
         method: "findAllowance",
         args: {
@@ -153,47 +154,37 @@ frappe.ui.form.on("Travel Allowance", {
             //console.log(r.message); // This will contain the result from the server
             let amount = r.message[0][`${cityClass}_class_city`];
             if (haltLodge == "Halting") {
-              frm.set_value("halting", amount);
+              frm.set_value("halting_lodging_amount", amount);
             } else if (haltLodge == "Lodging") {
-              frm.set_value("lodging", amount);
+              frm.set_value("halting_lodging_amount", amount);
             }
           }
+          console.log(frm.doc.daily_allowance);
+          console.log(frm.doc.halting_lodging_amount);
+          console.log(frm.doc.other_expenses_amount);
+          let total_amount =
+            frm.doc.daily_allowance +
+            frm.doc.halting_lodging_amount +
+            frm.doc.other_expenses_amount;
+          console.log("Total Allowance:", total_amount);
+          frm.set_value("total_amount", total_amount);
+          frm.refresh_field("total_amount");
         },
       });
     }
-
-    //</Taking Parameters to fetch Amount for Halting and Lodging>
-
-    // function handleHalting(halt_lodg) {
-    //   // Getting Employee Designation Category
-    //   console.log("function value halt_lodg:", halt_lodg);
-
-    //   // Fetch values from the child table (Allowance Parameters)
-    //   frappe.db
-    //     .get_list("Allowance Parameters", {
-    //       fields: ["level", "city_class_allowance"], // Add other fields as needed
-    //       filters: {
-    //         parent: halt_lodg, // Assuming halt_lodg is the parent field in Allowance Parameters
-    //         level: globalTaCategory, // Replace with the actual field and value you want to filter on
-
-    //       },
-    //     })
-    //     .then((result) => {
-    //       if (result && result.length > 0) {
-    //         // Assuming there could be multiple rows with the same level, use the first row
-    //         const allowanceParameters = result[0];
-    //         globalHaltLodgAllowance = allowanceParameters.city_class_allowance;
-    //         console.log("halting:", globalHaltLodgAllowance);
-
-    //         // You can perform further actions with the fetched values
-    //       } else {
-    //         console.log("No matching records found in Allowance Parameters");
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       console.error("Error fetching Allowance Parameters:", err);
-    //     });
-    // }
+  },
+  other_expense_radio: function (frm) {
+    console.log(frm.doc.other_expense_radio);
+  },
+  //handle the local conveyance amount
+  other_expenses_amount: function (frm) {
+    let total_amount =
+      frm.doc.daily_allowance +
+      frm.doc.halting_lodging_amount +
+      frm.doc.other_expenses_amount;
+    console.log("Total Allowance:", total_amount);
+    frm.set_value("total_amount", total_amount);
+    frm.refresh_field("total_amount");
   },
 });
 
