@@ -86,43 +86,56 @@ frappe.ui.form.on("Travel Allowance", {
       console.log("Old Form");
     }
   },
+
   //handle the DA Claim Allowance
   da_claim: function (frm) {
+    frm.trigger("set_claim");
+
     let da_category = frm.doc.da_claim; // Full Day or Half Day
     let category = frm.doc.category; // Designation category(level 1/2/3/4/5/6/7/8/)
     let cityClass = frm.doc.class_city; // Category of city a,b,c
 
-    frm.call({
-      method: "findAllowance",
-      args: {
-        city_class: cityClass,
-        category: category,
-        halt_lodge: "DA",
-      },
-      callback: function (r) {
-        if (!r.exc) {
-          // Handle the result if needed
-          //console.log(r.message); // This will contain the result from the server
-          let amount = r.message[0][`${cityClass}_class_city`];
-          if (da_category == "Half Day") {
-            amount = amount / 2;
-            frm.set_value("daily_allowance", amount);
-          } else if (da_category == "Full Day") {
-            frm.set_value("daily_allowance", amount);
+    if (!cityClass) {
+      frappe.throw("Please Select To Location");
+      frm.set_value("da_claim", "");
+      frm.refresh_field("da_claim");
+    } else {
+      frm.call({
+        method: "findAllowance",
+        args: {
+          city_class: cityClass,
+          category: category,
+          halt_lodge: "DA",
+        },
+        callback: function (r) {
+          if (!r.exc) {
+            // Handle the result if needed
+            //console.log(r.message); // This will contain the result from the server
+            let amount = r.message[0][`${cityClass}_class_city`];
+            if (da_category == "Half Day") {
+              amount = amount / 2;
+              frm.set_value("daily_allowance", amount);
+            } else if (da_category == "Full Day") {
+              frm.set_value("daily_allowance", amount);
+            }
           }
-        }
-        console.log(frm.doc.daily_allowance);
-        console.log(frm.doc.halting_lodging_amount);
-        console.log(frm.doc.other_expenses_amount);
-        let total_amount =
-          frm.doc.daily_allowance +
-          frm.doc.halting_lodging_amount +
-          frm.doc.other_expenses_amount;
-        console.log("Total Allowance:", total_amount);
-        frm.set_value("total_amount", total_amount);
-        frm.refresh_field("total_amount");
-      },
-    });
+          console.log(frm.doc.daily_allowance);
+          console.log(frm.doc.halting_lodging_amount);
+          console.log(frm.doc.other_expenses_amount);
+          let total_amount =
+            frm.doc.daily_allowance +
+            frm.doc.halting_lodging_amount +
+            frm.doc.other_expenses_amount;
+          console.log("Total Allowance:", total_amount);
+          frm.set_value("total_amount", total_amount);
+          frm.refresh_field("total_amount");
+        },
+      });
+    }
+  },
+
+  set_claim(frm) {
+    frappe.msgprint("hello claim");
   },
   //handle halting Lodging Allowances
   halting_lodging_select: function (frm) {
@@ -134,12 +147,15 @@ frappe.ui.form.on("Travel Allowance", {
 
     let category = frm.doc.category; // Designation category(level 1/2/3/4/5/6/7/8/)
     let cityClass = frm.doc.class_city; //Category of city a,b,c
-    let haltLodge = frm.doc.halting_lodging_select;
+    let haltLodge = frm.doc.halting_lodging_select; // selected value for halting/lodging
 
     if (!cityClass) {
+      //frm.set_value("halting_lodging_select", "");
       frappe.msgprint("Please Select To Location");
 
-      frm.set_value("halting_lodging_select", null);
+      //frm.doc.halting_lodging_select = null;
+      // Debug statement to check the state of the form document after setting the value
+      console.log("After setting value:", frm.doc.halting_lodging_select);
     } else {
       frm.call({
         method: "findAllowance",
