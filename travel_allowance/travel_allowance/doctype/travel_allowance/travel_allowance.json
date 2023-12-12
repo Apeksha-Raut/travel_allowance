@@ -112,9 +112,10 @@
   {
    "fieldname": "to_column",
    "fieldtype": "Column Break",
-   "label": "To "
+   "label": " "
   },
   {
+   "depends_on": "eval:doc.from_location",
    "fieldname": "date_and_time_from",
    "fieldtype": "Datetime",
    "in_list_view": 1,
@@ -122,6 +123,7 @@
    "reqd": 1
   },
   {
+   "depends_on": "eval:doc.to_location",
    "fieldname": "date_and_time_to",
    "fieldtype": "Datetime",
    "label": "Date And Time (To)",
@@ -135,6 +137,7 @@
    "reqd": 1
   },
   {
+   "depends_on": "eval:doc.from_location && doc.date_and_time_from",
    "fieldname": "to_location",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -143,6 +146,7 @@
    "reqd": 1
   },
   {
+   "depends_on": "eval:doc.from_location && doc.to_location && doc.date_and_time_from && doc.date_and_time_to",
    "fieldname": "purpose",
    "fieldtype": "Small Text",
    "label": "Purpose",
@@ -192,12 +196,14 @@
    "options": "\nAuto\nBike\nCar\nPublic Transport\nTaxi"
   },
   {
+   "depends_on": "eval:doc.from_location && doc.to_location && doc.date_and_time_from && doc.date_and_time_to",
    "fieldname": "da_claim",
    "fieldtype": "Select",
    "label": "DA Claim",
    "options": "\nHalf Day\nFull Day"
   },
   {
+   "depends_on": "eval:doc.from_location && doc.to_location && doc.date_and_time_from && doc.date_and_time_to",
    "fieldname": "halting_lodging_select",
    "fieldtype": "Select",
    "label": "Halting/Lodging",
@@ -275,6 +281,7 @@
   },
   {
    "default": "0",
+   "depends_on": "eval:doc.from_location && doc.to_location && doc.date_and_time_from && doc.date_and_time_to",
    "fieldname": "other_expenses_check",
    "fieldtype": "Check",
    "label": "Do you have other Expenses details ?"
@@ -292,7 +299,8 @@
   {
    "fieldname": "total_amount",
    "fieldtype": "Data",
-   "label": "Total Allowance"
+   "label": "Total Allowance",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_foml",
@@ -308,12 +316,14 @@
   {
    "fieldname": "purpose_local_conveyance",
    "fieldtype": "Data",
-   "label": "Purpose"
+   "label": "Purpose",
+   "mandatory_depends_on": "eval:doc.select_type_expenses",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-12 12:29:49.578010",
+ "modified": "2023-12-12 16:42:09.487333",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",

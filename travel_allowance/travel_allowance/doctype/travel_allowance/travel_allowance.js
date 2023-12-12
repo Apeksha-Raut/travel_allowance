@@ -202,7 +202,63 @@ frappe.ui.form.on("Travel Allowance", {
     frm.set_value("total_amount", total_amount);
     frm.refresh_field("total_amount");
   },
+  // onload: function (frm) {
+  //   frm.fields_dict["date_and_time_to"].df.options = "hh:mm a";
+  //   frm.fields_dict["date_and_time_to"].refresh();
+  // },
+
+  date_and_time_to: function (frm) {
+    // let from_datetime = frm.doc.date_and_time_from;
+    //let to_datetime = frm.doc.date_and_time_to;
+
+    //console.log(from_datetime);
+    // console.log(to_datetime);
+
+    calculateTotalTime(frm);
+    //frm.set_value("total_visit_time", total_time);
+  },
 });
+
+function calculateTotalTime(frm) {
+  let dateAndTimeFrom = new Date(frm.doc.date_and_time_from);
+  let dateAndTimeTo = new Date(frm.doc.date_and_time_to);
+  console.log(dateAndTimeFrom);
+  console.log(dateAndTimeFrom);
+
+  // Check if both date and time values are valid
+  if (!isNaN(dateAndTimeFrom) && !isNaN(dateAndTimeTo)) {
+    // Check if 'date_and_time_from' is earlier than 'date_and_time_to'
+    if (dateAndTimeTo >= dateAndTimeFrom) {
+      let timeDifference = dateAndTimeTo - dateAndTimeFrom;
+      console.log(dateAndTimeFrom, dateAndTimeTo, timeDifference); // Add this line for debugging
+      let formattedTime = formatTimeDifference(timeDifference);
+      console.log(formattedTime); // Add this line for debugging
+      frm.set_value("total_visit_time", formattedTime);
+    } else {
+      frm.set_value("total_visit_time", ""); // Clear total_visit_time if dates are not in order
+      frappe.msgprint(
+        __("End date and time should be later than start date and time.")
+      );
+    }
+  } else {
+    frm.set_value("total_visit_time", ""); // Clear total_visit_time if either date or time is invalid
+  }
+}
+
+function formatTimeDifference(timeDifference) {
+  var totalMinutes = Math.floor(timeDifference / (60 * 1000));
+  //var days = Math.floor(totalMinutes / (24 * 60));
+  var hours = Math.floor((totalMinutes % (24 * 60)) / 60);
+  var minutes = totalMinutes % 60;
+
+  // Format the time as DD:HH:MM
+  var formattedTime = `${padZero(hours)}:${padZero(minutes)}`; //${padZero(days)}:
+  return formattedTime;
+}
+
+function padZero(num) {
+  return num.toString().padStart(2, "0");
+}
 
 // function calculateTotalVisitTime(startDateTime, destinationDateTime) {
 //   // Parse the input strings to Date objects
@@ -239,7 +295,8 @@ function getCityClass(lowerDestination) {
     "Delhi",
     "Bangalore",
     "Chennai",
-    "Kolkata" /* Add more metro cities */,
+    "Kolkata",
+    "Hyderabad" /* Add more metro cities */,
   ];
   let classB = [
     "Nagpur",
@@ -248,7 +305,7 @@ function getCityClass(lowerDestination) {
     "Nashik",
     "Kolhapur",
     "Solapur",
-    "Gondia",
+    "Gondia HO",
   ];
 
   // Check if the destination is in Class A cities
