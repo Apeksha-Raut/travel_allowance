@@ -28,7 +28,7 @@
   "date_and_time_to",
   "to_location",
   "other_to_location",
-  "section_break_urtb",
+  "section_break_2",
   "purpose",
   "total",
   "column_break_8kud",
@@ -39,6 +39,8 @@
   "daily_allowance",
   "halting_lodging_amount",
   "total_visit_time",
+  "other_expenses_section",
+  "other_expenses",
   "tab_3_tab",
   "data_ehot",
   "from",
@@ -246,10 +248,6 @@
    "label": "Last Name"
   },
   {
-   "fieldname": "section_break_urtb",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "column_break_8kud",
    "fieldtype": "Column Break"
   },
@@ -277,11 +275,26 @@
    "fieldname": "halting_lodging_amount",
    "fieldtype": "Data",
    "label": "Amount"
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "other_expenses_section",
+   "fieldtype": "Section Break",
+   "label": "Other Expenses"
+  },
+  {
+   "default": "0",
+   "fieldname": "other_expenses",
+   "fieldtype": "Check",
+   "label": "Other Expenses ?"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-11 10:21:19.643864",
+ "modified": "2023-12-12 11:30:34.678606",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",
