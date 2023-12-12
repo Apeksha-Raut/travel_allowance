@@ -89,7 +89,7 @@ frappe.ui.form.on("Travel Allowance", {
 
   //handle the DA Claim Allowance
   da_claim: function (frm) {
-    frm.trigger("set_claim");
+    //frm.trigger("set_claim");
 
     let da_category = frm.doc.da_claim; // Full Day or Half Day
     let category = frm.doc.category; // Designation category(level 1/2/3/4/5/6/7/8/)
@@ -134,9 +134,9 @@ frappe.ui.form.on("Travel Allowance", {
     }
   },
 
-  set_claim(frm) {
-    frappe.msgprint("hello claim");
-  },
+  // set_claim(frm) {
+  //   frappe.msgprint("hello claim");
+  //},
   //handle halting Lodging Allowances
   halting_lodging_select: function (frm) {
     //<Taking Parameters to fetch Amount for Halting and Lodging>
@@ -189,8 +189,8 @@ frappe.ui.form.on("Travel Allowance", {
       });
     }
   },
-  other_expense_radio: function (frm) {
-    console.log(frm.doc.other_expense_radio);
+  other_expenses_check: function (frm) {
+    console.log(frm.doc.other_expense_check);
   },
   //handle the local conveyance amount
   other_expenses_amount: function (frm) {

@@ -22,15 +22,14 @@
   "category",
   "travel_allowance_details_section",
   "from_column",
-  "date_and_time_from",
   "from_location",
+  "date_and_time_from",
   "to_column",
-  "date_and_time_to",
   "to_location",
   "other_to_location",
+  "date_and_time_to",
   "section_break_2",
   "purpose",
-  "total",
   "column_break_8kud",
   "da_claim",
   "halting_lodging_select",
@@ -39,15 +38,19 @@
   "daily_allowance",
   "halting_lodging_amount",
   "total_visit_time",
+  "other_expenses_section",
+  "other_expenses_check",
+  "section_break_foml",
+  "total_amount",
   "tab_3_tab",
-  "data_ehot",
+  "select_type_expenses",
   "from",
   "mode_of_travel",
-  "amount",
+  "other_expenses_amount",
   "column_break_gnjd",
-  "date_glfz",
+  "date_other_expense",
   "to",
-  "purposelocalconveyance"
+  "purpose_local_conveyance"
  ],
  "fields": [
   {
@@ -114,28 +117,36 @@
   {
    "fieldname": "date_and_time_from",
    "fieldtype": "Datetime",
-   "label": "Date And Time (From)"
+   "in_list_view": 1,
+   "label": "Date And Time (From)",
+   "reqd": 1
   },
   {
    "fieldname": "date_and_time_to",
    "fieldtype": "Datetime",
-   "label": "Date And Time (To)"
+   "label": "Date And Time (To)",
+   "reqd": 1
   },
   {
    "fieldname": "from_location",
    "fieldtype": "Data",
-   "label": "From Location"
+   "in_list_view": 1,
+   "label": "From Location",
+   "reqd": 1
   },
   {
    "fieldname": "to_location",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "To Location",
-   "options": "\nOther\nMumbai\nDelhi\nChennai\nKolkata\nPune\nHyderabad\nNagpur\nAmravati\nAurangabad\nNashik\nKolhapur\nSolapur\nGondia"
+   "options": "\nOther\nMumbai\nDelhi\nChennai\nKolkata\nPune\nHyderabad\nNagpur\nAmravati\nAurangabad\nNashik\nKolhapur\nSolapur\nGondia",
+   "reqd": 1
   },
   {
    "fieldname": "purpose",
    "fieldtype": "Small Text",
-   "label": "Purpose"
+   "label": "Purpose",
+   "reqd": 1
   },
   {
    "fetch_from": "employee_id.division",
@@ -155,20 +166,10 @@
    "label": "Phone"
   },
   {
+   "depends_on": "eval:doc.other_expenses_check=='1'",
    "fieldname": "tab_3_tab",
    "fieldtype": "Tab Break",
-   "label": "Local Convenience & Other Expense"
-  },
-  {
-   "fieldname": "data_ehot",
-   "fieldtype": "Select",
-   "label": "Select type of Expenses",
-   "options": "\nLocal Expense\nOther Expense"
-  },
-  {
-   "fieldname": "date_glfz",
-   "fieldtype": "Date",
-   "label": "Date"
+   "label": "Local Conveyance & Other Expense"
   },
   {
    "fieldname": "column_break_gnjd",
@@ -191,16 +192,6 @@
    "options": "\nAuto\nBike\nCar\nPublic Transport\nTaxi"
   },
   {
-   "fieldname": "purposelocalconveyance",
-   "fieldtype": "Data",
-   "label": "Purpose"
-  },
-  {
-   "fieldname": "amount",
-   "fieldtype": "Currency",
-   "label": "Amount"
-  },
-  {
    "fieldname": "da_claim",
    "fieldtype": "Select",
    "label": "DA Claim",
@@ -215,7 +206,8 @@
   {
    "fieldname": "daily_allowance",
    "fieldtype": "Data",
-   "label": "Daily Allowance"
+   "label": "Daily Allowance",
+   "read_only": 1
   },
   {
    "fieldname": "employee_details_tab",
@@ -227,11 +219,6 @@
    "fieldname": "total_visit_time",
    "fieldtype": "Data",
    "label": "Total Visit Time"
-  },
-  {
-   "fieldname": "total",
-   "fieldtype": "Data",
-   "label": "Total"
   },
   {
    "fetch_from": "employee_id.first_name",
@@ -267,21 +254,66 @@
    "fieldname": "other_to_location",
    "fieldtype": "Data",
    "hidden": 1,
-   "label": "Other:"
+   "in_list_view": 1,
+   "label": "Other:",
+   "mandatory_depends_on": "eval:doc.to_location=='Other'"
   },
   {
    "fieldname": "halting_lodging_amount",
    "fieldtype": "Data",
-   "label": "Amount"
+   "label": "Amount",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_2",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "other_expenses_section",
+   "fieldtype": "Section Break",
+   "label": "Other Expenses"
+  },
+  {
+   "default": "0",
+   "fieldname": "other_expenses_check",
+   "fieldtype": "Check",
+   "label": "Do you have other Expenses details ?"
+  },
+  {
+   "fieldname": "other_expenses_amount",
+   "fieldtype": "Currency",
+   "label": "Amount"
+  },
+  {
+   "fieldname": "date_other_expense",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Data",
+   "label": "Total Allowance"
+  },
+  {
+   "fieldname": "section_break_foml",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "select_type_expenses",
+   "fieldtype": "Select",
+   "label": "Select type of Expenses",
+   "options": "\nLocal Expense\nOther Expense",
+   "reqd": 1
+  },
+  {
+   "fieldname": "purpose_local_conveyance",
+   "fieldtype": "Data",
+   "label": "Purpose"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-12 11:45:23.209565",
+ "modified": "2023-12-12 12:29:49.578010",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",
