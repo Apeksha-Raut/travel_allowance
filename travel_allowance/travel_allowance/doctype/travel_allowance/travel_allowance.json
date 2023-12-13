@@ -5,6 +5,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "final_amount",
   "employee_details_tab",
   "employee_details_section",
   "employee_id",
@@ -40,17 +41,22 @@
   "total_visit_time",
   "other_expenses_section",
   "other_expenses_check",
-  "section_break_foml",
-  "total_amount",
-  "tab_3_tab",
+  "section_break_wwab",
+  "other_expenses_lists",
+  "other_expense_details_section",
   "select_type_expenses",
-  "from",
   "mode_of_travel",
-  "other_expenses_amount",
+  "btn_add_more",
   "column_break_gnjd",
   "date_other_expense",
+  "purpose_local_conveyance",
+  "column_break_owmo",
+  "from",
+  "other_expenses_amount",
+  "column_break_lnab",
   "to",
-  "purpose_local_conveyance"
+  "section_break_foml",
+  "total_amount"
  ],
  "fields": [
   {
@@ -170,12 +176,6 @@
    "label": "Phone"
   },
   {
-   "depends_on": "eval:doc.other_expenses_check=='1'",
-   "fieldname": "tab_3_tab",
-   "fieldtype": "Tab Break",
-   "label": "Local Conveyance & Other Expense"
-  },
-  {
    "fieldname": "column_break_gnjd",
    "fieldtype": "Column Break"
   },
@@ -211,8 +211,9 @@
   },
   {
    "fieldname": "daily_allowance",
-   "fieldtype": "Data",
+   "fieldtype": "Currency",
    "label": "Daily Allowance",
+   "precision": "2",
    "read_only": 1
   },
   {
@@ -266,8 +267,9 @@
   },
   {
    "fieldname": "halting_lodging_amount",
-   "fieldtype": "Data",
+   "fieldtype": "Currency",
    "label": "Amount",
+   "precision": "2",
    "read_only": 1
   },
   {
@@ -297,9 +299,11 @@
    "label": "Date"
   },
   {
+   "depends_on": "eval:doc.daily_allowance && doc.halting_lodging_amount",
    "fieldname": "total_amount",
-   "fieldtype": "Data",
+   "fieldtype": "Currency",
    "label": "Total Allowance",
+   "precision": "2",
    "read_only": 1
   },
   {
@@ -310,20 +314,51 @@
    "fieldname": "select_type_expenses",
    "fieldtype": "Select",
    "label": "Select type of Expenses",
-   "options": "\nLocal Expense\nOther Expense",
-   "reqd": 1
+   "mandatory_depends_on": "eval:doc.other_expenses_check=='1' ",
+   "options": "\nLocal Expense\nOther Expense"
   },
   {
    "fieldname": "purpose_local_conveyance",
    "fieldtype": "Data",
    "label": "Purpose",
-   "mandatory_depends_on": "eval:doc.select_type_expenses",
-   "reqd": 1
+   "mandatory_depends_on": "eval:doc.select_type_expenses"
+  },
+  {
+   "fieldname": "column_break_owmo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_lnab",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.other_expenses_check=='1'",
+   "fieldname": "other_expense_details_section",
+   "fieldtype": "Section Break",
+   "label": "Local Conveyance & Other Expense"
+  },
+  {
+   "fieldname": "btn_add_more",
+   "fieldtype": "Button",
+   "label": "Add "
+  },
+  {
+   "fieldname": "section_break_wwab",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "other_expenses_lists",
+   "fieldtype": "HTML"
+  },
+  {
+   "fieldname": "final_amount",
+   "fieldtype": "HTML",
+   "options": "<div class=\"container text-center\">\n  <div class=\"row\">\n    <div class=\"col\">{{doc.da_claim}} <br>\n&#8377;{{doc.daily_allowance.toFixed(2)}}    </div>\n    <div class=\"col\">\n      {{doc.halting_lodging_select}} <br>\n&#8377;\n{{doc.halting_lodging_amount.toFixed(2)}}\n    </div>\n    <div class=\"col\"> Total Allowance Amount <br>\n      &#8377; {{doc.total_amount.toFixed(2)}}\n    </div>\n  </div>\n</div>"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-12 16:42:09.487333",
+ "modified": "2023-12-13 17:55:24.390984",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",

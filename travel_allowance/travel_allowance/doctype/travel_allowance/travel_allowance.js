@@ -85,6 +85,13 @@ frappe.ui.form.on("Travel Allowance", {
     } else if (!frm.is_new()) {
       console.log("Old Form");
     }
+    frm.fields_dict.btn_add_more.$input.css({
+      "background-color": "#3498db",
+      color: "#fff",
+      border: "none",
+      padding: "5px 10px",
+      cursor: "pointer",
+    });
   },
 
   //handle the DA Claim Allowance
@@ -125,9 +132,10 @@ frappe.ui.form.on("Travel Allowance", {
           let total_amount =
             frm.doc.daily_allowance +
             frm.doc.halting_lodging_amount +
-            frm.doc.other_expenses_amount;
+            (frm.doc.other_expenses_amount || 0);
+
           console.log("Total Allowance:", total_amount);
-          frm.set_value("total_amount", total_amount);
+          frm.set_value("total_amount", total_amount.toFixed(2));
           frm.refresh_field("total_amount");
         },
       });
@@ -181,9 +189,10 @@ frappe.ui.form.on("Travel Allowance", {
           let total_amount =
             frm.doc.daily_allowance +
             frm.doc.halting_lodging_amount +
-            frm.doc.other_expenses_amount;
+            (frm.doc.other_expenses_amount || 0);
+
           console.log("Total Allowance:", total_amount);
-          frm.set_value("total_amount", total_amount);
+          frm.set_value("total_amount", total_amount.toFixed(2));
           frm.refresh_field("total_amount");
         },
       });
@@ -197,9 +206,10 @@ frappe.ui.form.on("Travel Allowance", {
     let total_amount =
       frm.doc.daily_allowance +
       frm.doc.halting_lodging_amount +
-      frm.doc.other_expenses_amount;
+      (frm.doc.other_expenses_amount || 0);
+
     console.log("Total Allowance:", total_amount);
-    frm.set_value("total_amount", total_amount);
+    frm.set_value("total_amount", total_amount.toFixed(2));
     frm.refresh_field("total_amount");
   },
   // onload: function (frm) {
@@ -210,55 +220,86 @@ frappe.ui.form.on("Travel Allowance", {
   date_and_time_to: function (frm) {
     // let from_datetime = frm.doc.date_and_time_from;
     //let to_datetime = frm.doc.date_and_time_to;
-
     //console.log(from_datetime);
     // console.log(to_datetime);
-
-    calculateTotalTime(frm);
+    //calculateTotalTime(frm);
     //frm.set_value("total_visit_time", total_time);
   },
+
+  // other_expenses_check: function (frm) {
+  //   // Check if the field is checked
+  //   if (frm.doc.other_expenses_check) {
+  //     // Show the fields in the desired tab (change 'YourTabName' to the actual tab name)
+  //     frm.get_field("other_expense_details_tab").toggle(true);
+  //   } else {
+  //     // Optionally, hide the fields when unchecked
+  //     frm.get_field("other_expense_details_tab").toggle(false);
+  //   }
+  // },
+
+  // after_save: function (frm) {
+  //   showSummary(frm);
+  // },
 });
+// function showSummary(frm) {
+//   // Create a summary HTML using Jinja templating
+//   var summaryHTML = `
+//       <div>
+//           <strong>DA Claim:</strong> {{ doc.da_claim.toFixed(2) }}<br>
+//           <strong>Daily Allowance:</strong> &#8377;{{ doc.daily_allowance.toFixed(2) }}<br>
+//           <strong>Halting/Lodging Select:</strong> {{ doc.halting_lodging_select }}<br>
+//           <strong>Halting/Lodging Amount:</strong> &#8377;{{ doc.halting_lodging_amount.toFixed(2) }}<br>
+//           <strong>Total Allowance Amount:</strong> &#8377;{{ doc.total_amount.toFixed(2) }}<br>
+//       </div>
+//   `;
 
-function calculateTotalTime(frm) {
-  let dateAndTimeFrom = new Date(frm.doc.date_and_time_from);
-  let dateAndTimeTo = new Date(frm.doc.date_and_time_to);
-  console.log(dateAndTimeFrom);
-  console.log(dateAndTimeFrom);
+//   // Remove any existing summary fields before adding a new one
+//   frm.dashboard.clear_headline();
 
-  // Check if both date and time values are valid
-  if (!isNaN(dateAndTimeFrom) && !isNaN(dateAndTimeTo)) {
-    // Check if 'date_and_time_from' is earlier than 'date_and_time_to'
-    if (dateAndTimeTo >= dateAndTimeFrom) {
-      let timeDifference = dateAndTimeTo - dateAndTimeFrom;
-      console.log(dateAndTimeFrom, dateAndTimeTo, timeDifference); // Add this line for debugging
-      let formattedTime = formatTimeDifference(timeDifference);
-      console.log(formattedTime); // Add this line for debugging
-      frm.set_value("total_visit_time", formattedTime);
-    } else {
-      frm.set_value("total_visit_time", ""); // Clear total_visit_time if dates are not in order
-      frappe.msgprint(
-        __("End date and time should be later than start date and time.")
-      );
-    }
-  } else {
-    frm.set_value("total_visit_time", ""); // Clear total_visit_time if either date or time is invalid
-  }
-}
+//   // Display the summary at the top of the form
+//   frm.dashboard.add_headline(__("Summary"), summaryHTML);
+// }
 
-function formatTimeDifference(timeDifference) {
-  var totalMinutes = Math.floor(timeDifference / (60 * 1000));
-  //var days = Math.floor(totalMinutes / (24 * 60));
-  var hours = Math.floor((totalMinutes % (24 * 60)) / 60);
-  var minutes = totalMinutes % 60;
+// function calculateTotalTime(frm) {
+//   let dateAndTimeFrom = new Date(frm.doc.date_and_time_from);
+//   let dateAndTimeTo = new Date(frm.doc.date_and_time_to);
+//   console.log(dateAndTimeFrom);
+//   console.log(dateAndTimeFrom);
 
-  // Format the time as DD:HH:MM
-  var formattedTime = `${padZero(hours)}:${padZero(minutes)}`; //${padZero(days)}:
-  return formattedTime;
-}
+//   // Check if both date and time values are valid
+//   if (!isNaN(dateAndTimeFrom) && !isNaN(dateAndTimeTo)) {
+//     // Check if 'date_and_time_from' is earlier than 'date_and_time_to'
+//     if (dateAndTimeTo >= dateAndTimeFrom) {
+//       let timeDifference = dateAndTimeTo - dateAndTimeFrom;
+//       console.log(dateAndTimeFrom, dateAndTimeTo, timeDifference); // Add this line for debugging
+//       let formattedTime = formatTimeDifference(timeDifference);
+//       console.log(formattedTime); // Add this line for debugging
+//       frm.set_value("total_visit_time", formattedTime);
+//     } else {
+//       frm.set_value("total_visit_time", ""); // Clear total_visit_time if dates are not in order
+//       frappe.msgprint(
+//         __("End date and time should be later than start date and time.")
+//       );
+//     }
+//   } else {
+//     frm.set_value("total_visit_time", ""); // Clear total_visit_time if either date or time is invalid
+//   }
+// }
 
-function padZero(num) {
-  return num.toString().padStart(2, "0");
-}
+// function formatTimeDifference(timeDifference) {
+//   var totalMinutes = Math.floor(timeDifference / (60 * 1000));
+//   //var days = Math.floor(totalMinutes / (24 * 60));
+//   var hours = Math.floor((totalMinutes % (24 * 60)) / 60);
+//   var minutes = totalMinutes % 60;
+
+//   // Format the time as DD:HH:MM
+//   var formattedTime = `${padZero(hours)}:${padZero(minutes)}`; //${padZero(days)}:
+//   return formattedTime;
+// }
+
+// function padZero(num) {
+//   return num.toString().padStart(2, "0");
+// }
 
 // function calculateTotalVisitTime(startDateTime, destinationDateTime) {
 //   // Parse the input strings to Date objects
