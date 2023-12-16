@@ -5,7 +5,8 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "final_amount",
+  "ta_tab",
+  "total_amount_summary",
   "employee_details_tab",
   "employee_details_section",
   "employee_id",
@@ -46,7 +47,7 @@
   "other_expense_details_section",
   "select_type_expenses",
   "mode_of_travel",
-  "btn_add_more",
+  "btn_add",
   "column_break_gnjd",
   "date_other_expense",
   "purpose_local_conveyance",
@@ -55,8 +56,14 @@
   "other_expenses_amount",
   "column_break_lnab",
   "to",
+  "section_break_omlb",
+  "local_conveyance_table",
+  "other_total_expense_amount",
   "section_break_foml",
-  "total_amount"
+  "total_amount",
+  "btn_save_form",
+  "section_break_yoze",
+  "ta_chart"
  ],
  "fields": [
   {
@@ -138,7 +145,6 @@
   {
    "fieldname": "from_location",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "From Location",
    "reqd": 1
   },
@@ -146,7 +152,6 @@
    "depends_on": "eval:doc.from_location && doc.date_and_time_from",
    "fieldname": "to_location",
    "fieldtype": "Select",
-   "in_list_view": 1,
    "label": "To Location",
    "options": "\nOther\nMumbai\nDelhi\nChennai\nKolkata\nPune\nHyderabad\nNagpur\nAmravati\nAurangabad\nNashik\nKolhapur\nSolapur\nGondia",
    "reqd": 1
@@ -314,14 +319,12 @@
    "fieldname": "select_type_expenses",
    "fieldtype": "Select",
    "label": "Select type of Expenses",
-   "mandatory_depends_on": "eval:doc.other_expenses_check=='1' ",
    "options": "\nLocal Expense\nOther Expense"
   },
   {
    "fieldname": "purpose_local_conveyance",
    "fieldtype": "Data",
-   "label": "Purpose",
-   "mandatory_depends_on": "eval:doc.select_type_expenses"
+   "label": "Purpose"
   },
   {
    "fieldname": "column_break_owmo",
@@ -338,11 +341,6 @@
    "label": "Local Conveyance & Other Expense"
   },
   {
-   "fieldname": "btn_add_more",
-   "fieldtype": "Button",
-   "label": "Add "
-  },
-  {
    "fieldname": "section_break_wwab",
    "fieldtype": "Section Break"
   },
@@ -351,14 +349,55 @@
    "fieldtype": "HTML"
   },
   {
-   "fieldname": "final_amount",
+   "fieldname": "total_amount_summary",
    "fieldtype": "HTML",
-   "options": "<div class=\"container text-center\">\n  <div class=\"row\">\n    <div class=\"col\">{{doc.da_claim}} <br>\n&#8377;{{doc.daily_allowance.toFixed(2)}}    </div>\n    <div class=\"col\">\n      {{doc.halting_lodging_select}} <br>\n&#8377;\n{{doc.halting_lodging_amount.toFixed(2)}}\n    </div>\n    <div class=\"col\"> Total Allowance Amount <br>\n      &#8377; {{doc.total_amount.toFixed(2)}}\n    </div>\n  </div>\n</div>"
+   "options": "<div class=\"container text-center\">\n  <div class=\"row\">\n    <div class=\"col\">Daily Allowance: {{doc.da_claim}} <br>\n&#8377;{{doc.daily_allowance.toFixed(2)}}    </div>\n    <div class=\"col\">Halting/Lodging: \n      {{doc.halting_lodging_select}} <br>\n&#8377;\n{{doc.halting_lodging_amount.toFixed(2)}}\n    </div>\n    <div class=\"col\"> Total Allowance Amount <br>\n      &#8377; {{doc.total_amount.toFixed(2)}}\n    </div>\n  </div>\n</div>"
+  },
+  {
+   "fieldname": "section_break_omlb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "btn_add",
+   "fieldtype": "Button",
+   "label": "Add "
+  },
+  {
+   "fieldname": "local_conveyance_table",
+   "fieldtype": "Table",
+   "label": "Local Conveyance Details",
+   "options": "Local Conveyance"
+  },
+  {
+   "fieldname": "other_total_expense_amount",
+   "fieldtype": "Currency",
+   "label": "Other Total Expense Amount"
+  },
+  {
+   "depends_on": "eval:doc.total_amount",
+   "fieldname": "ta_tab",
+   "fieldtype": "Tab Break",
+   "label": "TA"
+  },
+  {
+   "fieldname": "ta_chart",
+   "fieldtype": "Table",
+   "label": "TA Chart",
+   "options": "TA Chart"
+  },
+  {
+   "fieldname": "section_break_yoze",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "btn_save_form",
+   "fieldtype": "Button",
+   "label": "Save"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-13 17:55:24.390984",
+ "modified": "2023-12-15 17:50:31.861199",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",

@@ -31,3 +31,5 @@ def findAllowance(city_class, category, halt_lodge):
     #     frappe.msgprint(f"No matching records found in Allowance Parameters for Category {category} and City Class {city_class}")
 
     return result
+
+

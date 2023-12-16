@@ -9,6 +9,15 @@ let globalTaCategory;
 let daAllowance;
 
 frappe.ui.form.on("Travel Allowance", {
+  // after_save: function (frm) {
+  //   console.log("form saved");
+  //   if (frm.save) {
+  //     frm.toggle_display("total_amount_summary", true);
+  //     console.log("details tab display");
+  //   }
+
+  //   //showSummary(frm);
+  // },
   // handle the destination field
   to_location: function (frm) {
     let destination = frm.doc.to_location;
@@ -26,11 +35,27 @@ frappe.ui.form.on("Travel Allowance", {
       frm.set_value("class_city", cityClass);
       frm.refresh_field("class_city");
     }
+
+    // set value null when destination location is change
+    frm.set_value("da_claim", null);
+    frm.set_value("halting_lodging_select", null);
+    frm.set_value("daily_allowance", null);
+    frm.set_value("halting_lodging_amount", null);
   },
 
   refresh: function (frm) {
-    if (frm.is_new()) {
-    }
+    // // Fetch the current client date
+    // var currentClientDate = frappe.datetime.get_today();
+
+    // // Log the result to the console
+    // console.log("Current Client Date:", currentClientDate);
+    // frm.set_value("date", currentClientDate);
+
+    // // Get the month from the date field
+    // var month = frappe.datetime.month(frm.doc.date);
+
+    // // Log the result to the console
+    // console.log("Month:", month);
 
     if (frm.is_new()) {
       //Setting Employee ID
@@ -85,11 +110,19 @@ frappe.ui.form.on("Travel Allowance", {
     } else if (!frm.is_new()) {
       console.log("Old Form");
     }
-    frm.fields_dict.btn_add_more.$input.css({
+    frm.fields_dict.btn_add.$input.css({
       "background-color": "#3498db",
       color: "#fff",
       border: "none",
-      padding: "5px 10px",
+      padding: "8px 20px",
+      cursor: "pointer",
+    });
+
+    frm.fields_dict.btn_save_form.$input.css({
+      "background-color": "#08A226",
+      color: "#fff",
+      border: "none",
+      padding: "8px 22px",
       cursor: "pointer",
     });
   },
@@ -145,6 +178,7 @@ frappe.ui.form.on("Travel Allowance", {
   // set_claim(frm) {
   //   frappe.msgprint("hello claim");
   //},
+
   //handle halting Lodging Allowances
   halting_lodging_select: function (frm) {
     //<Taking Parameters to fetch Amount for Halting and Lodging>
@@ -217,6 +251,143 @@ frappe.ui.form.on("Travel Allowance", {
   //   frm.fields_dict["date_and_time_to"].refresh();
   // },
 
+  // button function to add other expense data in child table Local Conveyance
+  btn_add: function (frm) {
+    //console.log(frm.doc.btn_add);
+    let typeofExpense = frm.doc.select_type_expenses;
+    let dateExpense = frm.doc.date_other_expense;
+    let fromExpense = frm.doc.from;
+    let toExpense = frm.doc.to;
+    let modeofTravel = frm.doc.mode_of_travel;
+    let purposeExpense = frm.doc.purpose_local_conveyance;
+    let amountExpense = frm.doc.other_expenses_amount;
+
+    //before add checking fields are empty
+    if (!typeofExpense) {
+      frappe.throw("Please select Type of Expense ");
+    } else if (!dateExpense) {
+      frappe.throw("Please Fill the date of other expense");
+    } else if (!fromExpense) {
+      frappe.throw("Please Fill your from location");
+    } else if (!toExpense) {
+      frappe.throw("Please your destination location");
+    } else if (!modeofTravel) {
+      frappe.throw("Please Select your Travelling Mode");
+    } else if (!purposeExpense) {
+      frappe.throw("Please fill purpose");
+    } else if (!amountExpense) {
+      frappe.throw("Please Enter your expense amount");
+    } else {
+      let row = frm.add_child("local_conveyance_table", {
+        type_of_expenses: typeofExpense,
+        date: dateExpense,
+        from: fromExpense,
+        to: toExpense,
+        mode_of_travel: modeofTravel,
+        purpose: purposeExpense,
+        amount: amountExpense,
+      });
+      frm.refresh_field("local_conveyance_table");
+
+      frm.set_value("select_type_expenses", null);
+      frm.set_value("date_other_expense", null);
+      frm.set_value("from", null);
+      frm.set_value("to", null);
+      frm.set_value("mode_of_travel", null);
+      frm.set_value("purpose_local_conveyance", null);
+      frm.set_value("other_expenses_amount", null);
+
+      let childAmount = 0;
+      for (let row of frm.doc.local_conveyance_table) {
+        childAmount = childAmount + row.amount;
+      }
+      console.log("child table amount", childAmount);
+      frm.set_value("other_total_expense_amount", childAmount);
+
+      frm.set_value("total_amount", childAmount + frm.doc.total_amount);
+      let totalamt = frm.doc.total_amount;
+      console.log("totalamt test : ", totalamt);
+      frm.refresh_field("total_amount");
+      frm.save();
+    }
+  },
+
+  //saving total allowance amount
+  before_save(frm) {
+    let total_amount =
+      frm.doc.daily_allowance +
+      frm.doc.halting_lodging_amount +
+      (frm.doc.other_total_expense_amount || 0);
+
+    console.log("Total Allowance:", total_amount);
+    frm.set_value("total_amount", total_amount.toFixed(2));
+    frm.refresh_field("total_amount");
+  },
+
+  // button function to add data in TA child table
+  btn_save_form: function (frm) {
+    let taFromLocation = frm.doc.from_location;
+    let tadateTimeFrom = frm.doc.date_and_time_from;
+    let taToLocation = frm.doc.to_location;
+    let taOtherLocation = frm.doc.other_to_location;
+    let tadateTimeTo = frm.doc.date_and_time_to;
+    let taPurpose = frm.doc.purpose;
+    let taDaClaim = frm.doc.da_claim;
+    let taDaAmount = frm.doc.daily_allowance;
+    let taHaltingLodging = frm.doc.halting_lodging_select;
+    let taHaltLodgAmount = frm.doc.halting_lodging_amount;
+    let taClassCity = frm.doc.class_city;
+    let taTotalTime = frm.doc.total_visit_time;
+    let taOtherExpense = frm.doc.other_total_expense_amount;
+    let taTotalAllowance = frm.doc.total_amount;
+
+    if (!taFromLocation) {
+      frappe.throw("Please Fill your Source Location");
+    } else if (!taToLocation) {
+      frappe.throw("Please Fill your Destination Location");
+    } else if (!taPurpose) {
+      frappe.throw("Please Fill your Reason of travelling");
+    } else if (!taDaClaim) {
+      frappe.throw("Please Select DA Claim");
+    } else if (!taHaltingLodging) {
+      frappe.throw("Please Select Halting/Lodging");
+    } else {
+      let row = frm.add_child("ta_chart", {
+        from_location: taFromLocation,
+        date_and_time_start: tadateTimeFrom,
+        to_location: taToLocation,
+        other_location: taOtherLocation,
+        date_and_time_end: tadateTimeTo,
+        purpose: taPurpose,
+        total_visit_hour: taTotalTime,
+        city_class: taClassCity,
+        da_claimed: taDaClaim,
+        haltinglodging: taHaltingLodging,
+        daily_allowance: taDaAmount,
+        haltinglodging_amount: taHaltLodgAmount,
+        local_conveyance__other_expenses: taOtherExpense,
+        total: taTotalAllowance,
+      });
+
+      frm.refresh_field("ta_chart");
+
+      frm.save();
+      frm.set_value("from_location", null);
+      frm.set_value("date_and_time_from", null);
+      frm.set_value("to_location", null);
+      frm.set_value("other_to_location", null);
+      frm.set_value("date_and_time_to", null);
+      frm.set_value("purpose", null);
+      frm.set_value("da_claim", null);
+      frm.set_value("daily_allowance", null);
+      frm.set_value("halting_lodging_select", null);
+      frm.set_value("halting_lodging_amount", null);
+      frm.set_value("class_city", null);
+      frm.set_value("total_visit_time", null);
+      frm.set_value("total_amount", null);
+    }
+  },
+
   date_and_time_to: function (frm) {
     // let from_datetime = frm.doc.date_and_time_from;
     //let to_datetime = frm.doc.date_and_time_to;
@@ -235,10 +406,6 @@ frappe.ui.form.on("Travel Allowance", {
   //     // Optionally, hide the fields when unchecked
   //     frm.get_field("other_expense_details_tab").toggle(false);
   //   }
-  // },
-
-  // after_save: function (frm) {
-  //   showSummary(frm);
   // },
 });
 // function showSummary(frm) {
@@ -346,7 +513,7 @@ function getCityClass(lowerDestination) {
     "Nashik",
     "Kolhapur",
     "Solapur",
-    "Gondia HO",
+    "Gondia",
   ];
 
   // Check if the destination is in Class A cities

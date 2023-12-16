@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class AllowanceParameters(Document):
+class LocalConveyance(Document):
 	pass
