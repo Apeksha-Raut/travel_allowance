@@ -23,10 +23,9 @@
   "phone",
   "category",
   "travel_allowance_details_section",
-  "from_column",
   "from_location",
   "date_and_time_from",
-  "to_column",
+  "column_break_bbrl",
   "to_location",
   "other_to_location",
   "date_and_time_to",
@@ -36,14 +35,19 @@
   "da_claim",
   "halting_lodging_select",
   "class_city",
+  "btn_add_ta",
   "column_break_bjkj",
   "daily_allowance",
   "halting_lodging_amount",
+  "btn_save_form",
   "total_visit_time",
   "other_expenses_section",
   "other_expenses_check",
-  "section_break_wwab",
-  "other_expenses_lists",
+  "section_break_xfdd",
+  "total_amount",
+  "section_break_esu8",
+  "ta_chart",
+  "other_expense_tab",
   "other_expense_details_section",
   "select_type_expenses",
   "mode_of_travel",
@@ -58,12 +62,7 @@
   "to",
   "section_break_omlb",
   "local_conveyance_table",
-  "other_total_expense_amount",
-  "section_break_foml",
-  "total_amount",
-  "btn_save_form",
-  "section_break_yoze",
-  "ta_chart"
+  "other_total_expense_amount"
  ],
  "fields": [
   {
@@ -115,53 +114,39 @@
   {
    "fieldname": "travel_allowance_details_section",
    "fieldtype": "Tab Break",
-   "label": "Travel Allowance Details"
+   "label": "Travel Allowance Form"
   },
   {
-   "fieldname": "from_column",
-   "fieldtype": "Column Break",
-   "label": "From"
-  },
-  {
-   "fieldname": "to_column",
-   "fieldtype": "Column Break",
-   "label": " "
-  },
-  {
+   "default": "Today",
    "depends_on": "eval:doc.from_location",
    "fieldname": "date_and_time_from",
    "fieldtype": "Datetime",
    "in_list_view": 1,
-   "label": "Date And Time (From)",
-   "reqd": 1
+   "label": "Date And Time (From)"
   },
   {
    "depends_on": "eval:doc.to_location",
    "fieldname": "date_and_time_to",
    "fieldtype": "Datetime",
-   "label": "Date And Time (To)",
-   "reqd": 1
+   "label": "Date And Time (To)"
   },
   {
    "fieldname": "from_location",
    "fieldtype": "Data",
-   "label": "From Location",
-   "reqd": 1
+   "label": "From Location"
   },
   {
    "depends_on": "eval:doc.from_location && doc.date_and_time_from",
    "fieldname": "to_location",
-   "fieldtype": "Select",
+   "fieldtype": "Link",
    "label": "To Location",
-   "options": "\nOther\nMumbai\nDelhi\nChennai\nKolkata\nPune\nHyderabad\nNagpur\nAmravati\nAurangabad\nNashik\nKolhapur\nSolapur\nGondia",
-   "reqd": 1
+   "options": "City Category"
   },
   {
    "depends_on": "eval:doc.from_location && doc.to_location && doc.date_and_time_from && doc.date_and_time_to",
    "fieldname": "purpose",
    "fieldtype": "Small Text",
-   "label": "Purpose",
-   "reqd": 1
+   "label": "Purpose"
   },
   {
    "fetch_from": "employee_id.division",
@@ -204,7 +189,7 @@
    "depends_on": "eval:doc.from_location && doc.to_location && doc.date_and_time_from && doc.date_and_time_to",
    "fieldname": "da_claim",
    "fieldtype": "Select",
-   "label": "DA Claim",
+   "label": "Daily Allowance Claim",
    "options": "\nHalf Day\nFull Day"
   },
   {
@@ -224,10 +209,12 @@
   {
    "fieldname": "employee_details_tab",
    "fieldtype": "Tab Break",
+   "hidden": 1,
    "label": "Employee Details"
   },
   {
-   "description": "(Day:HH:MM)",
+   "depends_on": "eval:doc.from_location && doc.to_location && doc.date_and_time_from && doc.date_and_time_to && frappe.user.has_role('System Manager')",
+   "description": "(HH:MM:SS)",
    "fieldname": "total_visit_time",
    "fieldtype": "Data",
    "label": "Total Visit Time"
@@ -258,6 +245,8 @@
    "label": "Category"
   },
   {
+   "depends_on": "eval:doc.from_location && doc.to_location && doc.date_and_time_from && doc.date_and_time_to && frappe.user.has_role('System Manager')",
+   "fetch_from": "to_location.category",
    "fieldname": "class_city",
    "fieldtype": "Data",
    "label": "Class City"
@@ -273,7 +262,7 @@
   {
    "fieldname": "halting_lodging_amount",
    "fieldtype": "Currency",
-   "label": "Amount",
+   "label": "Halting/Lodging Amount",
    "precision": "2",
    "read_only": 1
   },
@@ -312,10 +301,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "section_break_foml",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "select_type_expenses",
    "fieldtype": "Select",
    "label": "Select type of Expenses",
@@ -341,21 +326,14 @@
    "label": "Local Conveyance & Other Expense"
   },
   {
-   "fieldname": "section_break_wwab",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "other_expenses_lists",
-   "fieldtype": "HTML"
-  },
-  {
    "fieldname": "total_amount_summary",
    "fieldtype": "HTML",
    "options": "<div class=\"container text-center\">\n  <div class=\"row\">\n    <div class=\"col\">Daily Allowance: {{doc.da_claim}} <br>\n&#8377;{{doc.daily_allowance.toFixed(2)}}    </div>\n    <div class=\"col\">Halting/Lodging: \n      {{doc.halting_lodging_select}} <br>\n&#8377;\n{{doc.halting_lodging_amount.toFixed(2)}}\n    </div>\n    <div class=\"col\"> Total Allowance Amount <br>\n      &#8377; {{doc.total_amount.toFixed(2)}}\n    </div>\n  </div>\n</div>"
   },
   {
    "fieldname": "section_break_omlb",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Local Conveyance Details"
   },
   {
    "fieldname": "btn_add",
@@ -363,12 +341,14 @@
    "label": "Add "
   },
   {
+   "depends_on": "eval:doc.other_expenses_check=='1'",
    "fieldname": "local_conveyance_table",
    "fieldtype": "Table",
-   "label": "Local Conveyance Details",
+   "label": "Local Conveyance ",
    "options": "Local Conveyance"
   },
   {
+   "depends_on": "eval:doc.other_expenses_check=='1'",
    "fieldname": "other_total_expense_amount",
    "fieldtype": "Currency",
    "label": "Other Total Expense Amount"
@@ -382,22 +362,41 @@
   {
    "fieldname": "ta_chart",
    "fieldtype": "Table",
-   "label": "TA Chart",
+   "label": "TA Details",
    "options": "TA Chart"
-  },
-  {
-   "fieldname": "section_break_yoze",
-   "fieldtype": "Section Break"
   },
   {
    "fieldname": "btn_save_form",
    "fieldtype": "Button",
    "label": "Save"
+  },
+  {
+   "depends_on": "eval:doc.other_expenses_check=='1'",
+   "fieldname": "other_expense_tab",
+   "fieldtype": "Tab Break",
+   "label": "Local Conveyance & Other Expense"
+  },
+  {
+   "fieldname": "section_break_esu8",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_xfdd",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_bbrl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "btn_add_ta",
+   "fieldtype": "Button",
+   "label": "Add+"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-15 17:50:31.861199",
+ "modified": "2023-12-20 15:50:31.927391",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",
