@@ -31,3 +31,6 @@ def findAllowance(city_class, category, halt_lodge):
          frappe.msgprint("Cannot Find Details from Server !!")
 
 
+@frappe.whitelist(allow_guest=True)
+def get_server_datetime():
+    return frappe.utils.now_datetime()

@@ -83,6 +83,31 @@ frappe.ui.form.on("Travel Allowance", {
             console.error("Error fetching designation:", err);
           });
       }
+
+      frm.call({
+        method: "get_server_datetime",
+        callback: function (r) {
+          // Check if the response has a valid message
+          if (r.message) {
+            // Parse the datetime string into a JavaScript Date object
+            var serverDatetime = new Date(r.message);
+
+            // Extract the year
+            var year = serverDatetime.getFullYear();
+            // Extract the month (returns a zero-based index, so add 1)
+            var month = serverDatetime.getMonth() + 1;
+
+            // Set the value of the "year" field
+            frm.set_value("year", year);
+            frm.refresh_field("year");
+            // Set the value of the "month" field
+            frm.set_value("month", month);
+            frm.refresh_field("month");
+          } else {
+            console.log("Invalid server datetime response");
+          }
+        },
+      });
     } else if (!frm.is_new()) {
       console.log("Old Form");
     }
@@ -96,13 +121,13 @@ frappe.ui.form.on("Travel Allowance", {
     });
 
     //(Save Button)adding css to button
-    frm.fields_dict.btn_save_form.$input.css({
-      "background-color": "#08A226",
-      color: "#fff",
-      border: "none",
-      padding: "8px 22px",
-      cursor: "pointer",
-    });
+    // frm.fields_dict.btn_save_form.$input.css({
+    //   "background-color": "#08A226",
+    //   color: "#fff",
+    //   border: "none",
+    //   padding: "8px 22px",
+    //   cursor: "pointer",
+    // });
 
     //(TA Add Button)adding css to button
     frm.fields_dict.btn_add_ta.$input.css({
@@ -112,6 +137,13 @@ frappe.ui.form.on("Travel Allowance", {
       padding: "8px 22px",
       cursor: "pointer",
     });
+
+    // if (frm.doc.other_expenses_check === "1") {
+    //   frm.msgprint(
+    //     ___("Please Fill Tab Local Conveyance & Other Expense"),
+    //     "blue"
+    //   );
+    // }
   },
 
   //handle the DA Claim Allowance
@@ -154,6 +186,7 @@ frappe.ui.form.on("Travel Allowance", {
           console.log(frm.doc.daily_allowance);
           console.log(frm.doc.halting_lodging_amount);
           console.log(frm.doc.other_expenses_amount);
+          console.log(frm.doc.other_total_expense_amount);
           let total_amount =
             frm.doc.daily_allowance +
             frm.doc.halting_lodging_amount +
@@ -167,26 +200,13 @@ frappe.ui.form.on("Travel Allowance", {
     }
   },
 
-  // set_claim(frm) {
-  //   frappe.msgprint("hello claim");
-  //},
-
   //handle halting Lodging Allowances
   halting_lodging_select: function (frm) {
     //<Taking Parameters to fetch Amount for Halting and Lodging>
-
     let category = frm.doc.category; // Designation category(level 1/2/3/4/5/6/7/8/)
     let cityClass = frm.doc.class_city; //Category of city a,b,c
     let haltLodge = frm.doc.halting_lodging_select; // selected value for halting/lodging
 
-    // if (!cityClass) {
-    //   //frm.set_value("halting_lodging_select", "");
-    //   frappe.msgprint("Please Select To Location");
-
-    //   //frm.doc.halting_lodging_select = null;
-    //   // Debug statement to check the state of the form document after setting the value
-    //   console.log("After setting value:", frm.doc.halting_lodging_select);
-    // } else {
     if (!haltLodge) {
       frm.set_value("daily_allowance", null);
       frm.refresh_field("daily_allowance");
@@ -229,6 +249,7 @@ frappe.ui.form.on("Travel Allowance", {
   },
   other_expenses_check: function (frm) {
     console.log(frm.doc.other_expense_check);
+    // Add a trigger when the form is refreshed
   },
 
   //handle the local conveyance amount
@@ -236,7 +257,7 @@ frappe.ui.form.on("Travel Allowance", {
     let total_amount =
       frm.doc.daily_allowance +
       frm.doc.halting_lodging_amount +
-      (frm.doc.other_expenses_amount || 0);
+      (frm.doc.other_total_expense_amount || 0);
 
     console.log("Total Allowance:", total_amount);
     frm.set_value("total_amount", total_amount.toFixed(2));
@@ -319,6 +340,8 @@ frappe.ui.form.on("Travel Allowance", {
     frm.set_value("total_amount", total_amount.toFixed(2));
     frm.refresh_field("total_amount");
   },
+
+  /* Saving data into child table TA */
   btn_add_ta: function (frm) {
     let taFromLocation = frm.doc.from_location;
     let tadateTimeFrom = frm.doc.date_and_time_from;

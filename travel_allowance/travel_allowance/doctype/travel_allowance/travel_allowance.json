@@ -23,6 +23,8 @@
   "phone",
   "category",
   "travel_allowance_details_section",
+  "month",
+  "year",
   "from_location",
   "date_and_time_from",
   "column_break_bbrl",
@@ -33,18 +35,23 @@
   "purpose",
   "column_break_8kud",
   "da_claim",
-  "halting_lodging_select",
   "class_city",
-  "btn_add_ta",
   "column_break_bjkj",
-  "daily_allowance",
-  "halting_lodging_amount",
+  "halting_lodging_select",
   "btn_save_form",
   "total_visit_time",
   "other_expenses_section",
   "other_expenses_check",
-  "section_break_xfdd",
+  "section_break_yfkr",
+  "daily_allowance",
+  "column_break_szyp",
+  "halting_lodging_amount",
+  "column_break_ilwy",
+  "other_expenses",
+  "column_break_xemt",
   "total_amount",
+  "section_break_xfdd",
+  "btn_add_ta",
   "section_break_esu8",
   "ta_chart",
   "other_expense_tab",
@@ -121,7 +128,6 @@
    "depends_on": "eval:doc.from_location",
    "fieldname": "date_and_time_from",
    "fieldtype": "Datetime",
-   "in_list_view": 1,
    "label": "Date And Time (From)"
   },
   {
@@ -255,7 +261,6 @@
    "fieldname": "other_to_location",
    "fieldtype": "Data",
    "hidden": 1,
-   "in_list_view": 1,
    "label": "Other:",
    "mandatory_depends_on": "eval:doc.to_location=='Other'"
   },
@@ -368,6 +373,7 @@
   {
    "fieldname": "btn_save_form",
    "fieldtype": "Button",
+   "hidden": 1,
    "label": "Save"
   },
   {
@@ -389,14 +395,48 @@
    "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval:doc.from_location && doc.to_location && doc.date_and_time_from && doc.date_and_time_to",
    "fieldname": "btn_add_ta",
    "fieldtype": "Button",
    "label": "Add+"
+  },
+  {
+   "fieldname": "section_break_yfkr",
+   "fieldtype": "Section Break",
+   "label": "Total Allowances details"
+  },
+  {
+   "fieldname": "column_break_szyp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ilwy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.other_total_expense_amount",
+   "fieldname": "other_expenses",
+   "fieldtype": "Data",
+   "label": "Other Expenses"
+  },
+  {
+   "fieldname": "column_break_xemt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "month",
+   "fieldtype": "Data",
+   "label": "Month"
+  },
+  {
+   "fieldname": "year",
+   "fieldtype": "Data",
+   "label": "Year"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-20 15:50:31.927391",
+ "modified": "2023-12-21 17:59:33.712915",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",
