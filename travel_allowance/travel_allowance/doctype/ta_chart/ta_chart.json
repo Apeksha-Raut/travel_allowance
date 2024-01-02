@@ -5,11 +5,8 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "from_location",
   "date_and_time_start",
-  "to_location",
-  "other_location",
-  "date_and_time_end",
+  "from_location",
   "purpose",
   "total_visit_hour",
   "city_class",
@@ -17,8 +14,17 @@
   "haltinglodging",
   "daily_allowance",
   "haltinglodging_amount",
-  "local_conveyance__other_expenses",
-  "total"
+  "local_conveyance_other_expenses_amount",
+  "column_break_zbrd",
+  "date_and_time_end",
+  "to_location",
+  "other_location",
+  "total",
+  "local_section",
+  "local_conveyance",
+  "local_expense_type",
+  "column_break_9e1d",
+  "mode_of_travel"
  ],
  "fields": [
   {
@@ -31,7 +37,7 @@
   {
    "columns": 1,
    "fieldname": "date_and_time_start",
-   "fieldtype": "Data",
+   "fieldtype": "Datetime",
    "in_list_view": 1,
    "label": "Date / Time (Source Location)"
   },
@@ -45,7 +51,7 @@
   {
    "columns": 1,
    "fieldname": "date_and_time_end",
-   "fieldtype": "Data",
+   "fieldtype": "Datetime",
    "in_list_view": 1,
    "label": "Date / Time(Destination Location)"
   },
@@ -93,13 +99,6 @@
   },
   {
    "columns": 1,
-   "fieldname": "local_conveyance__other_expenses",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Local Conveyance / Other Expenses "
-  },
-  {
-   "columns": 1,
    "fieldname": "haltinglodging_amount",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -109,12 +108,55 @@
    "fieldname": "other_location",
    "fieldtype": "Data",
    "label": "Other Location"
+  },
+  {
+   "fieldname": "column_break_zbrd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "local_section",
+   "fieldtype": "Section Break",
+   "label": "Local Conveyance & Other Expense"
+  },
+  {
+   "description": "Yes / No",
+   "fieldname": "local_conveyance",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Local Conveyance ?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "description": "Local",
+   "fieldname": "local_expense_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Type of Expense",
+   "options": "\nLocal Expense\nOther Expense"
+  },
+  {
+   "fieldname": "column_break_9e1d",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mode_of_travel",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Mode of Travel",
+   "options": "\nAuto\nBike\nCar\nPublic Transport\nTaxi"
+  },
+  {
+   "columns": 1,
+   "fieldname": "local_conveyance_other_expenses_amount",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Other Expenses Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-12-15 12:56:22.327569",
+ "modified": "2024-01-01 12:09:13.086218",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "TA Chart",

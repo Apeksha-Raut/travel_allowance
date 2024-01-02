@@ -1,12 +1,14 @@
 {
  "actions": [],
- "allow_rename": 1,
+ "autoname": "format:TA-{employee_id}-{month}-{year}",
  "creation": "2023-11-30 11:53:40.709552",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "ta_tab",
   "total_amount_summary",
+  "ta_chart",
+  "ta_chart_html",
   "employee_details_tab",
   "employee_details_section",
   "employee_id",
@@ -23,25 +25,33 @@
   "phone",
   "category",
   "travel_allowance_details_section",
+  "ta_form_section",
   "month",
-  "year",
   "from_location",
   "date_and_time_from",
+  "purpose",
   "column_break_bbrl",
+  "year",
   "to_location",
   "other_to_location",
   "date_and_time_to",
-  "section_break_2",
-  "purpose",
-  "column_break_8kud",
   "da_claim",
-  "class_city",
-  "column_break_bjkj",
   "halting_lodging_select",
-  "btn_save_form",
   "total_visit_time",
+  "class_city",
   "other_expenses_section",
   "other_expenses_check",
+  "other_expense_details_section",
+  "select_type_expenses",
+  "mode_of_travel",
+  "column_break_gnjd",
+  "date_other_expense",
+  "purpose_other_expense",
+  "column_break_owmo",
+  "other_from",
+  "other_expenses_amount",
+  "column_break_lnab",
+  "other_to",
   "section_break_yfkr",
   "daily_allowance",
   "column_break_szyp",
@@ -51,25 +61,7 @@
   "column_break_xemt",
   "total_amount",
   "section_break_xfdd",
-  "btn_add_ta",
-  "section_break_esu8",
-  "ta_chart",
-  "other_expense_tab",
-  "other_expense_details_section",
-  "select_type_expenses",
-  "mode_of_travel",
-  "btn_add",
-  "column_break_gnjd",
-  "date_other_expense",
-  "purpose_local_conveyance",
-  "column_break_owmo",
-  "from",
-  "other_expenses_amount",
-  "column_break_lnab",
-  "to",
-  "section_break_omlb",
-  "local_conveyance_table",
-  "other_total_expense_amount"
+  "btn_add_ta"
  ],
  "fields": [
   {
@@ -124,7 +116,6 @@
    "label": "Travel Allowance Form"
   },
   {
-   "default": "Today",
    "depends_on": "eval:doc.from_location",
    "fieldname": "date_and_time_from",
    "fieldtype": "Datetime",
@@ -152,7 +143,8 @@
    "depends_on": "eval:doc.from_location && doc.to_location && doc.date_and_time_from && doc.date_and_time_to",
    "fieldname": "purpose",
    "fieldtype": "Small Text",
-   "label": "Purpose"
+   "label": "Purpose",
+   "max_height": "100px"
   },
   {
    "fetch_from": "employee_id.division",
@@ -167,6 +159,7 @@
    "label": "Date"
   },
   {
+   "fetch_from": "employee_id.cell_number",
    "fieldname": "phone",
    "fieldtype": "Data",
    "label": "Phone"
@@ -174,16 +167,6 @@
   {
    "fieldname": "column_break_gnjd",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "from",
-   "fieldtype": "Data",
-   "label": "From"
-  },
-  {
-   "fieldname": "to",
-   "fieldtype": "Data",
-   "label": "To"
   },
   {
    "fieldname": "mode_of_travel",
@@ -215,7 +198,6 @@
   {
    "fieldname": "employee_details_tab",
    "fieldtype": "Tab Break",
-   "hidden": 1,
    "label": "Employee Details"
   },
   {
@@ -223,6 +205,7 @@
    "description": "(HH:MM:SS)",
    "fieldname": "total_visit_time",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Total Visit Time"
   },
   {
@@ -238,14 +221,6 @@
    "label": "Last Name"
   },
   {
-   "fieldname": "column_break_8kud",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_bjkj",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "category",
    "fieldtype": "Data",
    "label": "Category"
@@ -255,6 +230,7 @@
    "fetch_from": "to_location.category",
    "fieldname": "class_city",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Class City"
   },
   {
@@ -272,17 +248,14 @@
    "read_only": 1
   },
   {
-   "fieldname": "section_break_2",
-   "fieldtype": "Section Break"
-  },
-  {
+   "depends_on": "eval:doc.da_claim || doc.halting_lodging_select",
    "fieldname": "other_expenses_section",
    "fieldtype": "Section Break",
-   "label": "Other Expenses"
+   "label": "OTHER EXPENSES ?"
   },
   {
    "default": "0",
-   "depends_on": "eval:doc.from_location && doc.to_location && doc.date_and_time_from && doc.date_and_time_to",
+   "description": "If checked , it will popup form.",
    "fieldname": "other_expenses_check",
    "fieldtype": "Check",
    "label": "Do you have other Expenses details ?"
@@ -312,11 +285,6 @@
    "options": "\nLocal Expense\nOther Expense"
   },
   {
-   "fieldname": "purpose_local_conveyance",
-   "fieldtype": "Data",
-   "label": "Purpose"
-  },
-  {
    "fieldname": "column_break_owmo",
    "fieldtype": "Column Break"
   },
@@ -325,38 +293,14 @@
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval:doc.other_expenses_check=='1'",
+   "depends_on": "eval:doc.other_expenses_check=='1' && (doc.da_claim || doc.halting_lodging_select)",
    "fieldname": "other_expense_details_section",
    "fieldtype": "Section Break",
-   "label": "Local Conveyance & Other Expense"
+   "label": "LOCAL CONVEYANCE FORM"
   },
   {
    "fieldname": "total_amount_summary",
-   "fieldtype": "HTML",
-   "options": "<div class=\"container text-center\">\n  <div class=\"row\">\n    <div class=\"col\">Daily Allowance: {{doc.da_claim}} <br>\n&#8377;{{doc.daily_allowance.toFixed(2)}}    </div>\n    <div class=\"col\">Halting/Lodging: \n      {{doc.halting_lodging_select}} <br>\n&#8377;\n{{doc.halting_lodging_amount.toFixed(2)}}\n    </div>\n    <div class=\"col\"> Total Allowance Amount <br>\n      &#8377; {{doc.total_amount.toFixed(2)}}\n    </div>\n  </div>\n</div>"
-  },
-  {
-   "fieldname": "section_break_omlb",
-   "fieldtype": "Section Break",
-   "label": "Local Conveyance Details"
-  },
-  {
-   "fieldname": "btn_add",
-   "fieldtype": "Button",
-   "label": "Add "
-  },
-  {
-   "depends_on": "eval:doc.other_expenses_check=='1'",
-   "fieldname": "local_conveyance_table",
-   "fieldtype": "Table",
-   "label": "Local Conveyance ",
-   "options": "Local Conveyance"
-  },
-  {
-   "depends_on": "eval:doc.other_expenses_check=='1'",
-   "fieldname": "other_total_expense_amount",
-   "fieldtype": "Currency",
-   "label": "Other Total Expense Amount"
+   "fieldtype": "HTML"
   },
   {
    "depends_on": "eval:doc.total_amount",
@@ -369,22 +313,6 @@
    "fieldtype": "Table",
    "label": "TA Details",
    "options": "TA Chart"
-  },
-  {
-   "fieldname": "btn_save_form",
-   "fieldtype": "Button",
-   "hidden": 1,
-   "label": "Save"
-  },
-  {
-   "depends_on": "eval:doc.other_expenses_check=='1'",
-   "fieldname": "other_expense_tab",
-   "fieldtype": "Tab Break",
-   "label": "Local Conveyance & Other Expense"
-  },
-  {
-   "fieldname": "section_break_esu8",
-   "fieldtype": "Section Break"
   },
   {
    "fieldname": "section_break_xfdd",
@@ -403,6 +331,7 @@
   {
    "fieldname": "section_break_yfkr",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Total Allowances details"
   },
   {
@@ -414,10 +343,11 @@
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval:doc.other_total_expense_amount",
+   "depends_on": "eval:doc.other_expenses_amount",
    "fieldname": "other_expenses",
    "fieldtype": "Data",
-   "label": "Other Expenses"
+   "label": "Other Expenses",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_xemt",
@@ -426,20 +356,51 @@
   {
    "fieldname": "month",
    "fieldtype": "Data",
-   "label": "Month"
+   "hidden": 1,
+   "label": "Month",
+   "read_only": 1
   },
   {
    "fieldname": "year",
    "fieldtype": "Data",
-   "label": "Year"
+   "hidden": 1,
+   "label": "Year",
+   "read_only": 1
+  },
+  {
+   "fieldname": "other_from",
+   "fieldtype": "Data",
+   "label": "From"
+  },
+  {
+   "fieldname": "other_to",
+   "fieldtype": "Data",
+   "label": "To"
+  },
+  {
+   "fieldname": "purpose_other_expense",
+   "fieldtype": "Data",
+   "label": "Purpose"
+  },
+  {
+   "fieldname": "ta_form_section",
+   "fieldtype": "Section Break",
+   "label": "TA FORM"
+  },
+  {
+   "fieldname": "ta_chart_html",
+   "fieldtype": "HTML",
+   "hidden": 1,
+   "label": "TA chart Html"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-21 17:59:33.712915",
+ "modified": "2024-01-02 12:03:05.143101",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

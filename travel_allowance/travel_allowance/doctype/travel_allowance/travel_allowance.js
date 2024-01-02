@@ -11,11 +11,35 @@ let halt_lodge_amount; // for halting or lodging amount
 let da_amount; // for DA claim amount
 
 frappe.ui.form.on("Travel Allowance", {
-  // handle the
+  // handle the destination field
   to_location: function (frm) {
-    let destination = frm.doc.to_location;
-    // Convert destination to lowercase for case-insensitive comparison
-    //let lowerDestination = destination.toLowerCase();
+    var source = frm.doc.from_location.toLowerCase();
+    let destination = frm.doc.to_location.toLowerCase();
+
+    if (source && destination && source === destination) {
+      frappe.msgprint({
+        title: __("Validation Error"),
+        message: __("From Location and To Location should be different."),
+        indicator: "red",
+      });
+      frm.set_value("to_location", " ");
+      // // Set the border color to red for the "to_location" field
+      // frm.fields_dict.to_location.$input.css({
+      //   "border-color": "red",
+      // });
+      // // frm.fields_dict["to_location"].$wrapper
+      // //   .find("input")
+      // //   .css("border-color", "red");
+
+      // frappe.validated = false;
+      // } else {
+      //   // Reset the border color if there is no error
+      //   frm.fields_dict.to_location.$input.css({
+      //     "border-color": "",
+      //   });
+    }
+
+    // check wheather the destination field is Other
     if (destination === "Other") {
       console.log(destination);
       frm.toggle_display("other_to_location", true);
@@ -95,13 +119,33 @@ frappe.ui.form.on("Travel Allowance", {
             // Extract the year
             var year = serverDatetime.getFullYear();
             // Extract the month (returns a zero-based index, so add 1)
-            var month = serverDatetime.getMonth() + 1;
+            //var month = serverDatetime.getMonth() + 1;
 
+            var monthIndex = serverDatetime.getMonth();
+
+            // Array of month names
+            var monthNames = [
+              "January",
+              "February",
+              "March",
+              "April",
+              "May",
+              "June",
+              "July",
+              "August",
+              "September",
+              "October",
+              "November",
+              "December",
+            ];
+
+            // Get the month name based on the index
+            var monthName = monthNames[monthIndex];
             // Set the value of the "year" field
             frm.set_value("year", year);
             frm.refresh_field("year");
             // Set the value of the "month" field
-            frm.set_value("month", month);
+            frm.set_value("month", monthName);
             frm.refresh_field("month");
           } else {
             console.log("Invalid server datetime response");
@@ -110,15 +154,18 @@ frappe.ui.form.on("Travel Allowance", {
       });
     } else if (!frm.is_new()) {
       console.log("Old Form");
+
+      frm.trigger("populate_total_amount_html");
+      frm.trigger("ta_chart_table_html");
     }
-    //(Local Convience Button)adding css to button
-    frm.fields_dict.btn_add.$input.css({
-      "background-color": "#3498db",
-      color: "#fff",
-      border: "none",
-      padding: "8px 20px",
-      cursor: "pointer",
-    });
+    // //(Local Convience Button)adding css to button
+    // frm.fields_dict.btn_add.$input.css({
+    //   "background-color": "#3498db",
+    //   color: "#fff",
+    //   border: "none",
+    //   padding: "8px 20px",
+    //   cursor: "pointer",
+    // });
 
     //(Save Button)adding css to button
     // frm.fields_dict.btn_save_form.$input.css({
@@ -138,6 +185,12 @@ frappe.ui.form.on("Travel Allowance", {
       cursor: "pointer",
     });
 
+    // Make the entire "ta_chart" child table read-only
+    frm.fields_dict["ta_chart"].df.read_only = 1;
+
+    // Refresh the form to apply the changes
+    frm.refresh_fields();
+
     // if (frm.doc.other_expenses_check === "1") {
     //   frm.msgprint(
     //     ___("Please Fill Tab Local Conveyance & Other Expense"),
@@ -146,57 +199,255 @@ frappe.ui.form.on("Travel Allowance", {
     // }
   },
 
+  async populate_total_amount_html(frm) {
+    // Fetch the data from the backend
+    frm.call({
+      method: "get_ta_total_amount",
+      args: {
+        self: frm.doc.name,
+      },
+      callback: function (r) {
+        if (!r.exc) {
+          const data = r.message;
+
+          // Generate HTML
+          let html = `<!DOCTYPE html>
+          <html lang="en">
+            <head>
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <style>
+                .cards {
+                  max-width: 1080px;
+                  margin: 0 auto;
+                  display: grid;
+                  gap: 10px;
+                  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                }
+          
+                .card {
+                  background-color: #d9d9d9;
+                  color: black;
+                  border-radius: 10px;
+                  border: none;
+                  padding: 16px;
+                }
+                .card-title {
+                  font-size: 16px;
+                }
+                p.card-content {
+                  font-weight: bold;
+                  font-size: 18px;
+                }
+                .heading h3 {
+                  color:black;
+                  font-weight: 700;
+                  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+                }
+                .pagination {
+                  display: inline-block;
+                }
+          
+                .pagination a {
+                  color: black;
+                  float: left;
+                  padding: 5px 8px;
+                  text-decoration: none;
+                  transition: background-color 0.3s;
+                  border: 1px solid #ddd;
+                  border-radius: 50%;
+                  background-color: #d9d9d9;
+                  margin: 0 6px;
+                }
+          
+                .pagination a.active {
+                  background-color: #4caf50;
+                  color: white;
+                  border: 1px solid #4caf50;
+                }
+                .pagination a:hover:not(.active) {
+                  background-color: #ddd;
+                }
+                .table-title {
+                  display: flex;
+                  align-items: center;
+                  margin-top: 10px;
+                }
+          
+                .tb-title h3 {
+                  display: inline-block;
+                  margin: 0; /* Remove default margin for inline elements */
+                  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="heading"><h3>Jan 01-Jan 31</h3></div>
+              <div class="cards">
+                <div class="card">
+                  <div class="card-title">Daily Allowance</div>
+                  <p class="card-content">₹${
+                    data.total_daily_allowance ?? 0
+                  }</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">Halting/Lodging</div>
+                  <p class="card-content">₹${
+                    data.total_haltinglodging_amount ?? 0
+                  }</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">Local Conveyance</div>
+                  <p class="card-content">
+                    ₹${data.total_local_conveyance_other_expenses ?? 0}
+                  </p>
+                </div>
+                <div class="card">
+                  <div class="card-title">Total Amount</div>
+                  <p class="card-content">₹${data.total_amount ?? 0}</p>
+                </div>
+              </div>
+          
+              <div class="table-title">
+                <div class="tb-title">
+                  <h3>Travel History</h3>
+                </div>
+                <div class="pagination">
+                  <a href="#">❮</a>
+                  <a href="#">❯</a>
+                </div>
+              </div>
+            </body>
+          </html>
+          
+          
+          `;
+
+          // Set the above `html` as Summary HTML
+          frm.set_df_property("total_amount_summary", "options", html);
+        } else {
+          frappe.msgprint("Error fetching total amounts");
+        }
+      },
+    });
+  },
+
+  async ta_chart_table_html(frm) {
+    // Generate HTML
+    let ta_table = frm.doc.ta_chart;
+    let ta_chart_html = `<!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <style>
+          .cards {
+            max-width: 1080px;
+            margin: 0 auto;
+    
+            display: grid;
+            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+          }
+    
+          .card {
+            background-color: #d9d9d9;
+            font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+            height: 4rem;
+            border-radius: 10px;
+            padding: 16px;
+          }
+          .card-title {
+            font-size: 16px;
+          }
+          p.card-content {
+            font-weight: 700;
+            font-size: 18px;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="cards">
+          <div class="card">
+            <div class="card-title">Daily Allowance</div>
+            <p class="card-content">₹${data.total_daily_allowance}</p>
+          </div>
+          <div class="card">
+            <div class="card-title">Halting/Lodging</div>
+            <p class="card-content">₹${data.total_haltinglodging_amount}</p>
+          </div>
+          <div class="card">
+            <div class="card-title">Local Conveyance</div>
+            <p class="card-content">
+              ₹${data.total_local_conveyance_other_expenses}
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-title">Total Amount</div>
+            <p class="card-content">₹${data.total_amount}</p>
+          </div>
+        </div>
+      </body>
+    </html>
+    
+   `;
+
+    // Set the above `html` as HTML
+    frm.set_df_property("ta_chart_html", "options", ta_chart_html);
+  },
+
   //handle the DA Claim Allowance
   da_claim: function (frm) {
     //frm.trigger("set_claim");
 
-    let da_category = frm.doc.da_claim; // Full Day or Half Day
-    let category = frm.doc.category; // Designation category(level 1/2/3/4/5/6/7/8/)
-    let cityClass = frm.doc.class_city; // Category of city a,b,c
+    if (frm.doc.from_location) {
+      console.log("da run ho raha hai ki nhi");
+      let da_category = frm.doc.da_claim; // Full Day or Half Day
+      let category = frm.doc.category; // Designation category(level 1/2/3/4/5/6/7/8/)
+      let cityClass = frm.doc.class_city; // Category of city a,b,c
 
-    console.log(da_category);
-    console.log(category);
-    console.log(cityClass);
+      console.log(da_category);
+      console.log(category);
+      console.log(cityClass);
 
-    if (!da_category) {
-      frm.set_value("daily_allowance", null);
-      frm.refresh_field("daily_allowance");
+      if (!da_category) {
+        frm.set_value("daily_allowance", null);
+        frm.refresh_field("daily_allowance");
 
-      frappe.throw("Please Select DA Category");
-    } else {
-      frm.call({
-        method: "findAllowance",
-        args: {
-          city_class: cityClass,
-          category: category,
-          halt_lodge: "DA",
-        },
-        callback: function (r) {
-          if (!r.exc) {
-            // Handle the result if needed
-            //console.log(r.message); // This will contain the result from the server
-            da_amount = r.message[0][`${cityClass}_class_city`];
-            if (da_category == "Half Day") {
-              da_amount = da_amount / 2;
-              frm.set_value("daily_allowance", da_amount);
-            } else if (da_category == "Full Day") {
-              frm.set_value("daily_allowance", da_amount);
+        frappe.throw("Please Select DA Category");
+      } else {
+        frm.call({
+          method: "findAllowance",
+          args: {
+            city_class: cityClass,
+            category: category,
+            halt_lodge: "DA",
+          },
+          callback: function (r) {
+            if (!r.exc) {
+              // Handle the result if needed
+              //console.log(r.message); // This will contain the result from the server
+              da_amount = r.message[0][`${cityClass}_class_city`];
+              if (da_category == "Half Day") {
+                da_amount = da_amount / 2;
+                frm.set_value("daily_allowance", da_amount);
+              } else if (da_category == "Full Day") {
+                frm.set_value("daily_allowance", da_amount);
+              }
             }
-          }
-          console.log(frm.doc.daily_allowance);
-          console.log(frm.doc.halting_lodging_amount);
-          console.log(frm.doc.other_expenses_amount);
-          console.log(frm.doc.other_total_expense_amount);
-          let total_amount =
-            frm.doc.daily_allowance +
-            frm.doc.halting_lodging_amount +
-            (frm.doc.other_total_expense_amount || 0);
+            console.log(frm.doc.daily_allowance);
+            console.log(frm.doc.halting_lodging_amount);
+            console.log(frm.doc.other_expenses_amount);
+            console.log(frm.doc.other_total_expense_amount);
+            let total_amount =
+              frm.doc.daily_allowance +
+              frm.doc.halting_lodging_amount +
+              (frm.doc.other_expenses_amount || 0);
 
-          console.log("Total Allowance:", total_amount);
-          frm.set_value("total_amount", total_amount.toFixed(2));
-          frm.refresh_field("total_amount");
-        },
-      });
+            console.log("Total Allowance:", total_amount);
+            frm.set_value("total_amount", total_amount.toFixed(2));
+            frm.refresh_field("total_amount");
+          },
+        });
+      }
     }
   },
 
@@ -206,49 +457,51 @@ frappe.ui.form.on("Travel Allowance", {
     let category = frm.doc.category; // Designation category(level 1/2/3/4/5/6/7/8/)
     let cityClass = frm.doc.class_city; //Category of city a,b,c
     let haltLodge = frm.doc.halting_lodging_select; // selected value for halting/lodging
-
-    if (!haltLodge) {
-      frm.set_value("daily_allowance", null);
-      frm.refresh_field("daily_allowance");
-      frappe.throw("Please Select Halting or Lodging !!");
-    } else {
-      frm.call({
-        method: "findAllowance",
-        args: {
-          city_class: cityClass,
-          category: category,
-          halt_lodge: haltLodge,
-        },
-        callback: function (r) {
-          if (!r.exc) {
-            // Handle the result if needed
-            console.log(r.message); // This will contain the result from the server
-            halt_lodge_amount = r.message[0][`${cityClass}_class_city`];
-            if (haltLodge == "Halting") {
-              frm.set_value("halting_lodging_amount", halt_lodge_amount);
-            } else if (haltLodge == "Lodging") {
-              frm.set_value("halting_lodging_amount", halt_lodge_amount);
+    if (frm.doc.from_location) {
+      if (!haltLodge) {
+        frm.set_value("daily_allowance", null);
+        frm.refresh_field("daily_allowance");
+        frappe.throw("Please Select Halting or Lodging !!");
+      } else {
+        frm.call({
+          method: "findAllowance",
+          args: {
+            city_class: cityClass,
+            category: category,
+            halt_lodge: haltLodge,
+          },
+          callback: function (r) {
+            if (!r.exc) {
+              // Handle the result if needed
+              console.log(r.message); // This will contain the result from the server
+              halt_lodge_amount = r.message[0][`${cityClass}_class_city`];
+              if (haltLodge == "Halting") {
+                frm.set_value("halting_lodging_amount", halt_lodge_amount);
+              } else if (haltLodge == "Lodging") {
+                frm.set_value("halting_lodging_amount", halt_lodge_amount);
+              }
             }
-          }
-          console.log(frm.doc.daily_allowance);
-          console.log(frm.doc.halting_lodging_amount);
-          console.log(frm.doc.other_expenses_amount);
-          let total_amount =
-            frm.doc.daily_allowance +
-            frm.doc.halting_lodging_amount +
-            (frm.doc.other_total_expense_amount || 0);
+            console.log(frm.doc.daily_allowance);
+            console.log(frm.doc.halting_lodging_amount);
+            console.log(frm.doc.other_expenses_amount);
+            let total_amount =
+              frm.doc.daily_allowance +
+              frm.doc.halting_lodging_amount +
+              (frm.doc.other_expenses_amount || 0);
 
-          console.log("Total Allowance:", total_amount);
-          frm.set_value("total_amount", total_amount.toFixed(2));
-          frm.refresh_field("total_amount");
-        },
-      });
+            console.log("Total Allowance:", total_amount);
+            frm.set_value("total_amount", total_amount.toFixed(2));
+            frm.refresh_field("total_amount");
+          },
+        });
+      }
     }
 
     // }
   },
   other_expenses_check: function (frm) {
-    console.log(frm.doc.other_expense_check);
+    let checkOtherExpense = frm.doc.other_expenses_check;
+    console.log("check value", checkOtherExpense);
     // Add a trigger when the form is refreshed
   },
 
@@ -257,7 +510,7 @@ frappe.ui.form.on("Travel Allowance", {
     let total_amount =
       frm.doc.daily_allowance +
       frm.doc.halting_lodging_amount +
-      (frm.doc.other_total_expense_amount || 0);
+      (frm.doc.other_expenses_amount || 0);
 
     console.log("Total Allowance:", total_amount);
     frm.set_value("total_amount", total_amount.toFixed(2));
@@ -265,66 +518,73 @@ frappe.ui.form.on("Travel Allowance", {
   },
 
   // button function to add other expense data in child table Local Conveyance
-  btn_add: function (frm) {
-    //console.log(frm.doc.btn_add);
-    let typeofExpense = frm.doc.select_type_expenses;
-    let dateExpense = frm.doc.date_other_expense;
-    let fromExpense = frm.doc.from;
-    let toExpense = frm.doc.to;
-    let modeofTravel = frm.doc.mode_of_travel;
-    let purposeExpense = frm.doc.purpose_local_conveyance;
-    let amountExpense = frm.doc.other_expenses_amount;
+  // btn_add: function (frm) {
+  //   //console.log(frm.doc.btn_add);
+  //   let typeofExpense = frm.doc.select_type_expenses;
+  //   let dateExpense = frm.doc.date_other_expense;
+  //   let fromExpense = frm.doc.from;
+  //   let toExpense = frm.doc.to;
+  //   let modeofTravel = frm.doc.mode_of_travel;
+  //   let purposeExpense = frm.doc.purpose_local_conveyance;
+  //   let amountExpense = frm.doc.other_expenses_amount;
 
-    //before add checking fields are empty
-    if (!typeofExpense) {
-      frappe.throw("Please select Type of Expense ");
-    } else if (!dateExpense) {
-      frappe.throw("Please Fill the date of other expense");
-    } else if (!fromExpense) {
-      frappe.throw("Please Fill your from location");
-    } else if (!toExpense) {
-      frappe.throw("Please your destination location");
-    } else if (!modeofTravel) {
-      frappe.throw("Please Select your Travelling Mode");
-    } else if (!purposeExpense) {
-      frappe.throw("Please fill purpose");
-    } else if (!amountExpense) {
-      frappe.throw("Please Enter your expense amount");
-    } else {
-      let row = frm.add_child("local_conveyance_table", {
-        type_of_expenses: typeofExpense,
-        date: dateExpense,
-        from: fromExpense,
-        to: toExpense,
-        mode_of_travel: modeofTravel,
-        purpose: purposeExpense,
-        amount: amountExpense,
-      });
-      frm.refresh_field("local_conveyance_table");
+  //   //before add checking fields are empty
+  //   if (!typeofExpense) {
+  //     frappe.throw("Please select Type of Expense ");
+  //   } else if (!dateExpense) {
+  //     frappe.throw("Please Fill the date of other expense");
+  //   } else if (!fromExpense) {
+  //     frappe.throw("Please Fill your from location");
+  //   } else if (!toExpense) {
+  //     frappe.throw("Please your destination location");
+  //   } else if (!modeofTravel) {
+  //     frappe.throw("Please Select your Travelling Mode");
+  //   } else if (!purposeExpense) {
+  //     frappe.throw("Please fill purpose");
+  //   } else if (!amountExpense) {
+  //     frappe.throw("Please Enter your expense amount");
+  //   } else {
+  //     let row = frm.add_child("local_conveyance_table", {
+  //       type_of_expenses: typeofExpense,
+  //       date: dateExpense,
+  //       from: fromExpense,
+  //       to: toExpense,
+  //       mode_of_travel: modeofTravel,
+  //       purpose: purposeExpense,
+  //       amount: amountExpense,
+  //     });
+  //     frm.refresh_field("local_conveyance_table");
 
-      frm.set_value("select_type_expenses", null);
-      frm.set_value("date_other_expense", null);
-      frm.set_value("from", null);
-      frm.set_value("to", null);
-      frm.set_value("mode_of_travel", null);
-      frm.set_value("purpose_local_conveyance", null);
-      frm.set_value("other_expenses_amount", null);
+  //     frm.set_value("select_type_expenses", null);
+  //     frm.set_value("date_other_expense", null);
+  //     frm.set_value("from", null);
+  //     frm.set_value("to", null);
+  //     frm.set_value("mode_of_travel", null);
+  //     frm.set_value("purpose_local_conveyance", null);
+  //     frm.set_value("other_expenses_amount", null);
 
-      let childAmount = 0;
-      for (let row of frm.doc.local_conveyance_table) {
-        childAmount = childAmount + row.amount;
-      }
-      console.log("child table amount", childAmount);
-      frm.set_value("other_total_expense_amount", childAmount);
+  //     let childAmount = 0;
+  //     for (let row of frm.doc.local_conveyance_table) {
+  //       childAmount = childAmount + row.amount;
+  //     }
+  //     console.log("child table amount", childAmount);
+  //     frm.set_value("other_total_expense_amount", childAmount);
 
-      frm.set_value("total_amount", childAmount + frm.doc.total_amount);
-      console.log(frm.doc.total_amount);
-      let totalamt = frm.doc.total_amount;
-      console.log("totalamt test : ", totalamt);
-      frm.refresh_field("total_amount");
-      //frm.save();
-    }
-  },
+  //     frm.set_value("total_amount", childAmount + frm.doc.total_amount);
+  //     console.log(frm.doc.total_amount);
+  //     let totalamt = frm.doc.total_amount;
+  //     console.log("totalamt test : ", totalamt);
+  //     frm.refresh_field("total_amount");
+  //     //frm.save();
+
+  //     //To display total other expense amount in TA main Form
+  //     let otherTaExpense = frm.doc.other_total_expense_amount;
+
+  //     //fetch value from other/local expense
+  //     frm.set_value("other_expenses", otherTaExpense);
+  //     frm.refresh_field("other_expenses");
+  //   }
+  // },
 
   //saving total allowance amount
   before_save(frm) {
@@ -334,7 +594,7 @@ frappe.ui.form.on("Travel Allowance", {
     let total_amount =
       frm.doc.daily_allowance +
       frm.doc.halting_lodging_amount +
-      (frm.doc.other_total_expense_amount || 0);
+      (frm.doc.other_expenses_amount || 0);
 
     console.log("Total Allowance:", total_amount);
     frm.set_value("total_amount", total_amount.toFixed(2));
@@ -355,8 +615,16 @@ frappe.ui.form.on("Travel Allowance", {
     let taHaltLodgAmount = frm.doc.halting_lodging_amount;
     let taClassCity = frm.doc.class_city;
     let taTotalTime = frm.doc.total_visit_time;
-    let taOtherExpense = frm.doc.other_total_expense_amount;
+    let taOtherExpense = frm.doc.other_expenses_amount;
     let taTotalAllowance = frm.doc.total_amount;
+    let taExpenseType = frm.doc.select_type_expenses;
+    let modeofTravel = frm.doc.mode_of_travel;
+    let otherExpenseYesNo;
+    if (frm.doc.other_expenses_check == "1") {
+      otherExpenseYesNo = "Yes";
+    } else {
+      otherExpenseYesNo = "No";
+    }
     if (!taFromLocation) {
       frappe.throw("Please Fill your Source Location");
     } else if (!taToLocation) {
@@ -381,29 +649,49 @@ frappe.ui.form.on("Travel Allowance", {
         haltinglodging: taHaltingLodging,
         daily_allowance: taDaAmount,
         haltinglodging_amount: taHaltLodgAmount,
-        local_conveyance__other_expenses: taOtherExpense,
+        local_conveyance_other_expenses_amount: taOtherExpense,
         total: taTotalAllowance,
+        local_expense_type: taExpenseType,
+        mode_of_travel: modeofTravel,
+        local_conveyance: otherExpenseYesNo,
       });
       frm.refresh_field("ta_chart");
-      //Set null to ta form
+      //save form after adding ta
+      frm.save();
+
+      //Set null of ta form
       frm.set_value("from_location", null);
       frm.set_value("date_and_time_from", null);
       frm.set_value("to_location", null);
       frm.set_value("other_to_location", null);
       frm.set_value("date_and_time_to", null);
       frm.set_value("purpose", null);
-      //frm.set_value("da_claim", null);
-      frm.set_value("daily_allowance", null);
-      //frm.set_value("halting_lodging_select", null);
+      frm.set_value("da_claim", null);
+      frm.set_value("daily_allowance", 11111);
+      frm.set_value("halting_lodging_select", null);
       frm.set_value("halting_lodging_amount", null);
       frm.set_value("class_city", null);
       frm.set_value("total_visit_time", null);
       frm.set_value("total_amount", null);
-
-      //save form after adding ta
-      frm.save();
+      frm.set_value("other_expenses_check", 0);
+      frm.set_value("select_type_expenses", null);
+      frm.set_value("date_other_expense", null);
+      frm.set_value("other_from", null);
+      frm.set_value("other_to", null);
+      frm.set_value("mode_of_travel", null);
+      frm.set_value("purpose_other_expense", null);
+      frm.set_value("other_expenses_amount", null);
     }
   },
+  // after_save: function (frm) {
+  //   // Reset the value of the select field to an empty string
+  //   frm.set_value("da_claim", null);
+  //   frm.refresh_field("da_claim");
+
+  //   frm.set_value("halting_lodging_select", null);
+  //   frm.refresh_field("halting_lodging_select");
+  // },
+
   // button function to add data in TA child table
   btn_save_form: function (frm) {
     // let btnSave = 1;

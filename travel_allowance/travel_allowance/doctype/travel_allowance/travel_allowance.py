@@ -34,3 +34,23 @@ def findAllowance(city_class, category, halt_lodge):
 @frappe.whitelist(allow_guest=True)
 def get_server_datetime():
     return frappe.utils.now_datetime()
+
+
+@frappe.whitelist()
+def get_ta_total_amount(self):
+    result = frappe.db.sql(
+        f"""SELECT
+                sum(daily_allowance) as total_daily_allowance,
+                sum(haltinglodging_amount) as total_haltinglodging_amount,
+                sum(local_conveyance_other_expenses_amount) as total_local_conveyance_other_expenses,
+                sum(total) as total_amount
+            FROM `tabTA Chart`
+            WHERE parent = '{self}';""",
+        as_dict=True
+    )
+
+    if result:
+        return result[0]
+    else:
+        frappe.msgprint("Error fetching total amounts")
+        return {}
