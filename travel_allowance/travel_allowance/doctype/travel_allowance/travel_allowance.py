@@ -40,6 +40,11 @@ def get_server_datetime():
 def get_ta_total_amount(self):
     result = frappe.db.sql(
         f"""SELECT
+                MIN(CAST(date_and_time_start AS DATE)) as StartDate,
+                MONTH(MIN(CAST(date_and_time_start AS DATE))) as Month,
+                DATE_FORMAT(MIN(CAST(date_and_time_start AS DATE)), '%b') as MonthName,
+                DATE_FORMAT(MAKEDATE(EXTRACT(YEAR FROM MIN(CAST(date_and_time_start AS DATE))), 1), '%d') as FirstDayOfMonth,
+                DATE_FORMAT(LAST_DAY(MIN(CAST(date_and_time_start AS DATE))), '%d') AS LastDayOfMonth,
                 sum(daily_allowance) as total_daily_allowance,
                 sum(haltinglodging_amount) as total_haltinglodging_amount,
                 sum(local_conveyance_other_expenses_amount) as total_local_conveyance_other_expenses,
@@ -54,3 +59,27 @@ def get_ta_total_amount(self):
     else:
         frappe.msgprint("Error fetching total amounts")
         return {}
+
+
+@frappe.whitelist()
+def get_child_table_data(parent_docname):
+    # Your logic to fetch data from the child table
+    data = frappe.get_all('TA Chart', filters={'parent': parent_docname}, fields=['from_location', 'to_location','purpose'])
+
+    return render_child_table_template(data)
+
+def render_child_table_template(data):
+    # Load the Jinja template
+    template = frappe.get_template("templates/ta_child_table_template.html")
+
+    # Render the template with the provided data
+    rendered_html = template.render({"data": data})
+
+    return rendered_html
+
+# @frappe.whitelist()
+# def get_child_table_data(parent_docname):
+#     # Replace 'YourChildTable' with the actual child table name in your doctype
+#     child_table_data = frappe.get_all('TA Chart', filters={'parent': parent_docname}, fields=['from_location', 'to_location'])
+
+#     return child_table_data

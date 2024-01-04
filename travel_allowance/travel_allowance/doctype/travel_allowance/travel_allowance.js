@@ -23,36 +23,16 @@ frappe.ui.form.on("Travel Allowance", {
         indicator: "red",
       });
       frm.set_value("to_location", " ");
-      // // Set the border color to red for the "to_location" field
-      // frm.fields_dict.to_location.$input.css({
-      //   "border-color": "red",
-      // });
-      // // frm.fields_dict["to_location"].$wrapper
-      // //   .find("input")
-      // //   .css("border-color", "red");
-
-      // frappe.validated = false;
-      // } else {
-      //   // Reset the border color if there is no error
-      //   frm.fields_dict.to_location.$input.css({
-      //     "border-color": "",
-      //   });
     }
 
     // check wheather the destination field is Other
-    if (destination === "Other") {
+    if (destination === "other") {
       console.log(destination);
       frm.toggle_display("other_to_location", true);
     } else {
       frm.toggle_display("other_to_location", false);
       console.log(destination);
     }
-
-    // set value null when destination location is change
-    // frm.set_value("da_claim", null);
-    // frm.set_value("halting_lodging_select", null);
-    // frm.set_value("daily_allowance", null);
-    // frm.set_value("halting_lodging_amount", null);
   },
 
   refresh: function (frm) {
@@ -158,23 +138,6 @@ frappe.ui.form.on("Travel Allowance", {
       frm.trigger("populate_total_amount_html");
       frm.trigger("ta_chart_table_html");
     }
-    // //(Local Convience Button)adding css to button
-    // frm.fields_dict.btn_add.$input.css({
-    //   "background-color": "#3498db",
-    //   color: "#fff",
-    //   border: "none",
-    //   padding: "8px 20px",
-    //   cursor: "pointer",
-    // });
-
-    //(Save Button)adding css to button
-    // frm.fields_dict.btn_save_form.$input.css({
-    //   "background-color": "#08A226",
-    //   color: "#fff",
-    //   border: "none",
-    //   padding: "8px 22px",
-    //   cursor: "pointer",
-    // });
 
     //(TA Add Button)adding css to button
     frm.fields_dict.btn_add_ta.$input.css({
@@ -209,7 +172,7 @@ frappe.ui.form.on("Travel Allowance", {
       callback: function (r) {
         if (!r.exc) {
           const data = r.message;
-
+          console.log(data);
           // Generate HTML
           let html = `<!DOCTYPE html>
           <html lang="en">
@@ -281,7 +244,9 @@ frappe.ui.form.on("Travel Allowance", {
               </style>
             </head>
             <body>
-              <div class="heading"><h3>Jan 01-Jan 31</h3></div>
+              <div class="heading"><h3>${data.MonthName} ${
+            data.FirstDayOfMonth
+          } - ${data.MonthName} ${data.LastDayOfMonth}</h3></div>
               <div class="cards">
                 <div class="card">
                   <div class="card-title">Daily Allowance</div>
@@ -303,7 +268,9 @@ frappe.ui.form.on("Travel Allowance", {
                 </div>
                 <div class="card">
                   <div class="card-title">Total Amount</div>
-                  <p class="card-content">₹${data.total_amount ?? 0}</p>
+                  <p class="card-content" style="color:#3E9C35;">₹${
+                    data.total_amount ?? 0
+                  }</p>
                 </div>
               </div>
           
@@ -331,67 +298,244 @@ frappe.ui.form.on("Travel Allowance", {
     });
   },
 
-  async ta_chart_table_html(frm) {
-    // Generate HTML
-    let ta_table = frm.doc.ta_chart;
-    let ta_chart_html = `<!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <style>
-          .cards {
-            max-width: 1080px;
-            margin: 0 auto;
-    
-            display: grid;
-            gap: 10px;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-          }
-    
-          .card {
-            background-color: #d9d9d9;
-            font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
-            height: 4rem;
-            border-radius: 10px;
-            padding: 16px;
-          }
-          .card-title {
-            font-size: 16px;
-          }
-          p.card-content {
-            font-weight: 700;
-            font-size: 18px;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="cards">
-          <div class="card">
-            <div class="card-title">Daily Allowance</div>
-            <p class="card-content">₹${data.total_daily_allowance}</p>
-          </div>
-          <div class="card">
-            <div class="card-title">Halting/Lodging</div>
-            <p class="card-content">₹${data.total_haltinglodging_amount}</p>
-          </div>
-          <div class="card">
-            <div class="card-title">Local Conveyance</div>
-            <p class="card-content">
-              ₹${data.total_local_conveyance_other_expenses}
-            </p>
-          </div>
-          <div class="card">
-            <div class="card-title">Total Amount</div>
-            <p class="card-content">₹${data.total_amount}</p>
-          </div>
-        </div>
-      </body>
-    </html>
-    
-   `;
+  // async ta_chart_table_html(frm) {
+  //   // Generate HTML
+  //   // Fetch the data from the backend
+  //   frm.call({
+  //     method: "get_child_table_data",
+  //     args: {
+  //       self: frm.doc.name,
+  //     },
+  //     callback: function (r) {
+  //       if (!r.exc) {
+  //         const data = r.message;
+  //         console.log(data);
+  //         // Generate HTML
+  //         let html = `<!DOCTYPE html>
+  //         <html lang="en">
+  //           <head>
+  //             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  //             <style>
+  //               /* generic */
 
-    // Set the above `html` as HTML
-    frm.set_df_property("ta_chart_html", "options", ta_chart_html);
+  //               body {
+  //                 background-color: #eee;
+  //                 color: #444;
+  //                 font-family: sans-serif;
+  //               }
+
+  //               .list ul:nth-child(odd) {
+  //                 background-color: #ddd;
+  //               }
+
+  //               .list ul:nth-child(even) {
+  //                 background-color: #fff;
+  //               }
+
+  //               /* big */
+  //               @media screen and (min-width: 600px) {
+  //                 .list {
+  //                   display: table;
+  //                   margin: 1em;
+  //                 }
+
+  //                 .list ul {
+  //                   display: table-row;
+  //                 }
+
+  //                 .list ul:first-child li {
+  //                   background-color: #444;
+  //                   color: #fff;
+  //                 }
+
+  //                 .list ul > li {
+  //                   display: table-cell;
+  //                   padding: 0.5em 1em;
+  //                 }
+  //               }
+
+  //               /* small */
+  //               @media screen and (max-width: 599px) {
+  //                 .list ul {
+  //                   border: solid 1px #ccc;
+  //                   display: block;
+  //                   list-style: none;
+  //                   margin: 1em;
+  //                   padding: 0.5em 1em;
+  //                 }
+
+  //                 .list ul:first-child {
+  //                   display: none;
+  //                 }
+
+  //                 .list ul > li {
+  //                   display: block;
+  //                   padding: 0.25em 0;
+  //                 }
+
+  //                 .list ul:nth-child(odd) > li + li {
+  //                   border-top: solid 1px #ccc;
+  //                 }
+
+  //                 .list ul:nth-child(even) > li + li {
+  //                   border-top: solid 1px #eee;
+  //                 }
+
+  //                 .list ul > li:before {
+  //                   color: #000;
+  //                   content: attr(data-label);
+  //                   display: inline-block;
+  //                   font-size: 75%;
+  //                   font-weight: bold;
+  //                   text-transform: capitalize;
+  //                   vertical-align: top;
+  //                   width: 50%;
+  //                 }
+
+  //                 .list p {
+  //                   margin: -1em 0 0 50%;
+  //                 }
+  //               }
+
+  //               /* tiny */
+  //               @media screen and (max-width: 349px) {
+  //                 .list ul > li:before {
+  //                   display: block;
+  //                 }
+
+  //                 .list p {
+  //                   margin: 0;
+  //                 }
+  //               }
+  //             </style>
+  //           </head>
+
+  //           <body>
+  //             <p>Resize window to see different layouts.</p>
+
+  //             <div class="list">
+  //               <ul>
+  //                 <li>First Name</li>
+  //                 <li>Last Name</li>
+  //                 <li>Country</li>
+  //                 <li>Number</li>
+  //                 <li>Reference</li>
+  //                 <li>Description</li>
+  //               </ul>
+  //               <ul>
+  //                 <li data-label="first name">Chris</li>
+  //                 <li data-label="last name">Smith</li>
+  //                 <li data-label="country">United Kingdom</li>
+  //                 <li data-label="number">0123456789</li>
+  //                 <li data-label="reference">ABCDE</li>
+  //                 <li data-label="description">
+  //                   <p>Example of a responsive list/table on Codepen.</p>
+  //                 </li>
+  //               </ul>
+  //               <ul>
+  //                 <li data-label="first name">Chris</li>
+  //                 <li data-label="last name">Smith</li>
+  //                 <li data-label="country">United Kingdom</li>
+  //                 <li data-label="number">0123456789</li>
+  //                 <li data-label="reference">ABCDE</li>
+  //                 <li data-label="description">
+  //                   <p>Example of a responsive list/table on Codepen.</p>
+  //                 </li>
+  //               </ul>
+  //               <ul>
+  //                 <li data-label="first name">Chris</li>
+  //                 <li data-label="last name">Smith</li>
+  //                 <li data-label="country">United Kingdom</li>
+  //                 <li data-label="number">0123456789</li>
+  //                 <li data-label="reference">ABCDE</li>
+  //                 <li data-label="description">
+  //                   <p>Example of a responsive list/table on Codepen.</p>
+  //                 </li>
+  //               </ul>
+  //               <ul>
+  //                 <li data-label="first name">Chris</li>
+  //                 <li data-label="last name">Smith</li>
+  //                 <li data-label="country">United Kingdom</li>
+  //                 <li data-label="number">0123456789</li>
+  //                 <li data-label="reference">ABCDE</li>
+  //                 <li data-label="description">
+  //                   <p>Example of a responsive list/table on Codepen.</p>
+  //                 </li>
+  //               </ul>
+  //               <ul>
+  //                 <li data-label="first name">Chris</li>
+  //                 <li data-label="last name">Smith</li>
+  //                 <li data-label="country">United Kingdom</li>
+  //                 <li data-label="number">0123456789</li>
+  //                 <li data-label="reference">ABCDE</li>
+  //                 <li data-label="description">
+  //                   <p>Example of a responsive list/table on Codepen.</p>
+  //                 </li>
+  //               </ul>
+  //               <ul>
+  //                 <li data-label="first name">Chris</li>
+  //                 <li data-label="last name">Smith</li>
+  //                 <li data-label="country">United Kingdom</li>
+  //                 <li data-label="number">0123456789</li>
+  //                 <li data-label="reference">ABCDE</li>
+  //                 <li data-label="description">
+  //                   <p>Example of a responsive list/table on Codepen.</p>
+  //                 </li>
+  //               </ul>
+  //             </div>
+  //           </body>
+  //         </html>
+  //       `;
+
+  //         // Set the above `html` as Summary HTML
+  //         frm.set_df_property("total_amount_summary", "options", html);
+  //       } else {
+  //         frappe.msgprint("Error fetching total amounts");
+  //       }
+  //     },
+  //   });
+  // },
+
+  // // In your Frappe client-side script
+  // async ta_chart_table_html(frm) {
+  //   frm.call({
+  //     method: "get_child_table_data",
+  //     args: {
+  //       parent_docname: frm.doc.name,
+  //     },
+  //     callback: function (r) {
+  //       if (!r.exc) {
+  //         const html = r.message;
+  //         frm.set_df_property("ta_chart_table_summary", "options", html);
+  //       } else {
+  //         frappe.msgprint("Error fetching child table data");
+  //       }
+  //     },
+  //   });
+  // },
+
+  // In your Frappe client-side script
+  async ta_chart_table_html(frm) {
+    try {
+      const childTableData = await frm.call({
+        method: "get_child_table_data",
+        args: {
+          parent_docname: frm.doc.name,
+        },
+      });
+
+      if (!childTableData.exc) {
+        const html = childTableData.message;
+        frm.set_df_property("ta_chart_table_summary", "options", html);
+      } else {
+        frappe.msgprint(
+          "Error fetching child table data: " + childTableData.exc
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching child table data:", error);
+      frappe.msgprint("Error fetching child table data");
+    }
   },
 
   //handle the DA Claim Allowance
@@ -502,7 +646,12 @@ frappe.ui.form.on("Travel Allowance", {
   other_expenses_check: function (frm) {
     let checkOtherExpense = frm.doc.other_expenses_check;
     console.log("check value", checkOtherExpense);
-    // Add a trigger when the form is refreshed
+    // Make other fields mandatory (example code)
+    if (checkOtherExpense === "1") {
+      frm.set_df_property("select_type_expenses", "reqd", true);
+      frm.set_df_property("date_other_expense", "reqd", true);
+      // Add a trigger when the form is refreshed
+    }
   },
 
   //handle the local conveyance amount
@@ -515,6 +664,50 @@ frappe.ui.form.on("Travel Allowance", {
     console.log("Total Allowance:", total_amount);
     frm.set_value("total_amount", total_amount.toFixed(2));
     frm.refresh_field("total_amount");
+  },
+  // local date validation-In the range of from date and to date
+  date_other_expense: function (frm) {
+    var from_date = frm.doc.date_and_time_from;
+    console.log(from_date);
+    var modifiedfromDate = frappe.datetime.add_days(from_date, -1);
+    console.log("Modified date:", modifiedfromDate);
+    var to_date = frm.doc.date_and_time_to;
+    console.log(to_date);
+    var date_otherexpense = frm.doc.date_other_expense;
+
+    // // Check if the inbetween_date is within the range of from_date and to_date
+    // if (
+    //   date_otherexpense &&
+    //   (date_otherexpense < from_date ||
+    //     date_otherexpense > to_date ||
+    //     date_otherexpense != from_date ||
+    //     date_otherexpense != to_date)
+    // ) {
+    //   frappe.msgprint(
+    //     __(
+    //       "Inbetween Date must be within the range of From Date and To Date, or equal to either."
+    //     )
+    //   );
+    //   frm.set_value("date_other_expense", "");
+    // }
+    if (date_otherexpense) {
+      // Check if inbetween_date is within the range
+      if (
+        date_otherexpense > modifiedfromDate &&
+        date_otherexpense <= to_date
+      ) {
+        console.log("from date:", from_date);
+        console.log("to date:", to_date);
+        frm.set_value("date_other_expense", date_otherexpense); // Set the valid in-between date
+      } else {
+        frappe.msgprint(
+          __(
+            "Your local date should be match with from date or to date or within this dates."
+          )
+        );
+        frm.set_value("date_other_expense", ""); // Clear the invalid in-between date
+      }
+    }
   },
 
   // button function to add other expense data in child table Local Conveyance
@@ -714,7 +907,7 @@ frappe.ui.form.on("Travel Allowance", {
       } else {
         // Clear total_visit_time if dates are not in order
         frappe.msgprint(
-          __("End date and time should be later than start date and time.")
+          __("End date and time should be greater than start date and time.")
         );
         frm.set_value("total_visit_time", "");
         frm.set_value("date_and_time_to", "");

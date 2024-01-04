@@ -7,6 +7,7 @@
  "field_order": [
   "ta_tab",
   "total_amount_summary",
+  "ta_chart_table_summary",
   "ta_chart",
   "ta_chart_html",
   "employee_details_tab",
@@ -392,11 +393,15 @@
    "fieldtype": "HTML",
    "hidden": 1,
    "label": "TA chart Html"
+  },
+  {
+   "fieldname": "ta_chart_table_summary",
+   "fieldtype": "HTML"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-01-02 12:03:05.143101",
+ "modified": "2024-01-04 17:50:50.678512",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",
