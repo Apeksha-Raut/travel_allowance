@@ -312,6 +312,7 @@
   {
    "fieldname": "ta_chart",
    "fieldtype": "Table",
+   "hidden": 1,
    "label": "TA Details",
    "options": "TA Chart"
   },
@@ -401,7 +402,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-01-04 17:50:50.678512",
+ "modified": "2024-01-08 13:30:27.849294",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",

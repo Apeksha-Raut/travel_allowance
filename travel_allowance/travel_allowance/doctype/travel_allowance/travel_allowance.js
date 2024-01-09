@@ -206,40 +206,11 @@ frappe.ui.form.on("Travel Allowance", {
                   font-weight: 700;
                   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
                 }
-                .pagination {
-                  display: inline-block;
-                }
-          
-                .pagination a {
-                  color: black;
-                  float: left;
-                  padding: 5px 8px;
-                  text-decoration: none;
-                  transition: background-color 0.3s;
-                  border: 1px solid #ddd;
-                  border-radius: 50%;
-                  background-color: #d9d9d9;
-                  margin: 0 6px;
-                }
-          
-                .pagination a.active {
-                  background-color: #4caf50;
-                  color: white;
-                  border: 1px solid #4caf50;
-                }
-                .pagination a:hover:not(.active) {
-                  background-color: #ddd;
-                }
-                .table-title {
-                  display: flex;
-                  align-items: center;
-                  margin-top: 10px;
-                }
-          
-                .tb-title h3 {
-                  display: inline-block;
-                  margin: 0; /* Remove default margin for inline elements */
-                  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+                /* Add responsive styles */
+                @media only screen and (max-width: 600px) {
+                  .heading h3 {
+                    font-size: small; 
+                  }
                 }
               </style>
             </head>
@@ -273,16 +244,6 @@ frappe.ui.form.on("Travel Allowance", {
                   }</p>
                 </div>
               </div>
-          
-              <div class="table-title">
-                <div class="tb-title">
-                  <h3>Travel History</h3>
-                </div>
-                <div class="pagination">
-                  <a href="#">❮</a>
-                  <a href="#">❯</a>
-                </div>
-              </div>
             </body>
           </html>
           
@@ -298,223 +259,7 @@ frappe.ui.form.on("Travel Allowance", {
     });
   },
 
-  // async ta_chart_table_html(frm) {
-  //   // Generate HTML
-  //   // Fetch the data from the backend
-  //   frm.call({
-  //     method: "get_child_table_data",
-  //     args: {
-  //       self: frm.doc.name,
-  //     },
-  //     callback: function (r) {
-  //       if (!r.exc) {
-  //         const data = r.message;
-  //         console.log(data);
-  //         // Generate HTML
-  //         let html = `<!DOCTYPE html>
-  //         <html lang="en">
-  //           <head>
-  //             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  //             <style>
-  //               /* generic */
-
-  //               body {
-  //                 background-color: #eee;
-  //                 color: #444;
-  //                 font-family: sans-serif;
-  //               }
-
-  //               .list ul:nth-child(odd) {
-  //                 background-color: #ddd;
-  //               }
-
-  //               .list ul:nth-child(even) {
-  //                 background-color: #fff;
-  //               }
-
-  //               /* big */
-  //               @media screen and (min-width: 600px) {
-  //                 .list {
-  //                   display: table;
-  //                   margin: 1em;
-  //                 }
-
-  //                 .list ul {
-  //                   display: table-row;
-  //                 }
-
-  //                 .list ul:first-child li {
-  //                   background-color: #444;
-  //                   color: #fff;
-  //                 }
-
-  //                 .list ul > li {
-  //                   display: table-cell;
-  //                   padding: 0.5em 1em;
-  //                 }
-  //               }
-
-  //               /* small */
-  //               @media screen and (max-width: 599px) {
-  //                 .list ul {
-  //                   border: solid 1px #ccc;
-  //                   display: block;
-  //                   list-style: none;
-  //                   margin: 1em;
-  //                   padding: 0.5em 1em;
-  //                 }
-
-  //                 .list ul:first-child {
-  //                   display: none;
-  //                 }
-
-  //                 .list ul > li {
-  //                   display: block;
-  //                   padding: 0.25em 0;
-  //                 }
-
-  //                 .list ul:nth-child(odd) > li + li {
-  //                   border-top: solid 1px #ccc;
-  //                 }
-
-  //                 .list ul:nth-child(even) > li + li {
-  //                   border-top: solid 1px #eee;
-  //                 }
-
-  //                 .list ul > li:before {
-  //                   color: #000;
-  //                   content: attr(data-label);
-  //                   display: inline-block;
-  //                   font-size: 75%;
-  //                   font-weight: bold;
-  //                   text-transform: capitalize;
-  //                   vertical-align: top;
-  //                   width: 50%;
-  //                 }
-
-  //                 .list p {
-  //                   margin: -1em 0 0 50%;
-  //                 }
-  //               }
-
-  //               /* tiny */
-  //               @media screen and (max-width: 349px) {
-  //                 .list ul > li:before {
-  //                   display: block;
-  //                 }
-
-  //                 .list p {
-  //                   margin: 0;
-  //                 }
-  //               }
-  //             </style>
-  //           </head>
-
-  //           <body>
-  //             <p>Resize window to see different layouts.</p>
-
-  //             <div class="list">
-  //               <ul>
-  //                 <li>First Name</li>
-  //                 <li>Last Name</li>
-  //                 <li>Country</li>
-  //                 <li>Number</li>
-  //                 <li>Reference</li>
-  //                 <li>Description</li>
-  //               </ul>
-  //               <ul>
-  //                 <li data-label="first name">Chris</li>
-  //                 <li data-label="last name">Smith</li>
-  //                 <li data-label="country">United Kingdom</li>
-  //                 <li data-label="number">0123456789</li>
-  //                 <li data-label="reference">ABCDE</li>
-  //                 <li data-label="description">
-  //                   <p>Example of a responsive list/table on Codepen.</p>
-  //                 </li>
-  //               </ul>
-  //               <ul>
-  //                 <li data-label="first name">Chris</li>
-  //                 <li data-label="last name">Smith</li>
-  //                 <li data-label="country">United Kingdom</li>
-  //                 <li data-label="number">0123456789</li>
-  //                 <li data-label="reference">ABCDE</li>
-  //                 <li data-label="description">
-  //                   <p>Example of a responsive list/table on Codepen.</p>
-  //                 </li>
-  //               </ul>
-  //               <ul>
-  //                 <li data-label="first name">Chris</li>
-  //                 <li data-label="last name">Smith</li>
-  //                 <li data-label="country">United Kingdom</li>
-  //                 <li data-label="number">0123456789</li>
-  //                 <li data-label="reference">ABCDE</li>
-  //                 <li data-label="description">
-  //                   <p>Example of a responsive list/table on Codepen.</p>
-  //                 </li>
-  //               </ul>
-  //               <ul>
-  //                 <li data-label="first name">Chris</li>
-  //                 <li data-label="last name">Smith</li>
-  //                 <li data-label="country">United Kingdom</li>
-  //                 <li data-label="number">0123456789</li>
-  //                 <li data-label="reference">ABCDE</li>
-  //                 <li data-label="description">
-  //                   <p>Example of a responsive list/table on Codepen.</p>
-  //                 </li>
-  //               </ul>
-  //               <ul>
-  //                 <li data-label="first name">Chris</li>
-  //                 <li data-label="last name">Smith</li>
-  //                 <li data-label="country">United Kingdom</li>
-  //                 <li data-label="number">0123456789</li>
-  //                 <li data-label="reference">ABCDE</li>
-  //                 <li data-label="description">
-  //                   <p>Example of a responsive list/table on Codepen.</p>
-  //                 </li>
-  //               </ul>
-  //               <ul>
-  //                 <li data-label="first name">Chris</li>
-  //                 <li data-label="last name">Smith</li>
-  //                 <li data-label="country">United Kingdom</li>
-  //                 <li data-label="number">0123456789</li>
-  //                 <li data-label="reference">ABCDE</li>
-  //                 <li data-label="description">
-  //                   <p>Example of a responsive list/table on Codepen.</p>
-  //                 </li>
-  //               </ul>
-  //             </div>
-  //           </body>
-  //         </html>
-  //       `;
-
-  //         // Set the above `html` as Summary HTML
-  //         frm.set_df_property("total_amount_summary", "options", html);
-  //       } else {
-  //         frappe.msgprint("Error fetching total amounts");
-  //       }
-  //     },
-  //   });
-  // },
-
-  // // In your Frappe client-side script
-  // async ta_chart_table_html(frm) {
-  //   frm.call({
-  //     method: "get_child_table_data",
-  //     args: {
-  //       parent_docname: frm.doc.name,
-  //     },
-  //     callback: function (r) {
-  //       if (!r.exc) {
-  //         const html = r.message;
-  //         frm.set_df_property("ta_chart_table_summary", "options", html);
-  //       } else {
-  //         frappe.msgprint("Error fetching child table data");
-  //       }
-  //     },
-  //   });
-  // },
-
-  // In your Frappe client-side script
+  // handle the ta_chart table to showing data
   async ta_chart_table_html(frm) {
     try {
       const childTableData = await frm.call({
@@ -543,7 +288,7 @@ frappe.ui.form.on("Travel Allowance", {
     //frm.trigger("set_claim");
 
     if (frm.doc.from_location) {
-      console.log("da run ho raha hai ki nhi");
+      // console.log("da run ho raha hai ki nhi");
       let da_category = frm.doc.da_claim; // Full Day or Half Day
       let category = frm.doc.category; // Designation category(level 1/2/3/4/5/6/7/8/)
       let cityClass = frm.doc.class_city; // Category of city a,b,c
