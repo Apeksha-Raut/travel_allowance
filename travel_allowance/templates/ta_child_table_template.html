@@ -1,0 +1,234 @@
+<!-- your_app/templates/child_table_template.html -->
+
+
+<style>
+  thead {
+    border: 2px solid #ccc;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    border-radius: 1px ;
+    color: black;
+  }
+ 
+  th,
+  td {
+    border: none;
+    padding: 15px 0;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
+ 
+   /* Custom border for a specific row */
+  .row_custom_border {
+    border: 2px solid #ccc; /* Adjust color and thickness as needed */
+    border-radius: 10px; /* Adjust the border-radius value as needed */
+  }
+
+  .serial-no {
+    width: 100px;
+    height: 100px;
+    background-color: #d9d9d9;
+    border-radius: 50%;
+    padding: 15px 20px;
+  }
+  .total-amt{
+    color: #3E9C35;
+    font-weight: bold;
+  }
+  .heading span{
+    color: #746d6d;
+    font-size: 11px;
+  }
+  .hide-data span{
+    margin-bottom: 10px;
+    visibility: hidden;
+  }
+
+  
+
+  /******** table heading CSS start here **********/
+  .pagination {
+    display: inline-block;
+  }
+          
+  .pagination a {
+    color: black;
+    float: left;
+    padding: 5px 10px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    background-color: #d9d9d9;
+    margin: 0 6px;
+    font-weight: bold;
+  }
+          
+  .pagination a.active {
+    background-color: #4caf50;
+    color: white;
+    border: 1px solid #4caf50;
+  }
+             
+  .pagination a:hover:not(.active) {                 
+    background-color: #ddd;
+  }
+                
+  .table-title {
+    display: flex;
+    align-items: center;
+    margin-top: 18px;
+    gap: 10px;
+  }
+          
+  .tb-title h3 {
+    display: inline-block;
+    margin: 0; /* Remove default margin for inline elements */
+    font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  }
+  /******** table heading CSS end here **********/
+
+  .arrow {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+  }
+
+  .right {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+  }
+
+  span.hidden-arrow{
+    visibility: hidden;
+    background-color: #f2f2f2;
+  }
+
+  /* Add responsive styles */
+  @media only screen and (max-width: 600px) {
+      .tb-title h3 {
+        font-size: 14px;
+      }
+      td {
+        font-weight: 600;
+        font-size: 8px;
+      }
+
+      .heading span {
+         font-size: 6px;
+      }
+      .serial-no {
+        padding: 4px 8px;
+      }
+     .arrow {
+        border-width: 0 1px 1px 0;
+        padding: 2px;
+      }
+      
+  }
+</style>
+
+
+<div class="table-title">
+  <div class="tb-title">
+    <h3>Travel History</h3>
+  </div>
+  <div class="pagination">
+    <a href="#"><</i></a>
+    <a href="#">></i></a>
+  </div>
+</div>
+
+<div style="overflow-x: auto;">
+<table>
+  <thead>
+    <tr>
+      <th>Sr. No.</th>
+      <th>Form </th>
+      <th><span class="hidden-arrow">Hidden-arrow</span></th>
+      <th>To </th>
+      <th>Daily Allowance</th>
+      <th>Halting/Lodging</th>
+      <th>Local Allowance</th>
+      <th>Total</th>
+     
+    </tr>
+  </thead>
+  <tbody>
+    {% for index, row in enumerate(data) %}
+   
+  <tr class="row_custom_border">
+   
+      <td><span class="serial-no">{{ index + 1 }}</span></span></td>
+      <!-- For date_and_time_start -->
+<td>
+  <div class="heading">
+    <span>{{ row.formatted_date_start }}</span>
+    <div>{{ row.from_location }}</div>
+  </div>
+</td>
+<td>
+  <div class="heading">
+    <div class="hide-data">
+      <span>hidden</span>
+    </div>
+    <div><p><i class="arrow right"></i></p></div>
+  </div>
+</td>
+
+<!-- For date_and_time_end -->
+<td>
+  <div class="heading">
+    <span>{{ row.formatted_date_end }}</span>
+    <div>{{ row.to_location }}</div>
+  </div>
+</td>
+<td>
+  <div class="heading">
+    <span>{{ row.da_claimed }}</span>
+    <div>₹{{ row.daily_allowance }}</div>
+  </div>
+</td>
+<td>
+  <div class="heading">
+    <span>{{ row.haltinglodging }}</span>
+    <div>₹{{ row.haltinglodging_amount }}</div>
+  </div>
+</td>
+
+<!-- <td>
+  <div class="heading">
+    <span>Local Allowance</span>
+    <div>₹{{ row.local_conveyance_other_expenses_amount }}</div>
+  </div>
+</td> -->
+
+<td>
+  <div class="heading">
+    <span>Local Allowance</span>
+    <div>₹{{ row.local_conveyance_other_expenses_amount if row.local_conveyance_other_expenses_amount is not none else 0 }}</div>
+  </div>
+</td>
+
+      <td >
+        <div class="heading">
+          <!-- <span>Total</span> -->
+            <div class="total-amt">₹{{ row.total  }}</div>
+        </div>
+      </td>
+      <!-- Add more columns as needed -->
+     
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
