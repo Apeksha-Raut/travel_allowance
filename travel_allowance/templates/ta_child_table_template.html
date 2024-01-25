@@ -21,7 +21,9 @@
     text-align: center;
     font-weight: bold;
   }
-
+  .heading div{
+    font-size: 13px;
+  } 
   th {
     background-color: #f2f2f2;
   }
@@ -142,10 +144,10 @@
   <div class="tb-title">
     <h3>Travel History</h3>
   </div>
-  <div class="pagination">
+  <!-- <div class="pagination">
     <a href="#"><</i></a>
     <a href="#">></i></a>
-  </div>
+  </div> -->
 </div>
 
 <div style="overflow-x: auto;">
@@ -153,7 +155,7 @@
   <thead>
     <tr>
       <th>Sr. No.</th>
-      <th>Form </th>
+      <th>From </th>
       <th><span class="hidden-arrow">Hidden-arrow</span></th>
       <th>To </th>
       <th>Daily Allowance</th>
@@ -192,7 +194,7 @@
     <div>{{ row.to_location }}</div>
   </div>
 </td>
-<td>
+<!-- <td>
   <div class="heading">
     <span>{{ row.da_claimed }}</span>
     <div>₹{{ row.daily_allowance }}</div>
@@ -203,7 +205,25 @@
     <span>{{ row.haltinglodging }}</span>
     <div>₹{{ row.haltinglodging_amount }}</div>
   </div>
+</td> -->
+<td>
+  <div class="heading">
+    {% if row.daily_allowance|default(0) | int > 0 %}
+      <span>{{ row.da_claimed }}</span>
+    {% endif %}
+    <div>₹{{ row.daily_allowance }}</div>
+  </div>
 </td>
+<td>
+  <div class="heading">
+    {% if row.haltinglodging_amount|default(0) | int > 0 %}
+      <span>{{ row.haltinglodging }}</span>
+    {% endif %}
+    <div>₹{{ row.haltinglodging_amount }}</div>
+  </div>
+</td>
+
+
 
 <!-- <td>
   <div class="heading">

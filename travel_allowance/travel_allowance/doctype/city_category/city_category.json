@@ -23,9 +23,10 @@
    "options": "\na\nb\nc"
   }
  ],
+ "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-01-15 10:46:02.257841",
+ "modified": "2024-01-18 14:08:30.524567",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "City Category",
@@ -45,7 +46,6 @@
    "write": 1
   },
   {
-   "create": 1,
    "delete": 1,
    "email": 1,
    "export": 1,
@@ -54,8 +54,7 @@
    "report": 1,
    "role": "Employee",
    "select": 1,
-   "share": 1,
-   "write": 1
+   "share": 1
   }
  ],
  "show_title_field_in_link": 1,
