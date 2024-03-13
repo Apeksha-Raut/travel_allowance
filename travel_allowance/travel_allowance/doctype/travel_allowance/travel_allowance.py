@@ -25,6 +25,7 @@ def before_save(self):
     self.total_amount = (
         handle_none(self.daily_allowance)
         + handle_none(self.halting_lodging_amount)
+        + handle_none(self.fare_amount) if self.fare_amount else 0
         + handle_none(self.other_expenses_amount) if self.other_expenses_amount else 0
     )
 
@@ -74,26 +75,12 @@ def get_ta_total_amount(self):
         return {}
 
 
-# @frappe.whitelist()
-# def get_child_table_data(parent_docname):
-#     # Your logic to fetch data from the child table
-#     data = frappe.get_all('TA Chart', filters={'parent': parent_docname}, fields=['date_and_time_start','from_location', 'to_location','daily_allowance','haltinglodging_amount','local_conveyance_other_expenses_amount','total'])
 
-#     return render_child_table_template(data)
-
-# def render_child_table_template(data):
-#     # Load the Jinja template
-#     template = frappe.get_template("templates/ta_child_table_template.html")
-
-#     # Render the template with the provided data
-#     rendered_html = template.render({"data": data})
-
-#     return rendered_html
-
+#Original code 
 @frappe.whitelist()
 def get_child_table_data(parent_docname):
     # Your logic to fetch data from the child table
-    data = frappe.get_all('TA Chart', filters={'parent': parent_docname}, fields=['date_and_time_start','from_location', 'date_and_time_end','to_location','da_claimed','haltinglodging','daily_allowance','haltinglodging_amount','local_conveyance_other_expenses_amount','total'], order_by='idx DESC')
+    data = frappe.get_all('TA Chart', filters={'parent': parent_docname}, fields=['date_and_time_start','from_location', 'date_and_time_end','to_location','da_claimed','haltinglodging','daily_allowance','haltinglodging_amount','fare_amount','local_conveyance_other_expenses_amount','total'], order_by='idx DESC')
 
     # Format the date in the data before passing it to the template
     for row in data:
@@ -122,11 +109,59 @@ def render_child_table_template(data):
     rendered_html = template.render({"data": data})
 
     return rendered_html
+    
+
+#New code added here
 
 
 # @frappe.whitelist()
 # def get_child_table_data(parent_docname):
-#     # Replace 'YourChildTable' with the actual child table name in your doctype
-#     child_table_data = frappe.get_all('TA Chart', filters={'parent': parent_docname}, fields=['from_location', 'to_location'])
+#     # Fetching data for the first set of rows
+#     initial_data = frappe.get_all('TA Chart', filters={'parent': parent_docname}, fields=['date_and_time_start','from_location', 'date_and_time_end','to_location','da_claimed','haltinglodging','daily_allowance','haltinglodging_amount','local_conveyance_other_expenses_amount','total'], order_by='idx DESC', limit=5)
 
-#     return child_table_data
+#     # Format the date in the initial data before passing it to the template
+#     for row in initial_data:
+#         if 'date_and_time_start' in row:
+#             row['formatted_date_start'] = row['date_and_time_start'].strftime("%d-%m-%Y")
+#         if 'date_and_time_end' in row:
+#             row['formatted_date_end'] = row['date_and_time_end'].strftime("%d-%m-%Y")
+
+#     # Render the initial data using the template
+#     initial_html = render_child_table_template(initial_data)
+
+#     return initial_html
+
+# #new Code added here
+# @frappe.whitelist()
+# def get_additional_child_table_data(parent_docname, current_row_count):
+#     # Fetching additional rows based on the current_row_count
+#     additional_data = frappe.get_all(
+#         'TA Chart',
+#         filters={'parent': parent_docname},
+#         fields=['date_and_time_start', 'from_location', 'date_and_time_end', 'to_location', 'da_claimed', 'haltinglodging', 'daily_allowance', 'haltinglodging_amount', 'local_conveyance_other_expenses_amount', 'total'],
+#         order_by='idx DESC',
+#         start=current_row_count,
+#         limit=5
+#     )
+
+#     # Format the date in the additional data before passing it to the template
+#     for row in additional_data:
+#         if 'date_and_time_start' in row:
+#             row['formatted_date_start'] = row['date_and_time_start'].strftime("%d-%m-%Y")
+#         if 'date_and_time_end' in row:
+#             row['formatted_date_end'] = row['date_and_time_end'].strftime("%d-%m-%Y")
+
+#     # Render the additional data using the template
+#     additional_html = render_child_table_template(additional_data)
+
+#     return additional_html
+
+
+# def render_child_table_template(data):
+#     # Load the Jinja template
+#     template = frappe.get_template("templates/ta_child_table_template.html")
+
+#     # Render the template with the provided data
+#     rendered_html = template.render({"data": data})
+
+#     return rendered_html

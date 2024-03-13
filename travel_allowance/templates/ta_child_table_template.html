@@ -1,5 +1,3 @@
-<!-- your_app/templates/child_table_template.html -->
-
 
 <style>
   thead {
@@ -49,11 +47,15 @@
     color: #746d6d;
     font-size: 11px;
   }
-  .hide-data span{
+  /* .hide-data span{
     margin-bottom: 10px;
     visibility: hidden;
+  } */
+  
+  .arrow-img{
+    width: 25px;
+    margin-top: 7px;
   }
-
   
 
   /******** table heading CSS start here **********/
@@ -115,6 +117,31 @@
     background-color: #f2f2f2;
   }
 
+  #load-more-btn {
+    background-color: #5890FF;
+    color: #f2f2f2;
+    border: none;
+    padding :8px 10px;
+    cursor: pointer;
+    border-radius: 2px;
+    float: inline-end;
+  }
+
+  button#load-more-btn:focus{
+   outline: none;
+  }
+  #show-less-btn{
+    background-color: #5890FF;
+    color: #f2f2f2;
+    border: none;
+    padding :8px 10px;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  button#show-less-btn:focus{
+   outline: none;
+  }
+
   /* Add responsive styles */
   @media only screen and (max-width: 600px) {
       .tb-title h3 {
@@ -135,11 +162,10 @@
         border-width: 0 1px 1px 0;
         padding: 2px;
       }
-      
   }
 </style>
 
-
+<!-- Main Body start here -->
 <div class="table-title">
   <div class="tb-title">
     <h3>Travel History</h3>
@@ -160,17 +186,17 @@
       <th>To </th>
       <th>Daily Allowance</th>
       <th>Halting/Lodging</th>
+      <th>Fare Amount</th>
       <th>Local Allowance</th>
       <th>Total</th>
      
     </tr>
   </thead>
-  <tbody>
+  <tbody id="ta_chart_table_body">
     {% for index, row in enumerate(data) %}
-   
-  <tr class="row_custom_border">
-   
-      <td><span class="serial-no">{{ index + 1 }}</span></span></td>
+    <!-- <tr class="row_custom_border "> -->
+      <tr class="row_custom_border" {% if index >= 5 %}hidden{% endif %}>
+     <td><span class="serial-no">{{ index + 1 }}</span></span></td>
       <!-- For date_and_time_start -->
 <td>
   <div class="heading">
@@ -180,10 +206,11 @@
 </td>
 <td>
   <div class="heading">
-    <div class="hide-data">
+    <!-- <div class="hide-data">
       <span>hidden</span>
-    </div>
-    <div><p><i class="arrow right"></i></p></div>
+    </div> -->
+    <!-- <div><p><i class="arrow right"></i></p></div> -->
+    <div><p><img class="arrow-img" src="/files/next.png"></img></p></div>
   </div>
 </td>
 
@@ -225,16 +252,16 @@
 
 
 
-<!-- <td>
+<td>
   <div class="heading">
-    <span>Local Allowance</span>
-    <div>₹{{ row.local_conveyance_other_expenses_amount }}</div>
+    <!-- <span>Fare Amount</span> -->
+    <div>₹{{ row.fare_amount }}</div>
   </div>
-</td> -->
+</td>
 
 <td>
   <div class="heading">
-    <span>Local Allowance</span>
+    <!-- <span>Local Allowance</span> -->
     <div>₹{{ row.local_conveyance_other_expenses_amount if row.local_conveyance_other_expenses_amount is not none else 0 }}</div>
   </div>
 </td>
@@ -251,4 +278,146 @@
     {% endfor %}
   </tbody>
 </table>
+
+<div>
+  <button id="load-more-btn" onclick="loadMore()">Show More</button>
+  <button id="show-less-btn" style="display:none;" onclick="showLess()">Show Less</button>
+ </div>
 </div>
+
+<!-- <button id="load-more-btn">Load More</button> -->
+<!-- <button id="load-more-btn" onclick="loadMore()">Load More</button> -->
+<!-- <div>
+  <button id="load-more-btn" onclick="toggleRows()">Load More</button>
+</div> -->
+<!-- "Load More" and "Show Less" buttons -->
+
+
+<!-- <script>
+  let startIndex = 5; // Starting index for loading more rows
+  let rowsPerPage = 5; // Number of rows to display per click
+
+  function loadMore() {
+    let tableBody = document.getElementById('ta_chart_table_body');
+    let rows = tableBody.getElementsByTagName('tr');
+
+    for (let i = startIndex; i < startIndex + rowsPerPage && i < rows.length; i++) {
+      rows[i].removeAttribute('hidden'); // Display the next set of rows
+    }
+
+    startIndex += rowsPerPage;
+
+    // Hide the "Load More" button if all rows are displayed
+    if (startIndex >= rows.length) {
+      document.getElementById('load-more-btn').style.display = 'none';
+    }
+  }
+</script> -->
+
+
+<!-- New code added here -->
+<!-- <button id="load-more-btn" onclick="loadMore()">Load More</button>
+<button id="show-less-btn" style="display:none;" onclick="showLess()">Show Less</button>
+
+<script>
+  let startIndex = 5; // Starting index for loading more rows
+  let rowsPerPage = 5; // Number of rows to display per click
+
+  function loadMore() {
+    let tableBody = document.getElementById('ta_chart_table_body');
+    let rows = tableBody.getElementsByTagName('tr');
+
+    for (let i = startIndex; i < startIndex + rowsPerPage && i < rows.length; i++) {
+      rows[i].removeAttribute('hidden'); // Display the next set of rows
+    }
+
+    startIndex += rowsPerPage;
+
+    // Show the "Show Less" button when additional rows are displayed
+    if (startIndex < rows.length) {
+      document.getElementById('show-less-btn').style.display = 'inline-block';
+    }
+
+    // Hide the "Load More" button if all rows are displayed
+    if (startIndex >= rows.length) {
+      document.getElementById('load-more-btn').style.display = 'none';
+    }
+  }
+
+  function showLess() {
+    // Update startIndex to point to the previous set of rows
+    startIndex -= rowsPerPage;
+
+    let tableBody = document.getElementById('ta_chart_table_body');
+    let rows = tableBody.getElementsByTagName('tr');
+
+    // Hide the last set of displayed rows
+    for (let i = startIndex; i < startIndex + rowsPerPage && i < rows.length; i++) {
+      rows[i].setAttribute('hidden', 'true');
+    }
+
+    // Show the "Load More" button
+    document.getElementById('load-more-btn').style.display = 'inline-block';
+
+    // Hide the "Show Less" button if we're back to the initial state
+    if (startIndex <= 0) {
+      document.getElementById('show-less-btn').style.display = 'none';
+    }
+  }
+</script>
+ -->
+
+ 
+ <script>
+   let startIndex = 5; // Starting index for loading more rows
+   let rowsPerPage = 5; // Number of rows to display per click
+   let initialRowCount = 5; // Initial number of rows
+ 
+   function loadMore() {
+     let tableBody = document.getElementById('ta_chart_table_body');
+     let rows = tableBody.getElementsByTagName('tr');
+ 
+     for (let i = startIndex; i < startIndex + rowsPerPage && i < rows.length; i++) {
+       rows[i].removeAttribute('hidden'); // Display the next set of rows
+     }
+ 
+     startIndex += rowsPerPage;
+ 
+     // Show the "Show Less" button when additional rows are displayed
+     if (startIndex < rows.length) {
+       document.getElementById('show-less-btn').style.display = 'inline-block';
+     }
+ 
+     // Hide the "Load More" button if all rows are displayed
+     if (startIndex >= rows.length) {
+       document.getElementById('load-more-btn').style.display = 'none';
+     }
+ 
+     // Hide the "Show Less" button when only the initial set of rows is displayed
+     if (startIndex <= initialRowCount) {
+       document.getElementById('show-less-btn').style.display = 'none';
+     }
+   }
+ 
+   function showLess() {
+     // Update startIndex to point to the previous set of rows
+     startIndex -= rowsPerPage;
+ 
+     let tableBody = document.getElementById('ta_chart_table_body');
+     let rows = tableBody.getElementsByTagName('tr');
+ 
+     // Hide the last set of displayed rows
+     for (let i = startIndex; i < startIndex + rowsPerPage && i < rows.length; i++) {
+       rows[i].setAttribute('hidden', 'true');
+     }
+ 
+     // Show the "Load More" button
+     document.getElementById('load-more-btn').style.display = 'inline-block';
+ 
+     // Hide the "Show Less" button if we're back to the initial state
+     if (startIndex <= initialRowCount) {
+       document.getElementById('show-less-btn').style.display = 'none';
+     }
+   }
+ </script>
+ 
