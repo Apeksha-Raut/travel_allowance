@@ -62,6 +62,7 @@ def get_ta_total_amount(self):
                 sum(daily_allowance) as total_daily_allowance,
                 sum(haltinglodging_amount) as total_haltinglodging_amount,
                 sum(local_conveyance_other_expenses_amount) as total_local_conveyance_other_expenses,
+                sum(fare_amount) as total_fare_amount,
                 sum(total) as total_amount
             FROM `tabTA Chart`
             WHERE parent = '{self}';""",

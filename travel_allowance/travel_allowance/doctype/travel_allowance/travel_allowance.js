@@ -243,10 +243,23 @@ frappe.ui.form.on("Travel Allowance", {
                   font-weight: bold;
                   font-size: 18px;
                 }
-                .heading p{
-                  text-align:right;
+                .heading_cards p{
+                  text-align: right;
+                  margin-left: auto;
+                  color: black;
+                  font-weight: bold;
+                  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+                  font-size: medium;
                 }
-                .heading h3 {
+                .heading_cards p span{
+                  color: #3E9C35;
+                }
+
+                .heading_cards {
+                 display:flex;
+                 margin: 0 4px;
+                }
+                .heading_cards h3 {
                   color:black;
                   font-weight: 700;
                   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
@@ -259,7 +272,6 @@ frappe.ui.form.on("Travel Allowance", {
                   }   
                
                 .cards {
-          
                   display: grid;
                   row-gap: 10px;
                   grid-template-columns: repeat(2, minmax(0, 1fr)); /* Updated value */
@@ -280,11 +292,11 @@ frappe.ui.form.on("Travel Allowance", {
               </style>
             </head>
             <body>
-              <div class="heading">
+              <div class="heading_cards">
               <h3>${data.MonthName} ${data.FirstDayOfMonth} - ${
             data.MonthName
           } ${data.LastDayOfMonth}</h3>
-              <p> Total  ${data.total_amount ?? 0} </p>
+              <p> Total: <span>  ${data.total_amount ?? 0} </span></p>
              </div>
               <div class="cards">
                 <div class="card">
@@ -299,17 +311,17 @@ frappe.ui.form.on("Travel Allowance", {
                     data.total_haltinglodging_amount ?? 0
                   }</p>
                 </div>
+                
+                <div class="card">
+                  <div class="card-title">Fare Amount</div>
+                  <p class="card-content">
+                  ₹${data.total_fare_amount ?? 0}</p>
+                </div>
                 <div class="card">
                   <div class="card-title">Local Conveyance</div>
                   <p class="card-content">
                     ₹${data.total_local_conveyance_other_expenses ?? 0}
                   </p>
-                </div>
-                <div class="card">
-                  <div class="card-title">Total Amount</div>
-                  <p class="card-content" style="color:#3E9C35;">₹${
-                    data.total_amount ?? 0
-                  }</p>
                 </div>
               </div>
             </body>

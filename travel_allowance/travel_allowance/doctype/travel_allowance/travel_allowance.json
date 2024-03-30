@@ -26,7 +26,6 @@
   "phone",
   "category",
   "travel_allowance_details_section",
-  "ta_form_section",
   "outward",
   "month",
   "year",
@@ -399,10 +398,6 @@
    "label": "Purpose"
   },
   {
-   "fieldname": "ta_form_section",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "ta_chart_html",
    "fieldtype": "HTML",
    "hidden": 1,
@@ -500,7 +495,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-03-12 10:22:54.460181",
+ "modified": "2024-03-21 17:39:20.759385",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",
