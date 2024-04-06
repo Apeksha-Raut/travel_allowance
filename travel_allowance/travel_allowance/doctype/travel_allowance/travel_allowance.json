@@ -31,14 +31,9 @@
   "year",
   "from_location",
   "date_and_time_from",
+  "column_break_bbrl",
   "to_location",
   "other_to_location",
-  "return_date_and_time_to",
-  "column_break_bbrl",
-  "return",
-  "return_from_location",
-  "return_date_and_time_from",
-  "return_to_location",
   "date_and_time_to",
   "section_break_rcygo",
   "ta_mode_of_transport",
@@ -47,12 +42,17 @@
   "fare_amount",
   "upload_ticket",
   "column_break_d3fyc",
+  "purpose",
   "total_visit_time",
+  "allowances_section",
+  "check_da",
+  "check_halting",
+  "check_da_with_lodging",
+  "check_lodging",
   "da_claim",
   "halting_lodging_select",
   "input_lodging_amt",
   "upload_image_of_lodging",
-  "purpose",
   "class_city",
   "other_expenses_section",
   "other_expenses_check",
@@ -189,8 +189,7 @@
   {
    "fieldname": "da_claim",
    "fieldtype": "Data",
-   "label": "Daily Allowance Claim",
-   "read_only": 1
+   "label": "Daily Allowance Claim"
   },
   {
    "fieldname": "halting_lodging_select",
@@ -201,13 +200,10 @@
   {
    "fieldname": "daily_allowance",
    "fieldtype": "Currency",
-   "hidden": 1,
    "label": "Daily Allowance",
-   "precision": "2",
-   "read_only": 1
+   "precision": "2"
   },
   {
-   "depends_on": "eval:frappe.user.has_role('System Manager')",
    "fieldname": "employee_details_tab",
    "fieldtype": "Tab Break",
    "label": "Employee Details"
@@ -254,10 +250,8 @@
   {
    "fieldname": "halting_lodging_amount",
    "fieldtype": "Currency",
-   "hidden": 1,
    "label": "Halting/Lodging Amount",
-   "precision": "2",
-   "read_only": 1
+   "precision": "2"
   },
   {
    "depends_on": "eval:doc.da_claim || doc.halting_lodging_select",
@@ -428,34 +422,9 @@
    "mandatory_depends_on": "eval:doc.halting_lodging_select==='Lodging'"
   },
   {
-   "fieldname": "return",
-   "fieldtype": "Heading",
-   "label": "Inward Journey"
-  },
-  {
    "fieldname": "outward",
-   "fieldtype": "Heading",
-   "label": "Outward Journey"
-  },
-  {
-   "fieldname": "return_to_location",
-   "fieldtype": "Data",
-   "label": "To Location"
-  },
-  {
-   "fieldname": "return_from_location",
-   "fieldtype": "Data",
-   "label": "From Location"
-  },
-  {
-   "fieldname": "return_date_and_time_from",
-   "fieldtype": "Datetime",
-   "label": "Date And Time (From)"
-  },
-  {
-   "fieldname": "return_date_and_time_to",
-   "fieldtype": "Datetime",
-   "label": "Date and Time (To)"
+   "fieldtype": "Section Break",
+   "label": "Place & Time"
   },
   {
    "fieldname": "section_break_rcygo",
@@ -491,11 +460,41 @@
    "fieldtype": "Currency",
    "label": "Lodging amount",
    "mandatory_depends_on": "eval:doc.halting_lodging_select==='Lodging'"
+  },
+  {
+   "description": "Please Select One of the Following.",
+   "fieldname": "allowances_section",
+   "fieldtype": "Section Break",
+   "label": "Allowances"
+  },
+  {
+   "default": "0",
+   "fieldname": "check_halting",
+   "fieldtype": "Check",
+   "label": "Halting"
+  },
+  {
+   "default": "0",
+   "fieldname": "check_da",
+   "fieldtype": "Check",
+   "label": "DA"
+  },
+  {
+   "default": "0",
+   "fieldname": "check_da_with_lodging",
+   "fieldtype": "Check",
+   "label": "DA with Lodging"
+  },
+  {
+   "default": "0",
+   "fieldname": "check_lodging",
+   "fieldtype": "Check",
+   "label": "Lodging"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-03-21 17:39:20.759385",
+ "modified": "2024-04-06 15:29:58.019451",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",

@@ -55,8 +55,8 @@ frappe.ui.form.on("Travel Allowance", {
   refresh: function (frm) {
     frm.set_value("halting_lodging_amount", null);
     frm.set_value("daily_allowance", null);
-    frm.toggle_display("da_claim", false);
-    frm.toggle_display("halting_lodging_select", false);
+    // frm.toggle_display("da_claim", false);
+    // frm.toggle_display("halting_lodging_select", false);
     //frm.toggle_display("upload_image_of_lodging", false);
 
     console.log("User Roles:", frappe.user_roles);
@@ -201,6 +201,36 @@ frappe.ui.form.on("Travel Allowance", {
     //     "blue"
     //   );
     // }
+
+    // Add a change event handler to your checkbox fields
+    frm.fields_dict.check_da.$input.on("change", function () {
+      // Uncheck all other checkboxes
+      uncheckAllCheckboxes(frm);
+      // Check the current checkbox
+      frm.fields_dict.check_da.$input.prop("checked", true);
+    });
+
+    frm.fields_dict.check_halting.$input.on("change", function () {
+      uncheckAllCheckboxes(frm);
+      frm.fields_dict.check_halting.$input.prop("checked", true);
+    });
+
+    frm.fields_dict.check_da_with_lodging.$input.on("change", function () {
+      uncheckAllCheckboxes(frm);
+      frm.fields_dict.check_da_with_lodging.$input.prop("checked", true);
+    });
+
+    frm.fields_dict.check_lodging.$input.on("change", function () {
+      uncheckAllCheckboxes(frm);
+      frm.fields_dict.check_lodging.$input.prop("checked", true);
+    });
+
+    function uncheckAllCheckboxes(frm) {
+      frm.fields_dict.check_da.$input.prop("checked", false);
+      frm.fields_dict.check_halting.$input.prop("checked", false);
+      frm.fields_dict.check_da_with_lodging.$input.prop("checked", false);
+      frm.fields_dict.check_lodging.$input.prop("checked", false);
+    }
   },
 
   async populate_total_amount_html(frm) {
@@ -361,7 +391,7 @@ frappe.ui.form.on("Travel Allowance", {
     }
   },
 
-  //handle the DA Claim Allowance
+  // //handle the DA Claim Allowance
   get_da_claim(frm) {
     //frm.trigger("set_claim");
 
@@ -416,6 +446,14 @@ frappe.ui.form.on("Travel Allowance", {
         },
       });
       //}
+    }
+  },
+
+  check_da: function (frm) {
+    if (frm.doc.check_da == 1) {
+      console.log("DA Select value");
+      frm.trigger("date_and_time_to");
+      // frm.trigger("get_da_claim");
     }
   },
 
@@ -496,40 +534,40 @@ frappe.ui.form.on("Travel Allowance", {
     updateTotalAmount(frm);
   },
 
-  halting_lodging_select: function (frm) {
-    //<Taking Parameters to fetch Amount for Halting and Lodging>
-    let category = frm.doc.category; // Designation category (level 1/2/3/4/5/6/7/8/)
-    let cityClass = frm.doc.class_city; // Category of city a,b,c
-    let haltLodge = frm.doc.halting_lodging_select; // selected value for halting/lodging
+  // halting_lodging_select: function (frm) {
+  //   //<Taking Parameters to fetch Amount for Halting and Lodging>
+  //   let category = frm.doc.category; // Designation category (level 1/2/3/4/5/6/7/8/)
+  //   let cityClass = frm.doc.class_city; // Category of city a,b,c
+  //   let haltLodge = frm.doc.halting_lodging_select; // selected value for halting/lodging
 
-    if (frm.doc.from_location) {
-      if (!haltLodge) {
-        frm.set_value("daily_allowance", null);
-        frm.refresh_field("daily_allowance");
-        frappe.throw("Please Select Halting or Lodging !!");
-      } else {
-        if (haltLodge === "Halting") {
-          frm.call({
-            method: "findAllowance",
-            args: {
-              city_class: cityClass,
-              category: category,
-              halt_lodge: haltLodge,
-            },
-            callback: function (r) {
-              if (!r.exc) {
-                let halt_lodge_amount = r.message[0][`${cityClass}_class_city`];
+  //   if (frm.doc.from_location) {
+  //     if (!haltLodge) {
+  //       frm.set_value("daily_allowance", null);
+  //       frm.refresh_field("daily_allowance");
+  //       frappe.throw("Please Select Halting or Lodging !!");
+  //     } else {
+  //       if (haltLodge === "Halting") {
+  //         frm.call({
+  //           method: "findAllowance",
+  //           args: {
+  //             city_class: cityClass,
+  //             category: category,
+  //             halt_lodge: haltLodge,
+  //           },
+  //           callback: function (r) {
+  //             if (!r.exc) {
+  //               let halt_lodge_amount = r.message[0][`${cityClass}_class_city`];
 
-                frm.set_value("halting_lodging_amount", halt_lodge_amount);
-                frm.refresh_field("halting_lodging_amount");
-                updateTotalAmount(frm);
-              }
-            },
-          });
-        }
-      }
-    }
-  },
+  //               frm.set_value("halting_lodging_amount", halt_lodge_amount);
+  //               frm.refresh_field("halting_lodging_amount");
+  //               updateTotalAmount(frm);
+  //             }
+  //           },
+  //         });
+  //       }
+  //     }
+  //   }
+  // },
 
   other_expenses_check: function (frm) {
     let checkOtherExpense = frm.doc.other_expenses_check;
@@ -818,10 +856,8 @@ frappe.ui.form.on("Travel Allowance", {
   CalculateAllowances(frm) {
     /**** for getting time in hours to unhidden DA and Halting/Lodging fields *****/
     var timeString = frm.doc.total_visit_time;
-
     // Split the time string into hours, minutes, and seconds
     var timeParts = timeString.split(":");
-
     // Extract the hours from the array
     var hours = parseInt(timeParts[0]);
 
@@ -831,28 +867,28 @@ frappe.ui.form.on("Travel Allowance", {
     // frm.toggle_display("da_claim", false);
     // frm.toggle_display("halting_lodging_select", false);
     if (hours <= 12) {
-      frm.toggle_display("da_claim", true);
+      // frm.toggle_display("da_claim", true);
       console.log("less than 12 hours");
       frm.set_value("da_claim", "Half Day");
-      frm.toggle_display("halting_lodging_select", false);
-      frm.set_value("halting_lodging_amount", 0);
-      frm.toggle_display("upload_image_of_lodging", false);
+      // frm.toggle_display("halting_lodging_select", false);
+      // frm.set_value("halting_lodging_amount", 0);
+      // frm.toggle_display("upload_image_of_lodging", false);
       frm.trigger("get_da_claim");
     } else if (hours > 12 && hours <= 24) {
-      frm.toggle_display("da_claim", true);
+      // frm.toggle_display("da_claim", true);
       console.log("less than 24 hours");
       frm.set_value("da_claim", "Full Day");
-      frm.toggle_display("halting_lodging_select", false);
-      frm.toggle_display("upload_image_of_lodging", false);
-      frm.set_value("halting_lodging_amount", 0);
+      // frm.toggle_display("halting_lodging_select", false);
+      // frm.toggle_display("upload_image_of_lodging", false);
+      // frm.set_value("halting_lodging_amount", 0);
       frm.trigger("get_da_claim");
     } else if (hours > 24) {
-      frm.toggle_display("halting_lodging_select", true);
+      // frm.toggle_display("halting_lodging_select", true);
       console.log("greater than 24 hours");
-      frm.toggle_display("da_claim", false);
-      frm.set_value("da_claim", "");
-      frm.refresh_field("da_claim");
-      frm.set_value("daily_allowance", 0);
+      // frm.toggle_display("da_claim", false);
+      // frm.set_value("da_claim", "");
+      // frm.refresh_field("da_claim");
+      // frm.set_value("daily_allowance", 0);
     }
   },
 
