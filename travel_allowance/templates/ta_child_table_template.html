@@ -184,9 +184,10 @@
       <th>From </th>
       <th><span class="hidden-arrow">Hidden-arrow</span></th>
       <th>To </th>
-      <th>Daily Allowance</th>
-      <th>Halting/Lodging</th>
       <th>Fare Amount</th>
+      <th>Daily Allowance</th>
+      <th>Halting</th>
+      <th>Lodging</th>
       <th>Local Allowance</th>
       <th>Total</th>
      
@@ -237,6 +238,12 @@
 </td> -->
 <td>
   <div class="heading">
+    <!-- <span>Fare Amount</span> -->
+    <div>₹{{ row.fare_amount }}</div>
+  </div>
+</td>
+<td>
+  <div class="heading">
     {% if row.daily_allowance|default(0) | int > 0 %}
       <span>{{ row.da_claimed }}</span>
     {% endif %}
@@ -245,21 +252,24 @@
 </td>
 <td>
   <div class="heading">
-    {% if row.haltinglodging_amount|default(0) | int > 0 %}
-      <span>{{ row.haltinglodging }}</span>
+    {% if row.halting_amount|default(0) | int > 0 %}
+      <!-- <span>{{ row.halting }}</span> -->
     {% endif %}
-    <div>₹{{ row.haltinglodging_amount }}</div>
+    <div>₹{{ row.halting_amount }}</div>
   </div>
 </td>
-
-
 
 <td>
   <div class="heading">
-    <!-- <span>Fare Amount</span> -->
-    <div>₹{{ row.fare_amount }}</div>
+    {% if row.lodging_amount|default(0) | int > 0 %}
+      <!-- <span>{{ row.lodging }}</span> -->
+    {% endif %}
+    <div>₹{{ row.lodging_amount }}</div>
   </div>
 </td>
+
+
+
 
 <td>
   <div class="heading">

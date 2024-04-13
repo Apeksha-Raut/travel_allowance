@@ -45,12 +45,8 @@
   "purpose",
   "total_visit_time",
   "allowances_section",
-  "check_da",
-  "check_halting",
-  "check_da_with_lodging",
-  "check_lodging",
+  "select_allowance",
   "da_claim",
-  "halting_lodging_select",
   "input_lodging_amt",
   "upload_image_of_lodging",
   "class_city",
@@ -69,11 +65,9 @@
   "other_to",
   "section_break_yfkr",
   "daily_allowance",
-  "column_break_szyp",
-  "halting_lodging_amount",
-  "column_break_ilwy",
+  "halting_amount",
+  "lodging_amount",
   "other_expenses",
-  "column_break_xemt",
   "total_amount",
   "section_break_xfdd",
   "btn_add_ta"
@@ -187,21 +181,18 @@
    "options": "\nAuto\nPublic Transport\nTaxi"
   },
   {
+   "depends_on": "eval:doc.select_allowance === \"DA\" || doc.select_allowance === \"DA with Lodging\"",
    "fieldname": "da_claim",
    "fieldtype": "Data",
    "label": "Daily Allowance Claim"
   },
   {
-   "fieldname": "halting_lodging_select",
-   "fieldtype": "Select",
-   "label": "Halting/Lodging",
-   "options": "\nHalting\nLodging"
-  },
-  {
+   "depends_on": "eval:doc.select_allowance === \"DA\" || doc.select_allowance === \"DA with Lodging\"",
    "fieldname": "daily_allowance",
    "fieldtype": "Currency",
    "label": "Daily Allowance",
-   "precision": "2"
+   "precision": "2",
+   "read_only": 1
   },
   {
    "fieldname": "employee_details_tab",
@@ -248,20 +239,12 @@
    "mandatory_depends_on": "eval:doc.to_location=='Other'"
   },
   {
-   "fieldname": "halting_lodging_amount",
-   "fieldtype": "Currency",
-   "label": "Halting/Lodging Amount",
-   "precision": "2"
-  },
-  {
-   "depends_on": "eval:doc.da_claim || doc.halting_lodging_select",
    "fieldname": "other_expenses_section",
    "fieldtype": "Section Break",
    "label": "OTHER EXPENSES ?"
   },
   {
    "default": "0",
-   "depends_on": "eval:doc.from_location && doc.to_location && doc.date_and_time_from && doc.date_and_time_to",
    "description": "If checked , it will popup form.",
    "fieldname": "other_expenses_check",
    "fieldtype": "Check",
@@ -278,9 +261,9 @@
    "label": "Date"
   },
   {
-   "depends_on": "eval:doc.daily_allowance && doc.halting_lodging_amount",
    "fieldname": "total_amount",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Total Allowance",
    "precision": "2",
    "read_only": 1
@@ -301,7 +284,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval:doc.other_expenses_check=='1' && (doc.da_claim || doc.halting_lodging_select)",
+   "depends_on": "eval:doc.other_expenses_check=='1' ",
    "fieldname": "other_expense_details_section",
    "fieldtype": "Section Break",
    "label": "LOCAL CONVEYANCE FORM"
@@ -317,7 +300,6 @@
    "label": "TA"
   },
   {
-   "depends_on": "eval:frappe.user.has_role('System Manager')",
    "fieldname": "ta_chart",
    "fieldtype": "Table",
    "label": "TA Details",
@@ -343,23 +325,11 @@
    "label": "Total Allowances details"
   },
   {
-   "fieldname": "column_break_szyp",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_ilwy",
-   "fieldtype": "Column Break"
-  },
-  {
    "depends_on": "eval:doc.other_expenses_amount",
    "fieldname": "other_expenses",
    "fieldtype": "Data",
    "label": "Other Expenses",
    "read_only": 1
-  },
-  {
-   "fieldname": "column_break_xemt",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "month",
@@ -415,7 +385,7 @@
    "precision": "2"
   },
   {
-   "depends_on": "eval:doc.halting_lodging_select==='Lodging'",
+   "depends_on": "eval:doc.select_allowance==='Lodging' || doc.select_allowance === \"DA with Lodging\"",
    "fieldname": "upload_image_of_lodging",
    "fieldtype": "Attach Image",
    "label": "Upload Image of Lodging Bill",
@@ -455,7 +425,7 @@
    "label": "Fare Amount"
   },
   {
-   "depends_on": "eval:doc.halting_lodging_select==='Lodging'",
+   "depends_on": "eval:doc.select_allowance==='Lodging' || doc.select_allowance === \"DA with Lodging\"",
    "fieldname": "input_lodging_amt",
    "fieldtype": "Currency",
    "label": "Lodging amount",
@@ -468,33 +438,29 @@
    "label": "Allowances"
   },
   {
-   "default": "0",
-   "fieldname": "check_halting",
-   "fieldtype": "Check",
-   "label": "Halting"
+   "depends_on": "eval:doc.select_allowance === \"Halting\"",
+   "fieldname": "halting_amount",
+   "fieldtype": "Currency",
+   "label": "Halting Amount",
+   "precision": "2",
+   "read_only": 1
   },
   {
-   "default": "0",
-   "fieldname": "check_da",
-   "fieldtype": "Check",
-   "label": "DA"
+   "fieldname": "select_allowance",
+   "fieldtype": "Select",
+   "label": "Select Allowances",
+   "options": "\nDA\nHalting\nDA with Lodging\nLodging"
   },
   {
-   "default": "0",
-   "fieldname": "check_da_with_lodging",
-   "fieldtype": "Check",
-   "label": "DA with Lodging"
-  },
-  {
-   "default": "0",
-   "fieldname": "check_lodging",
-   "fieldtype": "Check",
-   "label": "Lodging"
+   "depends_on": "eval:doc.select_allowance === \"Lodging\" || doc.select_allowance === \"DA with Lodging\" ",
+   "fieldname": "lodging_amount",
+   "fieldtype": "Currency",
+   "label": "Lodging Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-04-06 15:29:58.019451",
+ "modified": "2024-04-13 15:51:27.658940",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",

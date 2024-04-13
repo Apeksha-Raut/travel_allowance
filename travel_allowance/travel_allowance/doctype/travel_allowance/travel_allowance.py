@@ -15,7 +15,6 @@ class TravelAllowance(Document):
 #     else:
 #         self.total_amount=self.daily_allowance + self.halting_lodging_amount
               
-
 def before_save(self):
     # Helper function to handle None values by replacing them with 0
     def handle_none(value):
@@ -24,10 +23,12 @@ def before_save(self):
     # Calculate total_amount with or without other_expenses_amount
     self.total_amount = (
         handle_none(self.daily_allowance)
-        + handle_none(self.halting_lodging_amount)
         + handle_none(self.fare_amount) if self.fare_amount else 0
         + handle_none(self.other_expenses_amount) if self.other_expenses_amount else 0
+        + handle_none(self.halting_amount) if self.halting_amount else 0
+        + handle_none(self.lodging_amount) if self.lodging_amount else 0
     )
+
 
 
 @frappe.whitelist()
@@ -60,7 +61,8 @@ def get_ta_total_amount(self):
                 DATE_FORMAT(MAKEDATE(EXTRACT(YEAR FROM MIN(CAST(date_and_time_start AS DATE))), 1), '%d') as FirstDayOfMonth,
                 DATE_FORMAT(LAST_DAY(MIN(CAST(date_and_time_start AS DATE))), '%d') AS LastDayOfMonth,
                 sum(daily_allowance) as total_daily_allowance,
-                sum(haltinglodging_amount) as total_haltinglodging_amount,
+                sum(halting_amount) as total_halting_amount,
+                sum(lodging_amount) as total_lodging_amount,
                 sum(local_conveyance_other_expenses_amount) as total_local_conveyance_other_expenses,
                 sum(fare_amount) as total_fare_amount,
                 sum(total) as total_amount
@@ -81,7 +83,7 @@ def get_ta_total_amount(self):
 @frappe.whitelist()
 def get_child_table_data(parent_docname):
     # Your logic to fetch data from the child table
-    data = frappe.get_all('TA Chart', filters={'parent': parent_docname}, fields=['date_and_time_start','from_location', 'date_and_time_end','to_location','da_claimed','haltinglodging','daily_allowance','haltinglodging_amount','fare_amount','local_conveyance_other_expenses_amount','total'], order_by='idx DESC')
+    data = frappe.get_all('TA Chart', filters={'parent': parent_docname}, fields=['date_and_time_start','from_location', 'date_and_time_end','to_location','da_claimed','halting_amount','lodging_amount','daily_allowance','fare_amount','local_conveyance_other_expenses_amount','total'], order_by='idx DESC')
 
     # Format the date in the data before passing it to the template
     for row in data:
