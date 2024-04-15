@@ -198,6 +198,7 @@ frappe.ui.form.on("Travel Allowance", {
     // }
   },
 
+  //  to show the data as html with Fetching the data from the backend
   async populate_total_amount_html(frm) {
     // Fetch the data from the backend
     frm.call({
@@ -335,8 +336,7 @@ frappe.ui.form.on("Travel Allowance", {
     });
   },
 
-  //Original code here
-  // handle the ta_chart table to showing data
+  // handle the ta_chart table to showing data of travel history
   async ta_chart_table_html(frm) {
     try {
       const childTableData = await frm.call({
@@ -365,15 +365,24 @@ frappe.ui.form.on("Travel Allowance", {
     let select_allowance = frm.doc.select_allowance;
     console.log("selected value of allowances:", select_allowance);
     if (select_allowance === "DA") {
+      frm.set_value("halting_amount", 0);
+      frm.set_value("lodging_amount", 0);
+      frm.set_value("input_lodging_amt", 0);
       console.log("DA Select value");
       frm.trigger("total_time_travel");
     } else if (select_allowance === "Halting") {
+      frm.set_value("daily_allowance", 0);
+      frm.set_value("lodging_amount", 0);
+      frm.set_value("input_lodging_amt", 0);
       console.log("Halting Selected value");
       frm.trigger("get_halting");
     } else if (select_allowance === "Lodging") {
+      frm.set_value("halting_amount", 0);
+      frm.set_value("daily_allowance", 0);
       console.log("Lodging Selected value");
     } else if (select_allowance === "DA with Lodging") {
       console.log("DA with Lodging Selected value");
+      frm.set_value("halting_amount", 0);
       frm.trigger("total_time_travel");
     }
   },
@@ -507,6 +516,7 @@ frappe.ui.form.on("Travel Allowance", {
     }
   },
 
+  // calculating DA on total visiting time basis
   CalculateAllowances(frm) {
     /**** for getting time in hours to unhidden DA and Halting/Lodging fields *****/
     var timeString = frm.doc.total_visit_time;
@@ -518,23 +528,31 @@ frappe.ui.form.on("Travel Allowance", {
     // Now 'hours' contains the hours from the time field
     console.log("Hours:", hours);
 
-    if (hours <= 12) {
-      // frm.toggle_display("da_claim", true);
-      console.log("less than 12 hours");
-      frm.set_value("da_claim", "Half Day");
+    // Calculate days from hours
+    var days = Math.floor(hours / 24);
+    console.log("Days:", days);
 
-      frm.trigger("get_da_claim");
-    } else if (hours > 12 && hours <= 24) {
-      // frm.toggle_display("da_claim", true);
-      console.log("less than 24 hours");
-      frm.set_value("da_claim", "Full Day");
+    // Calculate remaining hours after converting to days
+    var remainingHours = hours % 24;
 
-      frm.trigger("get_da_claim");
-    } else if (hours > 24) {
-      console.log("greater than 24 hours");
+    console.log("Remaining Hours:", remainingHours);
+
+    if (hours <= 4) {
+      console.log("Absence not exceeding 4 hours");
+      frm.set_value("da_claim", "");
+    } else if (hours > 4 && hours <= 8) {
+      console.log("Absence exceeding 4 hours but less than 8 hours");
+      frm.set_value("da_claim", "50% of DA");
+    } else if (hours > 8 && hours <= 12) {
+      console.log("Absence exceeding 8 hours but less than 12 hours");
+      frm.set_value("da_claim", "75% of DA");
+    } else if (hours > 12) {
+      console.log("Absence exceeding 12 hours");
+      frm.set_value("da_claim", "100% of DA");
     }
   },
 
+  // Calculating total time of visiting
   total_time_travel: function (frm) {
     var dateAndTimeFrom = new Date(frm.doc.date_and_time_from);
     var dateAndTimeTo = new Date(frm.doc.date_and_time_to);
