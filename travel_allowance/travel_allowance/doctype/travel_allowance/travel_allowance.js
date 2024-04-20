@@ -184,6 +184,17 @@ frappe.ui.form.on("Travel Allowance", {
       cursor: "pointer",
     });
 
+    // //(TA Add Button)adding css to button
+    // frm.fields_dict.btn_add_journey.$input.css({
+    //   "background-color": "#4CAF50",
+    //   color: "#fff",
+    //   border: "none",
+    //   padding: "8px 22px",
+    //   cursor: "pointer",
+    //   width: "100%",
+    //   "border-radius": "12px",
+    // });
+
     // Make the entire "ta_chart" child table read-only
     frm.fields_dict["ta_chart"].df.read_only = 1;
 
@@ -364,7 +375,14 @@ frappe.ui.form.on("Travel Allowance", {
   select_allowance: function (frm) {
     let select_allowance = frm.doc.select_allowance;
     console.log("selected value of allowances:", select_allowance);
-    if (select_allowance === "DA") {
+
+    if (select_allowance === "") {
+      frm.set_value("da_claim", "");
+      frm.set_value("daily_allowance", 0);
+      frm.set_value("halting_amount", 0);
+      frm.set_value("lodging_amount", 0);
+      frm.set_value("input_lodging_amt", 0);
+    } else if (select_allowance === "DA") {
       frm.set_value("halting_amount", 0);
       frm.set_value("lodging_amount", 0);
       frm.set_value("input_lodging_amt", 0);
@@ -387,11 +405,63 @@ frappe.ui.form.on("Travel Allowance", {
     }
   },
 
-  // handle the DA Claim Allowance
+  date_and_time_to(frm) {
+    //console.log(frm.doc.date_and_time_to);
+    frm.trigger("total_time_travel");
+    frm.trigger("select_allowance");
+  },
+
+  // // handle the DA Claim Allowance
+  // get_da_claim(frm) {
+  //   if (frm.doc.from_location) {
+  //     let da_category = frm.doc.da_claim; // Full Day or Half Day
+  //     let category = frm.doc.category; // Designation category(level 1/2/3/4/5/6/7/8/)
+  //     let cityClass = frm.doc.class_city; // Category of city a,b,c
+
+  //     console.log(da_category);
+  //     console.log(category);
+  //     console.log(cityClass);
+
+  //     frm.call({
+  //       method: "findAllowance",
+  //       args: {
+  //         city_class: cityClass,
+  //         category: category,
+  //         halt_lodge: "DA",
+  //       },
+  //       callback: function (r) {
+  //         if (!r.exc) {
+  //           da_amount = r.message[0][`${cityClass}_class_city`];
+  //           if (da_category == "Half Day") {
+  //             da_amount = da_amount / 2;
+  //             frm.set_value("daily_allowance", da_amount);
+  //           } else if (da_category == "Full Day") {
+  //             frm.set_value("daily_allowance", da_amount);
+  //           }
+  //         }
+  //         console.log(frm.doc.daily_allowance);
+  //         console.log(frm.doc.fare_amount);
+
+  //         let total_amount =
+  //           (frm.doc.daily_allowance || 0) +
+  //           (frm.doc.other_expenses_amount || 0) +
+  //           (frm.doc.fare_amount || 0) +
+  //           (frm.doc.halting_amount || 0) +
+  //           (frm.doc.lodging_amount || 0);
+
+  //         console.log("Total Allowance in da_claim:", total_amount);
+  //         frm.set_value("total_amount", total_amount.toFixed(2));
+  //         frm.refresh_field("total_amount");
+  //       },
+  //     });
+  //   }
+  // },
+
+  // get_da_claim function fetching DA standard amount
   get_da_claim(frm) {
     if (frm.doc.from_location) {
-      let da_category = frm.doc.da_claim; // Full Day or Half Day
-      let category = frm.doc.category; // Designation category(level 1/2/3/4/5/6/7/8/)
+      let da_category = frm.doc.da_claim; // "Nil", "Half Day", "Three Quarters Day", "Full Day", "Multiple Days"
+      let category = frm.doc.category; // Designation category (level 1/2/3/4/5/6/7/8/)
       let cityClass = frm.doc.class_city; // Category of city a,b,c
 
       console.log(da_category);
@@ -407,38 +477,61 @@ frappe.ui.form.on("Travel Allowance", {
         },
         callback: function (r) {
           if (!r.exc) {
-            // Handle the result if needed
-            //console.log(r.message); // This will contain the result from the server
-            da_amount = r.message[0][`${cityClass}_class_city`];
-            if (da_category == "Half Day") {
-              da_amount = da_amount / 2;
-              frm.set_value("daily_allowance", da_amount);
-            } else if (da_category == "Full Day") {
-              frm.set_value("daily_allowance", da_amount);
+            console.log("response", r);
+            let da_amount = r.message[0][`${cityClass}_class_city`];
+            let da_amount_final;
+            let temp_amt = 0;
+            if (da_category === "NA") {
+              da_amount = 0;
+            } else if (da_category === "Half Day") {
+              da_amount /= 2;
+            } else if (da_category === "Three Quarters Day") {
+              da_amount = (da_amount * 3) / 4;
+            } else if (da_category === "Full Day") {
+              // No change to da_amount
+            } else if (da_category === "Multiple Days") {
+              // Calculate the amount for multiple days
+              let totalVisitTime = frm.doc.total_visit_time;
+              let timeParts = totalVisitTime.split(":");
+              let hours = parseInt(timeParts[0]);
+              let days = Math.floor(hours / 24);
+              let remainingHours = hours % 24;
+
+              da_amount_final = days * da_amount;
+              console.log("da_amount in days:", da_amount_final);
+              console.log("Remaining hours:", remainingHours);
+
+              if (remainingHours > 0 && remainingHours <= 4) {
+                // No additional amount for remaining hours up to 4 hours
+              } else if (remainingHours > 4 && remainingHours < 8) {
+                // Add 50% of the daily allowance proportionally
+                temp_amt = da_amount / 2;
+                console.log("da_amount:", da_amount);
+              } else if (remainingHours >= 8 && remainingHours < 12) {
+                temp_amt = (da_amount * 3) / 4; // 75% of daily allowance for remaining hours between 8 and 12 hours
+              } else if (remainingHours >= 12 && remainingHours <= 24) {
+                temp_amt = da_amount; // Full daily allowance for remaining hours between 12 and 24 hours
+              }
             }
+
+            console.log("total DA is:", da_amount_final + temp_amt);
+            frm.set_value("daily_allowance", da_amount_final + temp_amt);
+
+            let total_amount =
+              (frm.doc.daily_allowance || 0) +
+              (frm.doc.other_expenses_amount || 0) +
+              (frm.doc.fare_amount || 0) +
+              (frm.doc.halting_amount || 0) +
+              (frm.doc.lodging_amount || 0);
+
+            console.log("Total Allowance in get_da_claim:", total_amount);
+            frm.set_value("total_amount", total_amount.toFixed(2));
+            frm.refresh_field("total_amount");
           }
-          console.log(frm.doc.daily_allowance);
-          console.log(frm.doc.fare_amount);
-
-          // console.log(frm.doc.other_expenses_amount);
-          // console.log(frm.doc.other_total_expense_amount);
-          // console.log(frm.doc.fare_amount);
-          let total_amount =
-            (frm.doc.daily_allowance || 0) +
-            (frm.doc.other_expenses_amount || 0) +
-            (frm.doc.fare_amount || 0) +
-            (frm.doc.halting_amount || 0) +
-            (frm.doc.lodging_amount || 0);
-
-          console.log("Total Allowance in da_claim:", total_amount);
-          frm.set_value("total_amount", total_amount.toFixed(2));
-          frm.refresh_field("total_amount");
         },
       });
-      //}
     }
   },
-
   get_halting: function (frm) {
     //<Taking Parameters to fetch Amount for Halting and Lodging>
     let category = frm.doc.category; // Designation category (level 1/2/3/4/5/6/7/8/)
@@ -516,43 +609,176 @@ frappe.ui.form.on("Travel Allowance", {
     }
   },
 
-  // calculating DA on total visiting time basis
+  // // calculating DA on total visiting time basis
+  // CalculateAllowances(frm) {
+  //   /**** for getting time in hours to unhidden DA and Halting/Lodging fields *****/
+  //   var timeString = frm.doc.total_visit_time;
+  //   // Split the time string into hours, minutes, and seconds
+  //   var timeParts = timeString.split(":");
+  //   // Extract the hours from the array
+  //   var hours = parseInt(timeParts[0]);
+
+  //   // Now 'hours' contains the hours from the time field
+  //   console.log("Hours:", hours);
+
+  //   // Calculate days from hours
+  //   var days = Math.floor(hours / 24);
+  //   console.log("Days:", days);
+
+  //   // Calculate remaining hours after converting to days
+  //   var remainingHours = hours % 24;
+
+  //   console.log("Remaining Hours:", remainingHours);
+
+  //   if (hours <= 4) {
+  //     console.log("Absence not exceeding 4 hours");
+  //     frm.set_value("da_claim", "");
+  //   } else if (hours > 4 && hours <= 8) {
+  //     console.log("Absence exceeding 4 hours but less than 8 hours");
+  //     frm.set_value("da_claim", "50% of DA");
+  //   } else if (hours > 8 && hours <= 12) {
+  //     console.log("Absence exceeding 8 hours but less than 12 hours");
+  //     frm.set_value("da_claim", "75% of DA");
+  //   } else if (hours > 12) {
+  //     console.log("Absence exceeding 12 hours");
+  //     frm.set_value("da_claim", "100% of DA");
+  //   }
+  // },
+
+  // CalculateAllowances(frm) {
+  //   var timeString = frm.doc.total_visit_time;
+  //   var timeParts = timeString.split(":");
+  //   var hours = parseInt(timeParts[0]);
+
+  //   // Calculate days from hours
+  //   var days = Math.floor(hours / 24); // Get the whole number of days
+  //   var remainingHours = hours % 24; // Get the remaining hours after subtracting full days
+
+  //   // Loop through each full day
+  //   for (var i = 0; i < days; i++) {
+  //     // Set DA claim for full days
+  //     setDAClaimForDay(i + 1, 24);
+  //   }
+
+  //   // Calculate DA claim for the last partial day
+  //   if (remainingHours <= 4) {
+  //     console.log("Last day: Absence not exceeding 4 hours");
+  //     frm.set_value("da_claim", "");
+  //   } else if (remainingHours > 4 && remainingHours <= 8) {
+  //     console.log("Last day: Absence exceeding 4 hours but less than 8 hours");
+  //     frm.set_value("da_claim", "50% of DA");
+  //   } else if (remainingHours > 8 && remainingHours <= 12) {
+  //     console.log("Last day: Absence exceeding 8 hours but less than 12 hours");
+  //     frm.set_value("da_claim", "75% of DA");
+  //   } else if (remainingHours > 12) {
+  //     console.log("Last day: Absence exceeding 12 hours");
+  //     frm.set_value("da_claim", "100% of DA");
+  //   }
+
+  //   function setDAClaimForDay(dayNumber, dayHours) {
+  //     if (dayHours <= 4) {
+  //       console.log("Day " + dayNumber + ": Absence not exceeding 4 hours");
+  //     } else if (dayHours > 4 && dayHours <= 8) {
+  //       console.log(
+  //         "Day " +
+  //           dayNumber +
+  //           ": Absence exceeding 4 hours but less than 8 hours"
+  //       );
+  //     } else if (dayHours > 8 && dayHours <= 12) {
+  //       console.log(
+  //         "Day " +
+  //           dayNumber +
+  //           ": Absence exceeding 8 hours but less than 12 hours"
+  //       );
+  //     } else if (dayHours > 12) {
+  //       console.log("Day " + dayNumber + ": Absence exceeding 12 hours");
+  //     }
+  //   }
+  // },
+
   CalculateAllowances(frm) {
-    /**** for getting time in hours to unhidden DA and Halting/Lodging fields *****/
     var timeString = frm.doc.total_visit_time;
-    // Split the time string into hours, minutes, and seconds
     var timeParts = timeString.split(":");
-    // Extract the hours from the array
     var hours = parseInt(timeParts[0]);
 
-    // Now 'hours' contains the hours from the time field
     console.log("Hours:", hours);
 
-    // Calculate days from hours
-    var days = Math.floor(hours / 24);
-    console.log("Days:", days);
-
-    // Calculate remaining hours after converting to days
-    var remainingHours = hours % 24;
-
-    console.log("Remaining Hours:", remainingHours);
-
     if (hours <= 4) {
-      console.log("Absence not exceeding 4 hours");
-      frm.set_value("da_claim", "");
-    } else if (hours > 4 && hours <= 8) {
-      console.log("Absence exceeding 4 hours but less than 8 hours");
-      frm.set_value("da_claim", "50% of DA");
-    } else if (hours > 8 && hours <= 12) {
-      console.log("Absence exceeding 8 hours but less than 12 hours");
-      frm.set_value("da_claim", "75% of DA");
-    } else if (hours > 12) {
-      console.log("Absence exceeding 12 hours");
-      frm.set_value("da_claim", "100% of DA");
+      frm.set_value("da_claim", "NA");
+      frm
+        .get_field("da_claim")
+        .set_description(
+          "<span style='color:red;'>You are not eligible for Daily Allowance (DA) as the total visit time is less than or equal to 4 hours.</span>"
+        );
+      frm.trigger("get_da_claim");
+    } else if (hours > 4 && hours < 8) {
+      frm.set_value("da_claim", "Half Day");
+      frm
+        .get_field("da_claim")
+        .set_description(
+          "<span style='color:green;'>You are eligible for 50% of Daily Allowance (DA) as the total visit time exceeds 4 hours but is less than 8 hours.</span>"
+        );
+      frm.trigger("get_da_claim");
+    } else if (hours >= 8 && hours < 12) {
+      frm.set_value("da_claim", "Three Quarters Day");
+      frm
+        .get_field("da_claim")
+        .set_description(
+          "<span style='color:blue;'>You are eligible for 75% of Daily Allowance (DA) as the total visit time exceeds 8 hours but is less than 12 hours.</span>"
+        );
+      frm.trigger("get_da_claim");
+    } else if (hours >= 12 && hours <= 24) {
+      frm.set_value("da_claim", "Full Day");
+      frm
+        .get_field("da_claim")
+        .set_description(
+          "<span style='color:purple;'>You are eligible for 100% of Daily Allowance (DA) as the total visit time exceeds 12 hours.</span>"
+        );
+      frm.trigger("get_da_claim");
+    } else if (hours > 24) {
+      frm.set_value("da_claim", "Multiple Days");
+      frm
+        .get_field("da_claim")
+        .set_description(
+          "<span style='color:#8b8b07;'>You are eligible for Daily Allowance (DA) for multiple days as the total visit time exceeds 24 hours.</span>"
+        );
+      frm.trigger("get_da_claim");
     }
   },
 
-  // Calculating total time of visiting
+  // CalculateAllowances(frm) {
+  //   var timeString = frm.doc.total_visit_time;
+  //   var timeParts = timeString.split(":");
+  //   var hours = parseInt(timeParts[0]);
+
+  //   // Calculate days from hours
+  //   var days = Math.floor(hours / 24); // Get the whole number of days
+  //   var remainingHours = hours % 24; // Get the remaining hours after subtracting full days
+
+  //   var da_claim = "";
+
+  //   // Loop through each full day
+  //   for (var i = 0; i < days; i++) {
+  //     // Set DA claim for full days
+  //     da_claim += "Day " + (i + 1) + ": 100% of DA, "; // Add comma between multiple days
+  //   }
+
+  //   // Calculate DA claim for the last partial day
+  //   if (remainingHours <= 4) {
+  //     da_claim += "";
+  //   } else if (remainingHours > 4 && remainingHours <= 8) {
+  //     da_claim += "Day " + (days + 1) + ": 50% of DA";
+  //   } else if (remainingHours > 8 && remainingHours <= 12) {
+  //     da_claim += "Day " + (days + 1) + ": 75% of DA";
+  //   } else if (remainingHours > 12) {
+  //     da_claim += "Day " + (days + 1) + ": 100% of DA";
+  //   }
+
+  //   frm.set_value("da_claim", da_claim);
+  //   frm.refresh_field("da_claim");
+  //   frm.trigger("get_da_claim"); // Call get_da_claim function after setting da_claim
+  // },
+
   total_time_travel: function (frm) {
     var dateAndTimeFrom = new Date(frm.doc.date_and_time_from);
     var dateAndTimeTo = new Date(frm.doc.date_and_time_to);
@@ -566,16 +792,50 @@ frappe.ui.form.on("Travel Allowance", {
         var formattedTime = formatTimeDifference(timeDifference);
         console.log("total time is", formattedTime); // Add this line for debugging
         frm.set_value("total_visit_time", formattedTime);
+        // Calculate days and remaining hours
+        let timeParts = formattedTime.split(":");
+        let hours = parseInt(timeParts[0]);
+        let days = Math.floor(hours / 24);
+        let remainingHours = hours % 24;
+
+        // Construct the message based on days and remaining hours
+        var message = "";
+        if (days > 0) {
+          message += `${days} day`;
+          if (days !== 1) {
+            message += "s"; // Add 's' only if days is not equal to 1
+          }
+          if (remainingHours > 0) {
+            message += " and ";
+          }
+        }
+        if (remainingHours > 0) {
+          message += `${remainingHours} hour`;
+          if (remainingHours !== 1) {
+            message += "s"; // Add 's' only if remainingHours is not equal to 1
+          }
+        }
+        message += "."; // Add a period at the end of the sentence
+
+        // Show total visiting time to the user
+        var totalVisitTimeText = `<div style="font-weight: bold; color: #007bff;">Your total visiting time is ${message}</div>`;
+        // Replace the 'your_div_id' with the ID of the div where you want to display the text
+        $(frm.wrapper).find("#total_time_text").html(totalVisitTimeText);
       } else {
         // Clear total_visit_time if dates are not in order
         frappe.msgprint(
           __("End date and time should be greater than start date and time.")
         );
+
+        // Clear the div content
+        $(frm.wrapper).find("#total_time_text").html("");
         frm.set_value("total_visit_time", "");
         frm.set_value("date_and_time_to", "");
         // frm.set_value("date_and_time_from", "");
       }
     } else {
+      // Clear the div if either date or time is invalid
+      $(frm.wrapper).find("#total_time_text").html("");
       frm.set_value("total_visit_time", ""); // Clear total_visit_time if either date or time is invalid
     }
 
@@ -688,6 +948,16 @@ frappe.ui.form.on("Travel Allowance", {
     updateFareAmount(frm);
   },
 
+  // // button function to add data in TA child table
+  // btn_add_journey: function (frm) {
+  //   console.log("button add journey");
+  //   let fromLoc = frm.doc.from_location;
+  //   let dateTimeFrom = frm.doc.date_and_time_from;
+  //   let toLoc = frm.doc.to_location;
+  //   let OtherLoc = frm.doc.other_to_location;
+
+  // },
+
   /* Saving data into child table TA */
   btn_add_ta: function (frm) {
     let taFromLocation = frm.doc.from_location;
@@ -763,8 +1033,10 @@ frappe.ui.form.on("Travel Allowance", {
       frm.set_value("daily_allowance", 0);
       frm.set_value("ta_mode_of_transport", null);
       frm.set_value("fare_amount", 0);
+      frm.set_value("upload_ticket", null);
       frm.set_value("class_city", null);
       frm.set_value("total_visit_time", null);
+      frm.set_value("do_you_want_apply_allowances", 0);
       frm.set_value("select_allowance", null);
       frm.set_value("total_amount", 0);
       frm.set_value("halting_amount", 0);
@@ -784,12 +1056,6 @@ frappe.ui.form.on("Travel Allowance", {
 
       frm.refresh_field("Travel Allowance");
     }
-  },
-
-  // button function to add data in TA child table
-  btn_save_form: function (frm) {
-    // let btnSave = 1;
-    // console.log("button value=", btnSave);
   },
 });
 
