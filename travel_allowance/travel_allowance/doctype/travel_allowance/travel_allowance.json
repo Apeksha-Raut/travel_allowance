@@ -42,7 +42,6 @@
   "ta_mode_of_transport",
   "travel_km",
   "ticket_amount",
-  "fare_amount",
   "upload_ticket",
   "section_break_eapp7",
   "total_visit_time",
@@ -68,11 +67,13 @@
   "column_break_lnab",
   "other_to",
   "section_break_yfkr",
+  "fare_amount",
   "daily_allowance",
-  "halting_amount",
   "lodging_amount",
+  "halting_amount",
   "other_expenses",
   "total_amount",
+  "html_total_allowances_details",
   "section_break_xfdd",
   "btn_add_ta"
  ],
@@ -155,7 +156,7 @@
   {
    "fieldname": "purpose",
    "fieldtype": "Small Text",
-   "label": "Purpose",
+   "label": "PURPOSE",
    "max_height": "100px"
   },
   {
@@ -196,6 +197,7 @@
    "depends_on": "eval:doc.select_allowance === \"DA\" || doc.select_allowance === \"DA with Lodging\"",
    "fieldname": "daily_allowance",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Daily Allowance",
    "precision": "2"
   },
@@ -248,14 +250,14 @@
   {
    "fieldname": "other_expenses_section",
    "fieldtype": "Section Break",
-   "label": "OTHER EXPENSES ?"
+   "label": "LOCAL EXPENSES "
   },
   {
    "default": "0",
    "description": "If checked , it will popup form.",
    "fieldname": "other_expenses_check",
    "fieldtype": "Check",
-   "label": "Do you have other Expenses details ?"
+   "label": "Do you have Local Expenses details ?"
   },
   {
    "fieldname": "other_expenses_amount",
@@ -324,7 +326,7 @@
    "depends_on": "eval:doc.from_location && doc.to_location && doc.date_and_time_from && doc.date_and_time_to",
    "fieldname": "btn_add_ta",
    "fieldtype": "Button",
-   "label": "Add+"
+   "label": "Save"
   },
   {
    "fieldname": "section_break_yfkr",
@@ -335,6 +337,7 @@
    "depends_on": "eval:doc.other_expenses_amount",
    "fieldname": "other_expenses",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Other Expenses",
    "read_only": 1
   },
@@ -409,7 +412,7 @@
   },
   {
    "fieldname": "column_break_d3fyc",
-   "fieldtype": "Column Break"
+   "fieldtype": "Section Break"
   },
   {
    "depends_on": "eval:doc.ta_mode_of_transport==='Bus' || doc.ta_mode_of_transport==='Train'",
@@ -429,6 +432,7 @@
    "depends_on": "eval:doc.ta_mode_of_transport==='Bike' || doc.ta_mode_of_transport==='Car' || doc.ta_mode_of_transport==='Bus' || doc.ta_mode_of_transport==='Train'",
    "fieldname": "fare_amount",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Fare Amount"
   },
   {
@@ -443,12 +447,13 @@
    "description": "Please Select One of the Following.",
    "fieldname": "allowances_section",
    "fieldtype": "Section Break",
-   "label": "Allowances"
+   "label": "ALLOWANCES"
   },
   {
    "depends_on": "eval:doc.select_allowance === \"Halting\"",
    "fieldname": "halting_amount",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Halting Amount",
    "precision": "2"
   },
@@ -462,6 +467,7 @@
    "depends_on": "eval:doc.select_allowance === \"Lodging\" || doc.select_allowance === \"DA with Lodging\" ",
    "fieldname": "lodging_amount",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Lodging Amount"
   },
   {
@@ -470,7 +476,6 @@
   },
   {
    "default": "0",
-   "depends_on": "eval:doc.from_location && doc.to_location",
    "fieldname": "do_you_want_apply_allowances",
    "fieldtype": "Check",
    "label": "Do you want apply Allowances?"
@@ -483,11 +488,16 @@
    "fieldname": "total_time_text",
    "fieldtype": "HTML",
    "options": "<div id=\"total_time_text\"></div>\n"
+  },
+  {
+   "fieldname": "html_total_allowances_details",
+   "fieldtype": "HTML",
+   "label": "Total Allowances details"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-04-20 13:29:03.008502",
+ "modified": "2024-04-26 12:45:03.011670",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",
