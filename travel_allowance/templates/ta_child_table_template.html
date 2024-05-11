@@ -142,6 +142,16 @@
    outline: none;
   }
 
+  .delete-icon {
+    cursor: pointer;
+    width: 28px;
+    height: 28px;/* Adjust the height of the image */
+}
+
+.delete-icon:hover {
+    cursor: pointer;
+}
+
   /* Add responsive styles */
   @media only screen and (max-width: 600px) {
       .tb-title h3 {
@@ -190,7 +200,7 @@
       <th>Lodging</th>
       <th>Local Allowance</th>
       <th>Total</th>
-     
+      <th>Action</th> <!-- Added a new column for the delete button -->
     </tr>
   </thead>
   <tbody id="ta_chart_table_body">
@@ -199,6 +209,7 @@
       <tr class="row_custom_border" {% if index >= 5 %}hidden{% endif %}>
      <td><span class="serial-no">{{ index + 1 }}</span></span></td>
       <!-- For date_and_time_start -->
+ 
 <td>
   <div class="heading">
     <span>{{ row.formatted_date_start }}</span>
@@ -285,7 +296,9 @@
         </div>
       </td>
       <!-- Add more columns as needed -->
-     
+      <td>
+        <img class="delete-icon" src="/files/trash.png" alt="Delete" onclick="deleteRow(this)">
+    </td>
     </tr>
     {% endfor %}
   </tbody>
@@ -349,5 +362,39 @@
        document.getElementById('show-less-btn').style.display = 'none';
      }
    }
+
+
+function deleteRow(element) {
+  console.log("delete button");
+  console.log("element:",element);
+
+  // Get the row element
+  var row = element.parentNode.parentNode;
+
+  // Get the index of the row
+  var rowIndex = Array.prototype.indexOf.call(row.parentNode.children, row);
+
+  // Get the current form
+  var frm = frappe.cur_frm;
+  console.log(frm);
+
+  // Confirm the deletion
+  if (confirm("Are you sure you want to delete this row?")) {
+    // Check if frm object and its properties are defined
+    if (frm && frm.doctype && frm.docname) {
+      // Remove the child row from the TA Chart table
+      frappe.model.remove_from_locals(frm.doctype, frm.docname, "ta_chart", rowIndex);
+
+      // Remove the row from the table in the UI
+      row.remove();
+
+      // Save the form
+      frm.save();
+    } else {
+      console.error("Form object or its properties are undefined.");
+    }
+  }
+}
+
  </script>
  

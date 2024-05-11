@@ -20,7 +20,7 @@ def before_save(self):
     self.total_amount = (
         handle_none(self.daily_allowance)
         + handle_none(self.fare_amount) if self.fare_amount else 0
-        + handle_none(self.other_expenses_amount) if self.other_expenses_amount else 0
+        + handle_none(self.other_expenses) if self.other_expenses else 0
         + handle_none(self.halting_amount) if self.halting_amount else 0
         + handle_none(self.lodging_amount) if self.lodging_amount else 0
     )
@@ -91,6 +91,12 @@ def get_ta_total_amount(self):
 
 #     return render_child_table_template(data)
 
+@frappe.whitelist()
+def get_local_amount(parent_docname):
+    # Fetch data from the child table including the 'other_location' field
+    data = frappe.get_all('TA Chart', filters={'parent': parent_docname}, fields=['date_and_time_start','from_location', 'date_and_time_end','to_location','da_claimed','halting_amount','lodging_amount','daily_allowance','fare_amount','local_conveyance_other_expenses_amount','total', 'other_location'], order_by='idx DESC')
+    
+    return data
 
 @frappe.whitelist()
 def get_child_table_data(parent_docname):
