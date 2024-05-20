@@ -27,32 +27,41 @@
   "phone",
   "category",
   "travel_allowance_details_section",
-  "outward",
   "month",
   "year",
+  "que_is_local",
+  "check_yes",
+  "check_no",
+  "is_local_conveyance_select",
+  "outward",
   "from_location",
   "date_and_time_from",
   "column_break_bbrl",
   "to_location",
   "other_to_location",
+  "local_to_location",
   "date_and_time_to",
   "total_time_text",
   "no_of_days",
   "section_break_rcygo",
   "purpose",
   "column_break_d3fyc",
+  "local_mode_of_travel",
   "ta_mode_of_transport",
+  "column_break_6eifm",
+  "other_expenses",
   "travel_km",
   "ticket_amount",
   "upload_ticket",
   "section_break_eapp7",
   "total_visit_time",
-  "section_break_uypy0",
-  "do_you_want_apply_allowances",
   "allowances_section",
+  "do_you_want_apply_allowances",
   "select_allowance",
   "da_claim",
+  "da_claim_text_description",
   "input_lodging_amt",
+  "day_stay_lodge",
   "upload_image_of_lodging",
   "class_city",
   "other_expenses_section",
@@ -74,8 +83,8 @@
   "daily_allowance",
   "lodging_amount",
   "halting_amount",
-  "other_expenses",
   "total_amount",
+  "section_break_osomx",
   "html_total_allowances_details",
   "section_break_xfdd",
   "btn_add_ta"
@@ -138,25 +147,25 @@
    "label": "Date And Time (From)"
   },
   {
-   "description": "<span style=\"color: red; font-weight: bold;\">Note:</span> <span style=\"color: green;\">Enter the time you left the destination, after completing your work there.</span>",
    "fieldname": "date_and_time_to",
    "fieldtype": "Datetime",
    "label": "Date And Time (To)"
   },
   {
-   "description": "Source",
    "fieldname": "from_location",
    "fieldtype": "Data",
-   "label": "From Location"
+   "label": "From Location "
   },
   {
-   "description": "Destination",
+   "depends_on": "eval:doc.check_no=='1' ",
+   "description": "<span style=\"color: green; font-size: 14px;\"><b>Destination</b></span>",
    "fieldname": "to_location",
    "fieldtype": "Link",
    "label": "To Location",
    "options": "City Category"
   },
   {
+   "depends_on": "eval:doc.check_yes=='1' || doc.check_no=='1'",
    "fieldname": "purpose",
    "fieldtype": "Small Text",
    "label": "PURPOSE",
@@ -194,6 +203,7 @@
    "depends_on": "eval:doc.select_allowance === \"DA\" || doc.select_allowance === \"DA with Lodging\"",
    "fieldname": "da_claim",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Daily Allowance Claim"
   },
   {
@@ -254,6 +264,7 @@
    "depends_on": "eval:doc.from_location && doc.to_location && doc.date_and_time_from && doc.date_and_time_to ",
    "fieldname": "other_expenses_section",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "LOCAL EXPENSES "
   },
   {
@@ -261,6 +272,7 @@
    "description": "If checked , it will popup form.",
    "fieldname": "other_expenses_check",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Do you have Local Expenses details ?"
   },
   {
@@ -313,6 +325,7 @@
    "label": "TA"
   },
   {
+   "depends_on": "eval:frappe.user.has_role('System Manager');",
    "fieldname": "ta_chart",
    "fieldtype": "Table",
    "label": "TA Details",
@@ -327,7 +340,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval:doc.from_location && doc.to_location && doc.date_and_time_from && doc.date_and_time_to",
+   "depends_on": "eval:doc.check_yes=='1' || doc.check_no=='1'",
    "fieldname": "btn_add_ta",
    "fieldtype": "Button",
    "label": "Save"
@@ -335,12 +348,14 @@
   {
    "fieldname": "section_break_yfkr",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Total Allowances details"
   },
   {
    "fieldname": "other_expenses",
-   "fieldtype": "Data",
-   "label": "Other Expenses"
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Local Expense Amount"
   },
   {
    "fieldname": "month",
@@ -377,6 +392,7 @@
    "fieldtype": "HTML"
   },
   {
+   "depends_on": "eval:doc.check_no=='1' ",
    "fieldname": "ta_mode_of_transport",
    "fieldtype": "Select",
    "label": "Mode of Transport",
@@ -387,6 +403,7 @@
    "fieldname": "travel_km",
    "fieldtype": "Float",
    "label": "Kilometer of Travelling",
+   "mandatory_depends_on": "eval:doc.ta_mode_of_transport==='Bike' || doc.ta_mode_of_transport==='Car' ",
    "precision": "2"
   },
   {
@@ -394,9 +411,10 @@
    "fieldname": "upload_image_of_lodging",
    "fieldtype": "Attach Image",
    "label": "Upload Image of Lodging Bill",
-   "mandatory_depends_on": "eval:doc.halting_lodging_select==='Lodging'"
+   "mandatory_depends_on": "eval:doc.select_allowance==='Lodging' || doc.select_allowance === \"DA with Lodging\""
   },
   {
+   "depends_on": "eval:doc.check_yes=='1' || doc.check_no=='1'",
    "fieldname": "outward",
    "fieldtype": "Section Break",
    "label": "Place & Time"
@@ -406,8 +424,10 @@
    "fieldtype": "Section Break"
   },
   {
+   "depends_on": "eval:doc.check_yes=='1' || doc.check_no=='1'",
    "fieldname": "column_break_d3fyc",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Travel Expense"
   },
   {
    "depends_on": "eval:doc.ta_mode_of_transport==='Bus' || doc.ta_mode_of_transport==='Train'",
@@ -421,7 +441,8 @@
    "description": "The ticket amount should match the amount shown in the uploaded ticket image.",
    "fieldname": "ticket_amount",
    "fieldtype": "Currency",
-   "label": "Ticket Amount"
+   "label": "Ticket Amount",
+   "mandatory_depends_on": "eval:doc.ta_mode_of_transport==='Bus' || doc.ta_mode_of_transport==='Train'"
   },
   {
    "depends_on": "eval:doc.ta_mode_of_transport==='Bike' || doc.ta_mode_of_transport==='Car' || doc.ta_mode_of_transport==='Bus' || doc.ta_mode_of_transport==='Train'",
@@ -435,14 +456,14 @@
    "fieldname": "input_lodging_amt",
    "fieldtype": "Currency",
    "label": "Lodging amount",
-   "mandatory_depends_on": "eval:doc.halting_lodging_select==='Lodging'"
+   "mandatory_depends_on": "eval:doc.select_allowance==='Lodging' || doc.select_allowance === \"DA with Lodging\""
   },
   {
-   "depends_on": "eval:doc.do_you_want_apply_allowances=='1' ",
+   "depends_on": "eval:doc.from_location && doc.to_location && doc.date_and_time_from && doc.date_and_time_to  && doc.ta_mode_of_transport",
    "description": "Please Select One of the Following.",
    "fieldname": "allowances_section",
    "fieldtype": "Section Break",
-   "label": "ALLOWANCES"
+   "label": "Allowances"
   },
   {
    "depends_on": "eval:doc.select_allowance === \"Halting\"",
@@ -453,9 +474,12 @@
    "precision": "2"
   },
   {
+   "depends_on": "eval:doc.do_you_want_apply_allowances=='1'",
+   "description": "Please Select One of the Following.",
    "fieldname": "select_allowance",
    "fieldtype": "Select",
    "label": "Select Allowances",
+   "mandatory_depends_on": " ",
    "options": "\nDA\nHalting\nDA with Lodging\nLodging"
   },
   {
@@ -471,14 +495,10 @@
   },
   {
    "default": "0",
-   "depends_on": "eval:doc.from_location && doc.to_location && doc.date_and_time_from && doc.date_and_time_to ",
+   "depends_on": "eval:doc.from_location && doc.to_location && doc.date_and_time_from && doc.date_and_time_to  && doc.ta_mode_of_transport",
    "fieldname": "do_you_want_apply_allowances",
    "fieldtype": "Check",
    "label": "Do you want apply Allowances?"
-  },
-  {
-   "fieldname": "section_break_uypy0",
-   "fieldtype": "Section Break"
   },
   {
    "fieldname": "total_time_text",
@@ -486,15 +506,10 @@
    "options": "<div id=\"total_time_text\"></div>\n"
   },
   {
+   "depends_on": "eval:doc.check_yes==\"1\" || doc.check_no==\"1\"",
    "fieldname": "html_total_allowances_details",
    "fieldtype": "HTML",
    "label": "Total Allowances details"
-  },
-  {
-   "fieldname": "no_of_days",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "No. of days"
   },
   {
    "fieldname": "btn_local_add",
@@ -504,6 +519,7 @@
   {
    "fieldname": "local_conveyance_tab",
    "fieldtype": "Tab Break",
+   "hidden": 1,
    "label": "Local Conveyance & Other Expenses"
   },
   {
@@ -511,11 +527,77 @@
    "fieldtype": "Table",
    "label": "Local Conveyance & Other Expenses",
    "options": "Local Conveyance"
+  },
+  {
+   "fieldname": "section_break_osomx",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_6eifm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "da_claim_text_description",
+   "fieldtype": "HTML"
+  },
+  {
+   "depends_on": "eval:doc.select_allowance==='Lodging' || doc.select_allowance === \"DA with Lodging\"",
+   "fieldname": "day_stay_lodge",
+   "fieldtype": "Data",
+   "label": "How many days did you stay in the lodge?",
+   "mandatory_depends_on": "eval:doc.select_allowance==='Lodging' || doc.select_allowance === \"DA with Lodging\""
+  },
+  {
+   "default": "0",
+   "description": "Please check one of the following.",
+   "fieldname": "que_is_local",
+   "fieldtype": "Section Break",
+   "label": "Local Conveyance Entry?"
+  },
+  {
+   "default": "0",
+   "fieldname": "check_yes",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Yes"
+  },
+  {
+   "default": "0",
+   "fieldname": "check_no",
+   "fieldtype": "Check",
+   "label": "No"
+  },
+  {
+   "fieldname": "is_local_conveyance_select",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Is Local Conveyance?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.check_yes=='1' ",
+   "fieldname": "local_mode_of_travel",
+   "fieldtype": "Select",
+   "label": "Mode Of Transport",
+   "options": "\nAuto\nPublic Transport\nTaxi"
+  },
+  {
+   "depends_on": "eval:doc.check_yes=='1' ",
+   "description": "<span style=\"color: green; font-size: 14px;\"><b>Local Destination </b></span>",
+   "fieldname": "local_to_location",
+   "fieldtype": "Data",
+   "label": "To location"
+  },
+  {
+   "fieldname": "no_of_days",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "No. of days"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-05-09 17:37:14.090914",
+ "modified": "2024-05-18 11:35:48.030674",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",
