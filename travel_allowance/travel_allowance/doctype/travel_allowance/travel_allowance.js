@@ -56,6 +56,13 @@ frappe.ui.form.on("Travel Allowance", {
     frm.trigger("select_allowance");
   },
 
+  // onload: function (frm) {
+  //   // Check if the form is being accessed as a workspace
+  //   if (window.location.pathname === "/app/create-ta") {
+  //     window.location.href =
+  //       "http://10.52.10.10/app/travel-allowance/new-travel-allowance-";
+  //   }
+  // },
   refresh: function (frm) {
     frm.set_value("total_amount", 0);
     frm.set_value("other_expenses", 0);
@@ -64,6 +71,8 @@ frappe.ui.form.on("Travel Allowance", {
 
     //var isEmp = (frappe.user_roles || []).includes("Employee");
     var isEmp = frappe.user.has_role("Employee");
+
+    frm.trigger("custom_css");
 
     //remove save button
     if (isEmp) {
@@ -82,6 +91,8 @@ frappe.ui.form.on("Travel Allowance", {
       let eid = user.match(/\d+/)[0];
       frm.set_value("employee_id", eid);
       let empid = frm.doc.employee_id;
+
+      frm.trigger("populate_empty_record_html");
 
       // Getting Employee Designation
       frappe.db
@@ -180,9 +191,9 @@ frappe.ui.form.on("Travel Allowance", {
       });
 
       frm.set_value("total_amount", "");
+
       frm.trigger("populate_total_amount_html");
       frm.trigger("ta_chart_table_html");
-      frm.trigger("custom_css");
     }
 
     // frm.fields_dict.ta_chart.grid.wrapper.on(
@@ -262,16 +273,16 @@ frappe.ui.form.on("Travel Allowance", {
     });
 
     //(Local Add Button)adding css to button
-    frm.fields_dict.btn_local_add.$input.css({
-      "background-color": "#4CAF50",
-      color: "#fff",
-      border: "none",
-      padding: "8px 22px",
-      cursor: "pointer",
-      width: "100%",
-      "border-radius": "8px",
-      "margin-top": " 23px",
-    });
+    // frm.fields_dict.btn_local_add.$input.css({
+    //   "background-color": "#4CAF50",
+    //   color: "#fff",
+    //   border: "none",
+    //   padding: "8px 22px",
+    //   cursor: "pointer",
+    //   width: "100%",
+    //   "border-radius": "8px",
+    //   "margin-top": " 23px",
+    // });
 
     // //Make the entire "ta_chart" child table read-only
     // frm.fields_dict["ta_chart"].df.read_only = 1;
@@ -280,9 +291,67 @@ frappe.ui.form.on("Travel Allowance", {
     frm.refresh_fields();
   },
 
+  async populate_empty_record_html(frm) {
+    let html = `<!DOCTYPE html>
+        <html lang="en">
+            <head>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <style>
+                    .main-title {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;           
+                        border-radius: 8px;                         
+                        margin-bottom: 20px;
+                    }
+
+                    .title {
+                        color: black;
+                        font-weight: 700;
+                        font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+                    }
+
+                    .btn_create {
+                        background-color: rgb(11 104 106);
+                        color: white;
+                        border: none;
+                        padding: 8px 15px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-size: 18px;
+                        font-weight: bold;
+                    }
+
+                    .btn_create:hover {
+                        background-color: rgb(11 104 106);
+                    }
+
+                    .btn_create:focus {
+                        outline: none;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="main-title">
+                    <span class="title"><h3>No records created for the current month. Click the "Create" button to add a new record.</h3></span>
+                    <span><button id="createBtn" class="btn_create">Create +</button></span>
+                </div>
+                <script>
+                    document.getElementById('createBtn').addEventListener('click', function() {
+                        document.getElementById('travel-allowance-travel_allowance_details_section-tab').click();
+                    });
+                </script>
+            </body>
+        </html>`;
+
+    // Set the above `html` as Summary HTML
+    frm.set_df_property("total_amount_summary", "options", html);
+  },
+
   //  to show the data as html with Fetching the data from the backend
   async populate_total_amount_html(frm) {
     // Fetch the data from the backend
+
     frm.call({
       method: "get_ta_total_amount",
       args: {
@@ -292,12 +361,50 @@ frappe.ui.form.on("Travel Allowance", {
         if (!r.exc) {
           const data = r.message;
           console.log(data);
+
+          console.log(data.docname);
+
           // Generate HTML
           let html = `<!DOCTYPE html>
           <html lang="en">
             <head>
               <meta name="viewport" content="width=device-width, initial-scale=1.0" />
               <style>
+
+              .main-title {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;           
+                border-radius: 8px;                         
+                margin-bottom: 20px;
+              }
+        
+           .title {
+              color: black;
+              font-weight: 700;
+              font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+            }
+            
+        
+            .btn_create {
+              background-color: rgb(11 104 106);
+              color: white;
+              border: none;
+              padding: 8px 15px;
+              border-radius: 5px;
+              cursor: pointer;
+              font-size: 18px;
+              font-weight: bold;
+          
+            }
+        
+            .btn_create:hover {
+                background-color: rgb(11 104 106); /* Darken button background on hover */
+            }
+            .btn_create:focus {
+              outline:none;
+          }
+
                 .cards {
                   
                   margin: 0 auto;
@@ -314,6 +421,9 @@ frappe.ui.form.on("Travel Allowance", {
                   padding: 16px;
                 } 
 
+                .btn_create{
+                  float:right;
+                }
                 .card-title {
                   font-size: 16px;
                 }
@@ -370,10 +480,17 @@ frappe.ui.form.on("Travel Allowance", {
               </style>
             </head>
             <body>
+            <div class="main-title">
+              <span class="title"><h3>Expense Report for <b>${
+                data.MonthName
+              }</b></h3></span>
+              <span> <button id="createBtn" class="btn_create">Create +</button></span>
+            </div>
               <div class="heading_cards">
               <h3>${data.MonthName} ${data.FirstDayOfMonth} - ${
             data.MonthName
           } ${data.LastDayOfMonth}</h3>
+         
               <p> Total: <span>  ${data.total_amount ?? 0} </span></p>
              </div>
               <div class="cards">
@@ -406,6 +523,14 @@ frappe.ui.form.on("Travel Allowance", {
                 </div>
 
               </div>
+
+              <script>
+              document.getElementById('createBtn').addEventListener('click', function() {
+                  document.getElementById('travel-allowance-travel_allowance_details_section-tab').click();
+              });
+          </script>
+             
+
             </body>
           </html> `;
 
@@ -581,19 +706,10 @@ frappe.ui.form.on("Travel Allowance", {
       "description",
       '<span style="color: green; font-size: 14px;"><b>Local Source</b></span>'
     );
-    frm.set_df_property("date_and_time_to", "description", "");
-
-    // Change the field type of "to_location" to "Data" and clear its options
-    frm.set_df_property("to_location", "fieldtype", "Data");
-    frm.set_df_property("to_location", "options", "");
 
     // Hide the "total_time_text" field
     frm.set_df_property("total_time_text", "hidden", 1);
 
-    // if (frm.doc.to_location === "Other") {
-    //   frm.set_value("to_location", "");
-    //   // frm.set_df_property("other_to_location", "hidden", 1);
-    // }
     frm.set_df_property("travel_km", "hidden", 1);
     frm.set_df_property("ticket_amount", "hidden", 1);
     frm.set_df_property("upload_ticket", "hidden", 1);
@@ -624,14 +740,6 @@ frappe.ui.form.on("Travel Allowance", {
     // unhidden the allowances_section field
     frm.set_df_property("allowances_section", "hidden", 0);
 
-    frm.set_df_property(
-      "date_and_time_to",
-      "description",
-      '<span style="color: red; font-size:14px;"><b>Note:</b></span> <span style="color: green;font-size:14px;"><b>Enter the time you left the destination, after completing your work there.</b></span>'
-    );
-    // // Restore the original properties of the "to_location" field
-    // frm.set_df_property("to_location", "fieldtype", "Link"); // Set the field type back to "Link"
-    // frm.set_df_property("to_location", "options", "City Category"); // Set the options back to "Location"
     frm.trigger("refresh");
     frm.trigger("ta_mode_of_transport");
   },
@@ -669,6 +777,7 @@ frappe.ui.form.on("Travel Allowance", {
 
     if (select_allowance === "") {
       frm.set_value("da_claim", "");
+      // frm.set_value("da_claim_text_description", "");
       frm.set_value("daily_allowance", "");
       frm.set_value("halting_amount", "");
       frm.set_value("lodging_amount", "");
@@ -681,12 +790,16 @@ frappe.ui.form.on("Travel Allowance", {
       frm.trigger("total_time_travel");
       frm.trigger("CalculateAllowances");
     } else if (select_allowance === "Halting") {
+      frm.set_value("da_claim", "");
+      // frm.set_value("da_claim_text_description", "");
       frm.set_value("daily_allowance", "");
       frm.set_value("lodging_amount", "");
       frm.set_value("input_lodging_amt", "");
       console.log("Halting Selected value");
       frm.trigger("get_halting");
     } else if (select_allowance === "Lodging") {
+      frm.set_value("da_claim", "");
+      // frm.set_df_property("da_claim_text_description", "");
       frm.set_value("halting_amount", "");
       frm.set_value("daily_allowance", "");
       console.log("Lodging Selected value");
@@ -878,6 +991,7 @@ frappe.ui.form.on("Travel Allowance", {
     let lodge = "Lodging"; // selected value for halting
 
     let days = frm.doc.day_stay_lodge;
+
     if (frm.doc.from_location) {
       if (lodge === "Lodging") {
         frm.call({
@@ -1176,6 +1290,7 @@ frappe.ui.form.on("Travel Allowance", {
 
   ticket_amount: function (frm) {
     frm.set_value("fare_amount", frm.doc.ticket_amount);
+    updateFareAmount(frm);
     // console.log("Ticket amount:", frm.doc.ticket_amount);
   },
 
@@ -1295,6 +1410,7 @@ frappe.ui.form.on("Travel Allowance", {
     let taToLocation = frm.doc.to_location;
     let localToLocation = frm.doc.local_to_location;
     let tadateTimeTo = frm.doc.date_and_time_to;
+    let localDateTimeTo = frm.doc.local_date_and_time_to;
     let taPurpose = frm.doc.purpose;
     let taTotalTime = frm.doc.total_visit_time;
     let taClassCity = frm.doc.class_city;
@@ -1324,6 +1440,10 @@ frappe.ui.form.on("Travel Allowance", {
         frappe.throw("Please fill your Destination Location");
       } else if (!taPurpose) {
         frappe.throw("Please fill your Reason of travelling");
+      } else if (!localmodeofTravel) {
+        frappe.throw("Please Select Mode of Transport");
+      } else if (!localExpense) {
+        frappe.throw("Please Enter the amount");
       } else {
         let row = frm.add_child("ta_chart", {
           month: taMonth,
@@ -1332,7 +1452,7 @@ frappe.ui.form.on("Travel Allowance", {
           from_location: taFromLocation,
           date_and_time_start: tadateTimeFrom,
           to_location: localToLocation,
-          date_and_time_end: tadateTimeTo,
+          date_and_time_end: localDateTimeTo,
           purpose: taPurpose,
           mode_of_transport: localmodeofTravel,
           local_conveyance_other_expenses_amount: localExpense,
@@ -1346,7 +1466,7 @@ frappe.ui.form.on("Travel Allowance", {
         frm.set_value("from_location", null);
         frm.set_value("date_and_time_from", null);
         frm.set_value("local_to_location", null);
-        frm.set_value("date_and_time_to", null);
+        frm.set_value("local_date_and_time_to", null);
         frm.set_value("purpose", null);
         frm.set_value("local_mode_of_travel", null);
         frm.set_value("other_expenses", null);
@@ -1425,10 +1545,21 @@ frappe.ui.form.on("Travel Allowance", {
         frm.set_value("total_amount", 0);
         frm.set_value("class_city", null);
         frm.set_value("total_visit_time", null);
+        frm.set_value("day_stay_lodge", null);
 
         frm.refresh_fields("Travel Allowance");
       }
     }
+  },
+
+  after_save: function (frm) {
+    // Trigger the click event on the "TA History" tab link
+    // document.getElementById("travel-allowance-ta_tab-tab").click();
+
+    // Refresh the screen after 3 seconds (adjust the delay as needed)
+    setTimeout(function () {
+      window.location.reload();
+    }, 2000); // 2000 milliseconds = 2 seconds
   },
 });
 
@@ -1443,6 +1574,7 @@ function updateFareAmount(frm) {
     frm.set_df_property("ticket_amount", "hidden", 0);
     frm.set_df_property("upload_ticket", "hidden", 0);
     fareAmount = frm.doc.ticket_amount;
+    console.log("fare Amount on select Bus And Train is:", fareAmount);
   } else if (modeValue === "Bike") {
     frm.set_value("ticket_amount", 0);
     frm.set_df_property("travel_km", "hidden", 0);

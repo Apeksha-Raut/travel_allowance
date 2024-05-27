@@ -1,4 +1,3 @@
-
 <style>
   thead {
     border: 2px solid #ccc;
@@ -8,25 +7,24 @@
     width: 100%;
     border-collapse: collapse;
     margin: 10px 0;
-    border-radius: 1px ;
+    border-radius: 1px;
     color: black;
   }
- 
+
   th,
   td {
     border: none;
     padding: 15px 0;
     text-align: center;
-    font-weight: bold;
   }
-  .heading div{
+  .heading div {
     font-size: 13px;
-  } 
+  }
   th {
     background-color: #f2f2f2;
   }
- 
-   /* Custom border for a specific row */
+
+  /* Custom border for a specific row */
   .row_custom_border {
     border: 2px solid #ccc; /* Adjust color and thickness as needed */
     border-radius: 10px; /* Adjust the border-radius value as needed */
@@ -39,11 +37,11 @@
     border-radius: 50%;
     padding: 15px 20px;
   }
-  .total-amt{
-    color: #3E9C35;
+  .total-amt {
+    color: #3e9c35;
     font-weight: bold;
   }
-  .heading span{
+  .heading span {
     color: #746d6d;
     font-size: 11px;
   }
@@ -51,18 +49,17 @@
     margin-bottom: 10px;
     visibility: hidden;
   } */
-  
-  .arrow-img{
+
+  .arrow-img {
     width: 25px;
     margin-top: 7px;
   }
-  
 
   /******** table heading CSS start here **********/
   .pagination {
     display: inline-block;
   }
-          
+
   .pagination a {
     color: black;
     float: left;
@@ -75,24 +72,24 @@
     margin: 0 6px;
     font-weight: bold;
   }
-          
+
   .pagination a.active {
     background-color: #4caf50;
     color: white;
     border: 1px solid #4caf50;
   }
-             
-  .pagination a:hover:not(.active) {                 
+
+  .pagination a:hover:not(.active) {
     background-color: #ddd;
   }
-                
+
   .table-title {
     display: flex;
     align-items: center;
     margin-top: 18px;
     gap: 10px;
   }
-          
+
   .tb-title h3 {
     display: inline-block;
     margin: 0; /* Remove default margin for inline elements */
@@ -112,66 +109,67 @@
     -webkit-transform: rotate(-45deg);
   }
 
-  span.hidden-arrow{
+  span.hidden-arrow {
     visibility: hidden;
     background-color: #f2f2f2;
   }
 
   #load-more-btn {
-    background-color: #5890FF;
+    background-color: rgb(11 104 106);
     color: #f2f2f2;
     border: none;
-    padding :8px 10px;
+    padding: 8px 10px;
     cursor: pointer;
-    border-radius: 2px;
+    border-radius: 5px;
     float: inline-end;
+    font-size: 14px;
   }
 
-  button#load-more-btn:focus{
-   outline: none;
+  button#load-more-btn:focus {
+    outline: none;
   }
-  #show-less-btn{
-    background-color: #5890FF;
+  #show-less-btn {
+    background-color: #5890ff;
     color: #f2f2f2;
     border: none;
-    padding :8px 10px;
+    padding: 8px 10px;
     cursor: pointer;
     border-radius: 2px;
   }
-  button#show-less-btn:focus{
-   outline: none;
+  button#show-less-btn:focus {
+    outline: none;
   }
 
   .delete-icon {
     cursor: pointer;
     width: 28px;
-    height: 28px;/* Adjust the height of the image */
-}
+    height: 28px; /* Adjust the height of the image */
+  }
 
-.delete-icon:hover {
+  .delete-icon:hover {
     cursor: pointer;
-}
+  }
 
   /* Add responsive styles */
   @media only screen and (max-width: 600px) {
-      .tb-title h3 {
-        font-size: 14px;
-      }
-      td {
-        font-weight: 600;
-        font-size: 8px;
-      }
+    .tb-title h3 {
+      font-size: 14px;
+    }
+    td {
+      font-weight: 600;
+      font-size: 8px;
+    }
 
-      .heading span {
-         font-size: 6px;
-      }
-      .serial-no {
-        padding: 4px 8px;
-      }
-     .arrow {
-        border-width: 0 1px 1px 0;
-        padding: 2px;
-      }
+    .heading span {
+      font-size: 6px;
+    }
+    .serial-no {
+      padding: 4px 8px;
+    }
+    .arrow {
+      border-width: 0 1px 1px 0;
+      padding: 2px;
+    }
   }
 </style>
 
@@ -186,215 +184,185 @@
   </div> -->
 </div>
 
-<div style="overflow-x: auto;">
-<table>
-  <thead>
-    <tr>
-      <th>Sr. No.</th>
-      <th>From </th>
-      <th><span class="hidden-arrow">Hidden-arrow</span></th>
-      <th>To </th>
-      <th>Fare Amount</th>
-      <th>Daily Allowance</th>
-      <th>Halting</th>
-      <th>Lodging</th>
-      <th>Local Allowance</th>
-      <th>Total</th>
-      <!-- <th>Action</th> Added a new column for the delete button -->
-    </tr>
-  </thead>
-  <tbody id="ta_chart_table_body">
-    {% for index, row in enumerate(data) %}
-    <!-- <tr class="row_custom_border "> -->
-      <tr class="row_custom_border" {% if index >= 5 %}hidden{% endif %}>
-     <td><span class="serial-no">{{ index + 1 }}</span></span></td>
-      <!-- For date_and_time_start -->
- 
-<td>
-  <div class="heading">
-    <span>{{ row.formatted_date_start }}</span>
-    <div>{{ row.from_location }}</div>
-  </div>
-</td>
-<td>
-  <div class="heading">
-    <!-- <div class="hide-data">
-      <span>hidden</span>
-    </div> -->
-    <!-- <div><p><i class="arrow right"></i></p></div> -->
-    <div>
-      <img class="arrow-img" src="/files/next.png"></img>
-    </div>
-  </div>
-</td>
+<div style="overflow-x: auto">
+  <table>
+    <thead>
+      <tr>
+        <th>Sr. No.</th>
+        <th>Is Local Conveyance</th>
+        <th>From Location</th>
+        <th>Date and Time Start</th>
+        <th>To Location</th>
+        <th>Date and Time End</th>
 
-<!-- For date_and_time_end -->
-<td>
-  <div class="heading">
-    <span>{{ row.formatted_date_end }}</span>
-    <div>{{ row.to_location }}</div>
-  </div>
-</td>
-<!-- <td>
-  <div class="heading">
-    <span>{{ row.da_claimed }}</span>
-    <div>₹{{ row.daily_allowance }}</div>
-  </div>
-</td>
-<td>
-  <div class="heading">
-    <span>{{ row.haltinglodging }}</span>
-    <div>₹{{ row.haltinglodging_amount }}</div>
-  </div>
-</td> -->
-<td>
-  <div class="heading">
-    <!-- <span>Fare Amount</span> -->
-    <div>₹{{ row.fare_amount }}</div>
-  </div>
-</td>
-<td>
-  <div class="heading">
-    {% if row.daily_allowance|default(0) | int > 0 %}
-      <span>{{ row.da_claimed }}</span>
-    {% endif %}
-    <div>₹{{ row.daily_allowance }}</div>
-  </div>
-</td>
-<td>
-  <div class="heading">
-    {% if row.halting_amount|default(0) | int > 0 %}
-      <!-- <span>{{ row.halting }}</span> -->
-    {% endif %}
-    <div>₹{{ row.halting_amount }}</div>
-  </div>
-</td>
+        <th>Purpose</th>
+        <!--<th>Total Visit Hour</th>
+        <th>City Class</th>-->
+        <th>Mode of Transport</th>
+        <th>Travel KM</th>
+        <th>Fare Amt</th>
+        <!--<th>DA Claimed</th>-->
+        <th>DA</th>
+        <th>Halting Amt</th>
+        <th>Lodging Amt</th>
+        <th>Local Expense Amt</th>
+        <th>Total</th>
+        <!-- <th>Month</th>
+        <th>Year</th> 
+        <th>Uploaded Ticket Image</th>
+        <th>Uploaded Lodging Bill Image</th>
+        <th>Day Stay Lodge</th>-->
+      </tr>
+    </thead>
+    <tbody id="ta_chart_table_body">
+      {% for index, row in enumerate(data) %}
+      <tr class="row_custom_border {{ 'hidden' if index >= 5 else '' }}">
+        <td>{{ index + 1 }}</td>
+        <td>{{ row.local_conveyance }}</td>
+        <td>{{ row.from_location }}</td>
+        <td>{{ row.formatted_date_start }}</td>
+        <td>{{ row.to_location }}</td>
+        <td>{{ row.formatted_date_end }}</td>
 
-<td>
-  <div class="heading">
-    {% if row.lodging_amount|default(0) | int > 0 %}
-      <!-- <span>{{ row.lodging }}</span> -->
-    {% endif %}
-    <div>₹{{ row.lodging_amount }}</div>
+        <td>{{ row.purpose }}</td>
+        <!--<td>{{ row.total_visit_hour }}</td>
+        <td>{{ row.city_class }}</td>-->
+        <td>{{ row.mode_of_transport }}</td>
+        <td>{{ row.kilometer_of_travelling }}</td>
+        <td>₹{{ row.fare_amount }}</td>
+        <!-- <td>{{ row.da_claimed }}</td>-->
+        <td>₹{{ row.daily_allowance }}</td>
+        <td>₹{{ row.halting_amount }}</td>
+        <td>₹{{ row.lodging_amount }}</td>
+        <td>₹{{ row.local_conveyance_other_expenses_amount }}</td>
+        <td class="total-amt">₹{{ row.total }}</td>
+        <!--
+        <td>{{ row.month }}</td>
+        <td>{{ row.year }}</td> 
+       
+        <td>
+          <img
+            src="{{ row.uploaded_ticket_image }}"
+            alt="Ticket Image"
+            width="50"
+          />
+        </td>
+        <td>
+          <img
+            src="{{ row.uploaded_lodging_bill_image }}"
+            alt="Lodging Bill Image"
+            width="50"
+          />
+        </td>
+        <td>{{ row.day_stay_lodge }}</td>
+        -->
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div>
+    <button id="load-more-btn" onclick="loadMore()">Show More</button>
+    <button id="show-less-btn" style="display: none" onclick="showLess()">
+      Show Less
+    </button>
   </div>
-</td>
-
-
-
-
-<td>
-  <div class="heading">
-    <!-- <span>Local Allowance</span> -->
-    <div>₹{{ row.local_conveyance_other_expenses_amount if row.local_conveyance_other_expenses_amount is not none else 0 }}</div>
-  </div>
-</td>
-
-      <td >
-        <div class="heading">
-          <!-- <span>Total</span> -->
-            <div class="total-amt">₹{{ row.total  }}</div>
-        </div>
-      </td>
-      <!-- Add more columns as needed -->
-      <!-- <td>
-        <img class="delete-icon" src="/files/trash.png" alt="Delete" onclick="deleteRow(this)">
-      </td> -->
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
-<div>
-  <button id="load-more-btn" onclick="loadMore()">Show More</button>
-  <button id="show-less-btn" style="display:none;" onclick="showLess()">Show Less</button>
- </div>
 </div>
 
- 
- <script>
-   let startIndex = 5; // Starting index for loading more rows
-   let rowsPerPage = 5; // Number of rows to display per click
-   let initialRowCount = 5; // Initial number of rows
- 
-   function loadMore() {
-     let tableBody = document.getElementById('ta_chart_table_body');
-     let rows = tableBody.getElementsByTagName('tr');
- 
-     for (let i = startIndex; i < startIndex + rowsPerPage && i < rows.length; i++) {
-       rows[i].removeAttribute('hidden'); // Display the next set of rows
-     }
- 
-     startIndex += rowsPerPage;
- 
-     // Show the "Show Less" button when additional rows are displayed
-     if (startIndex < rows.length) {
-       document.getElementById('show-less-btn').style.display = 'inline-block';
-     }
- 
-     // Hide the "Load More" button if all rows are displayed
-     if (startIndex >= rows.length) {
-       document.getElementById('load-more-btn').style.display = 'none';
-     }
- 
-     // Hide the "Show Less" button when only the initial set of rows is displayed
-     if (startIndex <= initialRowCount) {
-       document.getElementById('show-less-btn').style.display = 'none';
-     }
-   }
- 
-   function showLess() {
-     // Update startIndex to point to the previous set of rows
-     startIndex -= rowsPerPage;
- 
-     let tableBody = document.getElementById('ta_chart_table_body');
-     let rows = tableBody.getElementsByTagName('tr');
- 
-     // Hide the last set of displayed rows
-     for (let i = startIndex; i < startIndex + rowsPerPage && i < rows.length; i++) {
-       rows[i].setAttribute('hidden', 'true');
-     }
- 
-     // Show the "Load More" button
-     document.getElementById('load-more-btn').style.display = 'inline-block';
- 
-     // Hide the "Show Less" button if we're back to the initial state
-     if (startIndex <= initialRowCount) {
-       document.getElementById('show-less-btn').style.display = 'none';
-     }
-   }
+<script>
+  let startIndex = 5; // Starting index for loading more rows
+  let rowsPerPage = 5; // Number of rows to display per click
+  let initialRowCount = 5; // Initial number of rows
 
+  function loadMore() {
+    let tableBody = document.getElementById("ta_chart_table_body");
+    let rows = tableBody.getElementsByTagName("tr");
 
-function deleteRow(element) {
-  console.log("delete button");
-  console.log("element:",element);
+    for (
+      let i = startIndex;
+      i < startIndex + rowsPerPage && i < rows.length;
+      i++
+    ) {
+      rows[i].removeAttribute("hidden"); // Display the next set of rows
+    }
 
-  // Get the row element
-  var row = element.parentNode.parentNode;
+    startIndex += rowsPerPage;
 
-  // Get the index of the row
-  var rowIndex = Array.prototype.indexOf.call(row.parentNode.children, row);
+    // Show the "Show Less" button when additional rows are displayed
+    if (startIndex < rows.length) {
+      document.getElementById("show-less-btn").style.display = "inline-block";
+    }
 
-  // Get the current form
-  var frm = frappe.cur_frm;
-  console.log(frm);
+    // Hide the "Load More" button if all rows are displayed
+    if (startIndex >= rows.length) {
+      document.getElementById("load-more-btn").style.display = "none";
+    }
 
-  // Confirm the deletion
-  if (confirm("Are you sure you want to delete this row?")) {
-    // Check if frm object and its properties are defined
-    if (frm && frm.doctype && frm.docname) {
-      // Remove the child row from the TA Chart table
-      frappe.model.remove_from_locals(frm.doctype, frm.docname, "ta_chart", rowIndex);
-
-      // Remove the row from the table in the UI
-      row.remove();
-
-      // Save the form
-      frm.save();
-    } else {
-      console.error("Form object or its properties are undefined.");
+    // Hide the "Show Less" button when only the initial set of rows is displayed
+    if (startIndex <= initialRowCount) {
+      document.getElementById("show-less-btn").style.display = "none";
     }
   }
-}
 
- </script>
- 
+  function showLess() {
+    // Update startIndex to point to the previous set of rows
+    startIndex -= rowsPerPage;
+
+    let tableBody = document.getElementById("ta_chart_table_body");
+    let rows = tableBody.getElementsByTagName("tr");
+
+    // Hide the last set of displayed rows
+    for (
+      let i = startIndex;
+      i < startIndex + rowsPerPage && i < rows.length;
+      i++
+    ) {
+      rows[i].setAttribute("hidden", "true");
+    }
+
+    // Show the "Load More" button
+    document.getElementById("load-more-btn").style.display = "inline-block";
+
+    // Hide the "Show Less" button if we're back to the initial state
+    if (startIndex <= initialRowCount) {
+      document.getElementById("show-less-btn").style.display = "none";
+    }
+  }
+
+  function deleteRow(element) {
+    console.log("delete button");
+    console.log("element:", element);
+
+    // Get the row element
+    var row = element.parentNode.parentNode;
+
+    // Get the index of the row
+    var rowIndex = Array.prototype.indexOf.call(row.parentNode.children, row);
+
+    // Get the current form
+    var frm = frappe.cur_frm;
+    console.log(frm);
+
+    // Confirm the deletion
+    if (confirm("Are you sure you want to delete this row?")) {
+      // Check if frm object and its properties are defined
+      if (frm && frm.doctype && frm.docname) {
+        // Remove the child row from the TA Chart table
+        frappe.model.remove_from_locals(
+          frm.doctype,
+          frm.docname,
+          "ta_chart",
+          rowIndex
+        );
+
+        // Remove the row from the table in the UI
+        row.remove();
+
+        // Save the form
+        frm.save();
+      } else {
+        console.error("Form object or its properties are undefined.");
+      }
+    }
+  }
+</script>

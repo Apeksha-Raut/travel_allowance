@@ -41,6 +41,7 @@
   "other_to_location",
   "local_to_location",
   "date_and_time_to",
+  "local_date_and_time_to",
   "total_time_text",
   "no_of_days",
   "section_break_rcygo",
@@ -57,9 +58,11 @@
   "total_visit_time",
   "allowances_section",
   "do_you_want_apply_allowances",
+  "section_break_nzvqs",
   "select_allowance",
   "da_claim",
   "da_claim_text_description",
+  "column_break_j5tui",
   "input_lodging_amt",
   "day_stay_lodge",
   "upload_image_of_lodging",
@@ -139,7 +142,7 @@
   {
    "fieldname": "travel_allowance_details_section",
    "fieldtype": "Tab Break",
-   "label": "Travel Allowance Form"
+   "label": "Create TA"
   },
   {
    "fieldname": "date_and_time_from",
@@ -147,6 +150,8 @@
    "label": "Date And Time (From)"
   },
   {
+   "depends_on": "eval:doc.check_no=='1' ",
+   "description": "<span style=\"color: red; font-size: 14px;\"><b>Note:</b></span> <span style=\"color: green; font-size: 14px;\"><b>Enter the time you left the destination, after completing your work there.</b></span>",
    "fieldname": "date_and_time_to",
    "fieldtype": "Datetime",
    "label": "Date And Time (To)"
@@ -319,10 +324,9 @@
    "fieldtype": "HTML"
   },
   {
-   "depends_on": "eval:doc.total_amount",
    "fieldname": "ta_tab",
    "fieldtype": "Tab Break",
-   "label": "TA"
+   "label": "TA History"
   },
   {
    "depends_on": "eval:frappe.user.has_role('System Manager');",
@@ -392,7 +396,7 @@
    "fieldtype": "HTML"
   },
   {
-   "depends_on": "eval:doc.check_no=='1' ",
+   "depends_on": "eval:doc.check_no=='1' && doc.from_location  && doc.to_location",
    "fieldname": "ta_mode_of_transport",
    "fieldtype": "Select",
    "label": "Mode of Transport",
@@ -479,7 +483,7 @@
    "fieldname": "select_allowance",
    "fieldtype": "Select",
    "label": "Select Allowances",
-   "mandatory_depends_on": " ",
+   "mandatory_depends_on": "eval:doc.do_you_want_apply_allowances=='1'",
    "options": "\nDA\nHalting\nDA with Lodging\nLodging"
   },
   {
@@ -537,11 +541,13 @@
    "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval:doc.select_allowance === \"DA\" || doc.select_allowance === \"DA with Lodging\"",
    "fieldname": "da_claim_text_description",
    "fieldtype": "HTML"
   },
   {
    "depends_on": "eval:doc.select_allowance==='Lodging' || doc.select_allowance === \"DA with Lodging\"",
+   "description": "Input Days in Number Only",
    "fieldname": "day_stay_lodge",
    "fieldtype": "Data",
    "label": "How many days did you stay in the lodge?",
@@ -549,7 +555,7 @@
   },
   {
    "default": "0",
-   "description": "Please check one of the following.",
+   "description": " <p style=\"color: black;\">Please choose an option:</p>\n    <p style=\"color: black;\"><strong>Yes</strong> - Fill out a Local Conveyance entry.</p>\n    <p style=\"color: black;\"><strong>No</strong> - Proceed to the main Travel Allowance (TA) entry.</p>",
    "fieldname": "que_is_local",
    "fieldtype": "Section Break",
    "label": "Local Conveyance Entry?"
@@ -593,11 +599,26 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "No. of days"
+  },
+  {
+   "depends_on": "eval:doc.check_yes=='1' ",
+   "fieldname": "local_date_and_time_to",
+   "fieldtype": "Datetime",
+   "label": "Date And Time (To)"
+  },
+  {
+   "fieldname": "section_break_nzvqs",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_j5tui",
+   "fieldtype": "Column Break"
   }
  ],
+ "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-05-18 11:35:48.030674",
+ "modified": "2024-05-27 11:56:26.203521",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",
@@ -629,6 +650,7 @@
    "write": 1
   }
  ],
+ "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []
