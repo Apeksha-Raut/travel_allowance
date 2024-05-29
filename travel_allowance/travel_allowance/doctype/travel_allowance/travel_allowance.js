@@ -360,12 +360,21 @@ frappe.ui.form.on("Travel Allowance", {
       callback: function (r) {
         if (!r.exc) {
           const data = r.message;
-          console.log(data);
+          console.log("Total Amount html:", data);
 
-          console.log(data.docname);
+          // console.log(data.docname);
 
-          // Generate HTML
-          let html = `<!DOCTYPE html>
+          if (
+            data &&
+            (data.total_amount !== null ||
+              data.total_daily_allowance !== null ||
+              data.total_fare_amount !== null ||
+              data.total_halting_amount !== null ||
+              data.total_lodging_amount !== null ||
+              data.total_local_conveyance_other_expenses !== null)
+          ) {
+            // Generate HTML
+            let html = `<!DOCTYPE html>
           <html lang="en">
             <head>
               <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -488,8 +497,8 @@ frappe.ui.form.on("Travel Allowance", {
             </div>
               <div class="heading_cards">
               <h3>${data.MonthName} ${data.FirstDayOfMonth} - ${
-            data.MonthName
-          } ${data.LastDayOfMonth}</h3>
+              data.MonthName
+            } ${data.LastDayOfMonth}</h3>
          
               <p> Total: <span>  ${data.total_amount ?? 0} </span></p>
              </div>
@@ -534,8 +543,12 @@ frappe.ui.form.on("Travel Allowance", {
             </body>
           </html> `;
 
-          // Set the above `html` as Summary HTML
-          frm.set_df_property("total_amount_summary", "options", html);
+            // Set the above `html` as Summary HTML
+            frm.set_df_property("total_amount_summary", "options", html);
+          } else {
+            // Call populate_empty_record_html if data is null or all relevant fields are null
+            frm.trigger("populate_empty_record_html");
+          }
         } else {
           frappe.msgprint("Error fetching total amounts");
         }
@@ -555,6 +568,7 @@ frappe.ui.form.on("Travel Allowance", {
 
       if (!childTableData.exc) {
         const html = childTableData.message;
+
         frm.set_df_property("ta_chart_table_summary", "options", html);
       } else {
         frappe.msgprint(

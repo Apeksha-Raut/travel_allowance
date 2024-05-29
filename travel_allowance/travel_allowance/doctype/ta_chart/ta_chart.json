@@ -25,7 +25,8 @@
   "month",
   "year",
   "uploaded_ticket_image",
-  "uploaded_lodging_bill_image"
+  "uploaded_lodging_bill_image",
+  "day_stay_lodge"
  ],
  "fields": [
   {
@@ -74,7 +75,7 @@
   {
    "columns": 1,
    "fieldname": "daily_allowance",
-   "fieldtype": "Data",
+   "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Daily Allowance"
   },
@@ -102,14 +103,14 @@
   {
    "columns": 1,
    "fieldname": "local_conveyance_other_expenses_amount",
-   "fieldtype": "Data",
+   "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Other Expenses Amount"
   },
   {
    "columns": 1,
    "fieldname": "fare_amount",
-   "fieldtype": "Data",
+   "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Fare Amount"
   },
@@ -126,14 +127,14 @@
   {
    "columns": 1,
    "fieldname": "halting_amount",
-   "fieldtype": "Data",
+   "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Halting Amount"
   },
   {
    "columns": 1,
    "fieldname": "lodging_amount",
-   "fieldtype": "Data",
+   "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Lodging Amount"
   },
@@ -149,19 +150,24 @@
   },
   {
    "fieldname": "uploaded_ticket_image",
-   "fieldtype": "Data",
+   "fieldtype": "Attach Image",
    "label": "Uploaded Ticket Image"
   },
   {
    "fieldname": "uploaded_lodging_bill_image",
-   "fieldtype": "Data",
+   "fieldtype": "Attach Image",
    "label": "Uploaded Lodging bill image"
+  },
+  {
+   "fieldname": "day_stay_lodge",
+   "fieldtype": "Data",
+   "label": "Day stay in Lodge"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-05-18 12:22:52.327915",
+ "modified": "2024-05-29 13:40:01.146739",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "TA Chart",

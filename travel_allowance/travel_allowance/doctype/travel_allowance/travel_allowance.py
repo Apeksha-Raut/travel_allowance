@@ -127,6 +127,7 @@ def get_child_table_data(parent_docname, month=None, year=None):
     data = frappe.get_all('TA Chart', 
                           filters=filters, 
                           fields=[
+                              'name',
                               'local_conveyance',
                               'date_and_time_start',
                               'from_location',
@@ -152,13 +153,18 @@ def get_child_table_data(parent_docname, month=None, year=None):
                           ],
                           order_by='modified DESC')
     
-    # Format the date in the data before returning
-    for row in data:
-        if 'date_and_time_start' in row:
-            row['formatted_date_start'] = row['date_and_time_start'].strftime("%d-%m-%Y")
-        if 'date_and_time_end' in row:
-            row['formatted_date_end'] = row['date_and_time_end'].strftime("%d-%m-%Y")
+    # # Format the date in the data before returning
+    # for row in data:
+    #     if 'date_and_time_start' in row:
+    #         row['formatted_date_start'] = row['date_and_time_start'].strftime("%d-%m-%Y")
+    #     if 'date_and_time_end' in row:
+    #         row['formatted_date_end'] = row['date_and_time_end'].strftime("%d-%m-%Y")
 
+    # Convert datetime objects to strings
+    for row in data:
+        row['date_and_time_start'] = row['date_and_time_start'].strftime("%Y-%m-%d %H:%M:%S")
+        row['date_and_time_end'] = row['date_and_time_end'].strftime("%Y-%m-%d %H:%M:%S")
+        
     return render_child_table_template(data)
 
 
@@ -170,6 +176,23 @@ def render_child_table_template(data):
     rendered_html = template.render({"data": data})
 
     return rendered_html
+    
+    
+@frappe.whitelist()
+def delete_ta_record(record_name):
+    try:
+        # Check if the record exists
+        if frappe.db.exists("TA Chart", record_name):
+            # Delete the record
+            frappe.delete_doc("TA Chart", record_name)
+            frappe.db.commit()
+            return "success"
+        else:
+            return "error: Record does not exist"
+    except Exception as e:
+        # Handle any errors that occur during deletion
+        frappe.log_error(frappe.get_traceback(), "Delete Error")
+        return f"error: {str(e)}"
     
 
 @frappe.whitelist()
