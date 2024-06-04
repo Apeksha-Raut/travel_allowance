@@ -193,6 +193,47 @@ def delete_ta_record(record_name):
         # Handle any errors that occur during deletion
         frappe.log_error(frappe.get_traceback(), "Delete Error")
         return f"error: {str(e)}"
+
+
+
+@frappe.whitelist()
+def get_recordName(record_name):
+    if not record_name:
+        frappe.throw("Record name is required")
+    
+    # Fetch all fields for the specific record in the TA Chart child table
+    record = frappe.db.get_all('TA Chart', filters={'name': record_name}, fields='*')
+    
+    if not record:
+        frappe.throw("Record not found")
+
+    return record
+    
+    
+# update the record in the database
+@frappe.whitelist()
+def update_record(name, data):
+    try:
+        # Parse the data from JSON format if necessary
+        if isinstance(data, str):
+            data = frappe.parse_json(data)
+        
+        # Fetch the existing document
+        doc = frappe.get_doc("Travel Allowance", name)
+        
+        # Update the document with new values
+        for field, value in data.items():
+            if hasattr(doc, field):
+                setattr(doc, field, value)
+        
+        # Save the updated document
+        doc.save()
+        
+        return "success"
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Travel Allowance Update Error")
+        return str(e)
+
     
 
 @frappe.whitelist()
