@@ -104,6 +104,7 @@
    "fetch_from": "employee_id.designation",
    "fieldname": "designation",
    "fieldtype": "Data",
+   "in_standard_filter": 1,
    "label": "Designation",
    "read_only": 1
   },
@@ -111,6 +112,7 @@
    "fetch_from": "employee_id.department",
    "fieldname": "department",
    "fieldtype": "Data",
+   "in_standard_filter": 1,
    "label": "Department",
    "read_only": 1
   },
@@ -126,12 +128,14 @@
    "fetch_from": "employee_id.branch",
    "fieldname": "branch",
    "fieldtype": "Data",
+   "in_standard_filter": 1,
    "label": "Branch"
   },
   {
    "fetch_from": "employee_id.region",
    "fieldname": "region",
    "fieldtype": "Data",
+   "in_standard_filter": 1,
    "label": "Region"
   },
   {
@@ -180,6 +184,7 @@
    "fetch_from": "employee_id.division",
    "fieldname": "division",
    "fieldtype": "Data",
+   "in_standard_filter": 1,
    "label": "Division",
    "read_only": 1
   },
@@ -618,7 +623,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-05-27 11:56:26.203521",
+ "modified": "2024-07-06 15:53:36.697603",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",

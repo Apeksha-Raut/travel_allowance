@@ -650,7 +650,77 @@ frappe.ui.form.on("Travel Allowance", {
     document.head.appendChild(style);
   },
 
+  clear_all_fields: function (frm) {
+    // List of fields to clear
+    var fields_to_clear = [
+      "from_location",
+      "date_and_time_from",
+      "to_location",
+      "other_to_location",
+      "date_and_time_to",
+      "purpose",
+      "ta_mode_of_transport",
+      "travel_km",
+      "ticket_amount",
+      "upload_ticket",
+      "fare_amount",
+      "do_you_want_apply_allowances",
+      "select_allowance",
+      "da_claim",
+      "daily_allowance",
+      "halting_amount",
+      "lodging_amount",
+      "input_lodging_amt",
+      "upload_image_of_lodging",
+      "total_amount",
+      "class_city",
+      "total_visit_time",
+      "day_stay_lodge",
+      "local_to_location",
+      "local_date_and_time_to",
+      "local_mode_of_travel",
+      "other_expenses",
+    ];
+
+    // Clear values of specified fields
+    fields_to_clear.forEach(function (fieldname) {
+      frm.set_value(fieldname, "");
+    });
+
+    // frm.set_value("from_location", "");
+    // frm.set_value("date_and_time_from", "");
+    // frm.set_value("to_location", "");
+    // frm.set_value("other_to_location", "");
+    // frm.set_value("date_and_time_to", "");
+    // frm.set_value("purpose", "");
+    // frm.set_value("ta_mode_of_transport", "");
+    // frm.set_value("travel_km", "");
+    // frm.set_value("ticket_amount", "");
+    // frm.set_value("upload_ticket", "");
+    // frm.set_value("fare_amount", "");
+    // frm.set_value("do_you_want_apply_allowances", "");
+    // frm.set_value("select_allowance", "");
+    // frm.set_value("da_claim", "");
+    // frm.set_value("daily_allowance", "");
+    // frm.set_value("halting_amount", "");
+    // frm.set_value("lodging_amount", "");
+    // frm.set_value("input_lodging_amt", "");
+    // frm.set_value("upload_image_of_lodging", "");
+    // frm.set_value("total_amount", "");
+    // frm.set_value("class_city", "");
+    // frm.set_value("total_visit_time", "");
+    // frm.set_value("day_stay_lodge", "");
+
+    // frm.set_value("local_to_location", "");
+    // frm.set_value("local_date_and_time_to", "");
+    // frm.set_value("local_mode_of_travel", "");
+    // frm.set_value("other_expenses", "");
+
+    frm.refresh_fields(); // Refresh the form to reflect cleared values
+  },
+
   check_yes: function (frm) {
+    frm.trigger("clear_all_fields");
     // Hide the description of the "date_and_time_to" field
     console.log("check yes", frm.doc.check_yes);
     frm.set_df_property(
@@ -676,6 +746,7 @@ frappe.ui.form.on("Travel Allowance", {
   },
 
   check_no: function (frm) {
+    frm.trigger("clear_all_fields");
     // Hide the description of the "date_and_time_to" field
     console.log("check no", frm.doc.check_no);
 
@@ -1165,6 +1236,7 @@ frappe.ui.form.on("Travel Allowance", {
     let taModeOfTransport = frm.doc.ta_mode_of_transport;
     let taTotalKM = frm.doc.travel_km;
     let taFareAmt = frm.doc.fare_amount;
+    let taAllowanceType = frm.doc.select_allowance;
     let taDaClaim = frm.doc.da_claim;
     let taDaAmount = frm.doc.daily_allowance;
     let taHaltingAmt = frm.doc.halting_amount;
@@ -1255,6 +1327,7 @@ frappe.ui.form.on("Travel Allowance", {
           mode_of_transport: taModeOfTransport,
           kilometer_of_travelling: taTotalKM,
           fare_amount: taFareAmt,
+          allowance_type: taAllowanceType,
           da_claim: taDaClaim,
           daily_allowance: taDaAmount,
           halting_amount: taHaltingAmt,

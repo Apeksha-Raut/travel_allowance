@@ -139,7 +139,7 @@ def get_child_table_data(parent_docname, month=None, year=None):
                               'mode_of_transport',
                               'kilometer_of_travelling',
                               'fare_amount',
-                              'da_claimed',
+                              'allowance_type',
                               'daily_allowance',
                               'halting_amount',
                               'lodging_amount',
@@ -162,8 +162,8 @@ def get_child_table_data(parent_docname, month=None, year=None):
 
     # Convert datetime objects to strings
     for row in data:
-        row['date_and_time_start'] = row['date_and_time_start'].strftime("%Y-%m-%d %H:%M:%S")
-        row['date_and_time_end'] = row['date_and_time_end'].strftime("%Y-%m-%d %H:%M:%S")
+        row['date_and_time_start'] = row['date_and_time_start'].strftime("%d-%m-%Y %H:%M:%S")
+        row['date_and_time_end'] = row['date_and_time_end'].strftime("%d-%m-%Y %H:%M:%S")
         
     return render_child_table_template(data)
 
