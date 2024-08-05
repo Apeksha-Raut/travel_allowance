@@ -1,8 +1,13 @@
 {
  "charts": [],
- "content": "[{\"id\":\"7eBleb7Fwe\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Create TA\",\"col\":3}},{\"id\":\"lD52ZtwYbF\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"TA List\",\"col\":3}}]",
+ "content": "[{\"id\":\"Cj2ACVIxF4\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Home Page (TA)\",\"col\":12}}]",
  "creation": "2024-04-18 13:10:24.589258",
- "custom_blocks": [],
+ "custom_blocks": [
+  {
+   "custom_block_name": "Home Page (TA)",
+   "label": "Home Page (TA)"
+  }
+ ],
  "docstatus": 0,
  "doctype": "Workspace",
  "for_user": "",
@@ -12,7 +17,7 @@
  "is_hidden": 0,
  "label": "E-Travel",
  "links": [],
- "modified": "2024-05-25 13:44:04.206876",
+ "modified": "2024-07-25 16:40:32.583465",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "E-Travel",
@@ -27,24 +32,6 @@
   }
  ],
  "sequence_id": 2.0,
- "shortcuts": [
-  {
-   "color": "Grey",
-   "doc_view": "New",
-   "label": "Create TA",
-   "link_to": "Travel Allowance",
-   "stats_filter": "[]",
-   "type": "DocType"
-  },
-  {
-   "color": "Green",
-   "doc_view": "List",
-   "format": "{}",
-   "label": "TA List",
-   "link_to": "Travel Allowance",
-   "stats_filter": "[]",
-   "type": "DocType"
-  }
- ],
+ "shortcuts": [],
  "title": "E-Travel"
 }

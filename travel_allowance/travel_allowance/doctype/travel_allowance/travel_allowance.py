@@ -5,11 +5,12 @@ import frappe
 from frappe.model.document import Document
 from datetime import datetime
 
+from frappe import _
 
 class TravelAllowance(Document):
 	pass
 
-
+             
               
 def before_save(self):
     # Helper function to handle None values by replacing them with 0
@@ -149,16 +150,12 @@ def get_child_table_data(parent_docname, month=None, year=None):
                               'year',
                               'uploaded_ticket_image',
                               'uploaded_lodging_bill_image',
-                              'day_stay_lodge'
+                              'day_stay_lodge',
+                              'status'
                           ],
-                          order_by='modified DESC')
+                          order_by='idx')
     
-    # # Format the date in the data before returning
-    # for row in data:
-    #     if 'date_and_time_start' in row:
-    #         row['formatted_date_start'] = row['date_and_time_start'].strftime("%d-%m-%Y")
-    #     if 'date_and_time_end' in row:
-    #         row['formatted_date_end'] = row['date_and_time_end'].strftime("%d-%m-%Y")
+  
 
     # Convert datetime objects to strings
     for row in data:
@@ -168,7 +165,26 @@ def get_child_table_data(parent_docname, month=None, year=None):
     return render_child_table_template(data)
 
 
+# def render_child_table_template(data):
+#     # Load the Jinja template
+#     template = frappe.get_template("templates/ta_child_table_template.html")
+
+#     # Render the template with the provided data
+#     rendered_html = template.render({"data": data})
+
+#     return rendered_html
+
 def render_child_table_template(data):
+    # Convert None, empty strings, and whitespace to '-'
+    for row in data:
+        for key, value in row.items():
+            if value is None or (isinstance(value, str) and not value.strip()):
+                row[key] = '-'
+            elif key == 'uploaded_ticket_image' or key == 'uploaded_lodging_bill_image':
+                # Handle image fields to display '-' when not available
+                if not value or value == '-':
+                    row[key] = '-'
+
     # Load the Jinja template
     template = frappe.get_template("templates/ta_child_table_template.html")
 
@@ -176,6 +192,9 @@ def render_child_table_template(data):
     rendered_html = template.render({"data": data})
 
     return rendered_html
+
+
+
     
     
 @frappe.whitelist()
@@ -242,3 +261,50 @@ def get_local_amount(parent_docname):
     data = frappe.get_all('TA Chart', filters={'parent': parent_docname}, fields=['date_and_time_start','from_location', 'date_and_time_end','to_location','da_claimed','halting_amount','lodging_amount','daily_allowance','fare_amount','local_conveyance_other_expenses_amount','total', 'other_location'], order_by='idx DESC')
     
     return data
+
+
+
+@frappe.whitelist()
+def update_record_status(record_name, status):
+    try:
+        # Fetch the record based on the record_name
+        record = frappe.get_doc('TA Chart', record_name)
+        
+        # Update the status field
+        record.status = status
+        
+        # Save the record
+        record.save(ignore_permissions=True)
+        
+        # Return success message
+        return 'Record status updated successfully.'
+    
+    except frappe.DoesNotExistError:
+        frappe.throw(_('Record {0} not found').format(record_name))
+    
+    except Exception as e:
+        frappe.throw(_('Failed to update record status: {0}').format(str(e)))
+        
+        
+
+@frappe.whitelist()
+def update_approved_record_status(record_name, status, approved_by):
+    try:
+        # Fetch the record based on the record_name
+        record = frappe.get_doc('TA Chart', record_name)
+        
+        # Update the status field
+        record.status = status
+        record.approved_by = approved_by
+        
+        # Save the record
+        record.save(ignore_permissions=True)
+        
+        # Return success message
+        return 'Record status updated successfully.'
+    
+    except frappe.DoesNotExistError:
+        frappe.throw(_('Record {0} not found').format(record_name))
+    
+    except Exception as e:
+        frappe.throw(_('Failed to update record status: {0}').format(str(e)))
