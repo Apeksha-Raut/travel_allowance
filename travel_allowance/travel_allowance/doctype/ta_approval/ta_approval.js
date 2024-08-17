@@ -8,10 +8,10 @@ frappe.ui.form.on("TA Approval", {
     frm.disable_save();
     // Add custom button 'Go To Home'
     frm
-      .add_custom_button(__("Go To Home"), function () {
+      .add_custom_button(__("Go To Back"), function () {
         // Define the action for the button
         // Redirect to home page or any other action
-        window.location.href = "/app/e-travel"; // Adjust the URL as needed
+        window.location.href = "/ta"; // Adjust the URL as needed
       })
       .css({
         "background-color": "#2490ef",
@@ -40,15 +40,12 @@ frappe.ui.form.on("TA Approval", {
 
           let data = response.message;
           // Extract travel allowance records and employee names
+          //let taApprovedRecords = data.approved_records;
           let taRecords = data.travel_allowance_records;
           let employeeNames = data.employee_names;
 
           console.log("Travel Allowance Records:", taRecords);
           console.log("Employee Names:", employeeNames);
-
-          // Generate the employee ID list for further use
-          // let employeeIds = employeeNames.map((emp) => emp.employee_id);
-          // console.log("Employee IDs:", employeeIds);
 
           // Generate employee record counts
           let employeeRecordCounts = {};
@@ -64,20 +61,30 @@ frappe.ui.form.on("TA Approval", {
           // Count of pending records
           let count = taRecords.length;
 
-          // Function to format date and time
-          function formatDateTime(dateTime) {
-            let options = {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-              hour: "numeric",
-              minute: "numeric",
-              hour12: true,
-            };
-            let date = new Date(dateTime);
-            return date.toLocaleString("en-GB", options).replace(",", "");
+          //let approvedCount = taApprovedRecords.length;
+          // Function to format date as DD-MM-YYYY
+          function formatDate(date) {
+            let dateObj = new Date(date);
+
+            // Check if date is valid
+            if (isNaN(dateObj.getTime())) {
+              return date; // Return the original string if it's not a valid date
+            }
+
+            // Format date as DD-MM-YYYY
+            let day = String(dateObj.getDate()).padStart(2, "0");
+            let month = String(dateObj.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+            let year = dateObj.getFullYear();
+            return `${day}-${month}-${year}`;
           }
 
+          // Function to format both 'from_date' and 'to_date'
+          function formatDates(fromDate, toDate) {
+            return {
+              formattedFromDate: formatDate(fromDate),
+              formattedToDate: formatDate(toDate),
+            };
+          }
           // Generate detailed HTML content
           let html = `
           <!DOCTYPE html>
@@ -85,7 +92,11 @@ frappe.ui.form.on("TA Approval", {
             <head>
               <meta charset="UTF-8" />
               <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-              <title>Pending Travel Allowance Records</title>
+              <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+              <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+              <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+              <title> Travel Allowance Records</title>
 
               <style>
 
@@ -143,113 +154,104 @@ frappe.ui.form.on("TA Approval", {
                   margin-left: 5px;
                 }
 
-
                 /* Count span styles */
                 .count {
                   font-weight: bold;
                   margin-left: 5px;
                 }
 
-
                 .main-container{
                   border: 1px solid #ddd;
                   border-radius: 10px;
                   
                 }
-                /* Card container styles */
-                .card-container {
-                  max-height: calc(100vh - 60px); /* Adjust height based on the height of the sticky navbar */
-                  overflow-y: auto; /* Enable vertical scrolling */
-                  margin: 0px 4px;
+                /* Make the table responsive */
+                .table-responsive {
+                    overflow-x: auto;
                 }
-                .card {
-                  border: 1px solid #ddd;
-                  border-radius: 8px;
-                  height: 340px;
-                  position: relative;
-                  margin-bottom: 20px;
-                  position: relative;
-                  background-color: #E8F3FC;
 
+                /* Table styles */
+                table#travelAllowancesTable {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 20px 0;
+                    font-size: 14px;
+                    text-align: left;
                 }
-                .card-header {
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  background-color:#E8F3FC;
-                  border-radius:10px;
-                  padding: 8px 10px;
+
+                table#travelAllowancesTable th, 
+                table#travelAllowancesTable td {
+                    padding: 12px 15px;
+                    border: 1px solid #ddd;
+                    white-space: nowrap; /* Prevent line wrapping */
+                    text-align: center;
                 }
-                .card-header .status {
-                  color: red;
+
+                /* Header styling */
+                table#travelAllowancesTable thead th {
+                    background-color: #f2f2f2;
+                    color: #333;
+                    font-weight: bold;
+                    text-align: center;
                 }
-                .action{
-                  cursor:pointer;
+
+                /* Zebra striping */
+                table#travelAllowancesTable tbody tr:nth-child(even) {
+                    background-color: #f9f9f9;
                 }
-                .emp-name{
-                  font-size:larger;
+
+                table#travelAllowancesTable tbody tr:nth-child(odd) {
+                    background-color: #fff;
                 }
-                /*.card-body {
-                  display: flex;
-                  justify-content: space-between;
-                }*/
-                .card-content {
-                  padding: 5px 10px;
+
+                /* Hover effects */
+                table#travelAllowancesTable tbody tr:hover {
+                    background-color: #f1f1f1;
                 }
-                .card-content .left {
-                  text-align: left;
+
+                /* Center align specific columns */
+                table#travelAllowancesTable td:nth-child(4),
+                table#travelAllowancesTable td:nth-child(5),
+                table#travelAllowancesTable td:nth-child(6),
+                table#travelAllowancesTable td:nth-child(7),
+                table#travelAllowancesTable td:nth-child(8),
+                table#travelAllowancesTable td:nth-child(9),
+                table#travelAllowancesTable td:nth-child(10),
+                table#travelAllowancesTable td:nth-child(13),
+                table#travelAllowancesTable td:nth-child(14),
+                table#travelAllowancesTable td:nth-child(15),
+                table#travelAllowancesTable td:nth-child(16),
+                table#travelAllowancesTable td:nth-child(17),
+                table#travelAllowancesTable td:nth-child(18),
+                table#travelAllowancesTable td:nth-child(19) {
+                    text-align: center;
                 }
-                .card-content .center {
-                  text-align: center;
+
+                /* Checkbox column */
+                table#travelAllowancesTable td:first-child {
+                    text-align: center;
+                    width: 50px;
                 }
-                .card-content .right {
-                  text-align: right;
+
+                /* Highlighting total column */
+                table#travelAllowancesTable td:last-child {
+                    font-weight: bold;
+                    color: #000;
+                    background-color: #e7f3ff;
                 }
-                .location{
-                  font-size: 16px;
-                  font-weight: bold;
-                  text-transform:uppercase;
+
+                /* Table header alignment */
+                table#travelAllowancesTable th {
+                    text-align: center;
                 }
-                /*.time{
-                  font-size:14px;
-                }*/
-                .arrow-icon{
-                  height: 25px;
-                  width: 75px;
+
+                /* Styling for no records row */
+                table#travelAllowancesTable .text-center {
+                    text-align: center;
+                    font-weight: bold;
+                    color: #999;
                 }
-                .card-content .amount {
-                  font-size: medium;
-                  color: #0a0909;
-                }
-              
-                .purpose{
-                  border-top: 1px solid rgb(0 0 0 / 13%);
-                  padding: 6px 10px;
-                  font-size:14px;
-                }
-                .card-footer { 
-                  background-color: #E8F3FC;
-                  padding: 10px;
-                  border-radius: 8px;
-                  border-top: 1px solid #ddd;
-                }
-                .footer-title {
-                  font-size: 15px;
-                  font-weight: bold;
-                }
-                .Allowances {
-                  display: flex;
-                  flex-wrap: wrap;
-                  gap: 10px;
-                  align-items: center;
-                  justify-content: space-between;
-                  padding: 10px 5px;
-                  font-size: 14px;
-                  text-align:center;
-                }
-                .Amounts{
-                  text-align:center;
-                }
+
 
                 .approve-btn {
                   display: none;
@@ -288,15 +290,23 @@ frappe.ui.form.on("TA Approval", {
                   justify-content: end;
                 }
                 .btn_bulk_approve{
-                  display:none;
                   margin-right:10px;
                   font-size: 15px;
                 }
+                  .btn_bulk_reject{
+                  margin-right:10px;
+                  font-size: 15px;
+                }
+
                 .btn_select_all{
                   
                   font-size: 15px;
                 }
                
+                button.swal2-confirm.swal2-styled:focus,
+                button.swal2-cancel.swal2-styled:focus {
+                  outline: none;
+                }
              
               </style>
             </head>
@@ -313,7 +323,7 @@ frappe.ui.form.on("TA Approval", {
               </div>
               
               <div class="container main-container">
-                <div class="row ">
+                <div class="row">
                   <ul class="ta_navbar" id="employeeTabs" role="tablist">
                     <li class="ta-nav-item">
                       <button class="ta-nav-link active" id="all-tab" data-employee-name="all" onclick="handleTabClick('all', this)">
@@ -339,112 +349,109 @@ frappe.ui.form.on("TA Approval", {
                   </ul>
                 </div>
            
-                <div class="container action_menu">
+                <div class="container action_menu" id="action-menu" style="display:none;">
                   <button class="btn btn-success btn_bulk_approve" onclick="bulkApprove()"> Approve </button>
+                   <button class="btn btn-danger btn_bulk_reject" onclick="bulkReject()"> Reject </button>
                   <button class="btn btn-primary btn_select_all" id="selectAllButton" onclick="toggleSelectAll()">Select All</button>
                 </div>
-                <div class="row mb-2 card-container" id="cardContainer">
-                  ${
-                    count === 0
-                      ? `<h3 class="no-records" style="text-align:center;">You have no Request</h3>`
-                      : taRecords
-                          .map(
-                            (record) => `
-                      <div class="col-md-4 card-column">
-                      <!-- Checkbox for each card -->
-                      <input class="approve-checkbox" type="checkbox" data-record-name="${
-                        record.name
-                      }" >
-                        <div class="card ">
-                        <button class="btn btn-success approve-btn" id="approve-${
-                          record.name
-                        }" onclick="approveRecord('${
+                <div class="table-responsive">
+                
+                  <table class="table table-bordered" id="travelAllowancesTable">
+                    <thead>
+                      <tr>
+                        <th>Select</th>
+                        <th>Employee Name</th>
+                        <th>Status</th>
+                        <th>From Location</th>
+                        <th>Start Date</th>
+                        <th>Start Time</th>
+                        <th>To Location</th>
+                        <th>End Date</th>
+                        <th>End Time</th>
+                        <th>Total Time</th>
+                        <th>Purpose</th>
+                        <th>Mode of Transport</th>
+                        <th>Total KM</th>
+                        <th>Ticket Amount</th>
+                        <th>Uploaded Ticket </th>
+                        <th>Fare Amount</th>
+                        <th>Allowance Type</th>
+                        <th>DA</th>
+                        <th>Halting</th>
+                        <th>Lodging</th>
+                        <th>Uploaded Lodging bill </th>
+                        <th>Total</th>
+                      
+                       
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${taRecords
+                        .map(
+                          (record) => `
+                        <tr>
+                          <td>
+                            <input class="approve-checkbox" type="checkbox" data-record-name="${
                               record.name
-                            }')">Approve</button>
-                          <div class="card-header">
-                            <div class="emp-name">
-                              <img src="/files/user (1).png" alt="user" width="20" />
-                              ${record.employee_name}
-                            </div>
-
-                            <div class="status">Pending
-                              <span>
-                                <img class="action" onclick="get_approve_btn('${
-                                  record.name
-                                }')" src="/files/dots.png" alt="user" width="20" />
-                              </span>
-                            </div>
-                          </div>
-                        <div class="card-content">
-                          <div class="row">
-                            <div class="col-4 left">
-                              <div>From</div>
-                              <div class="location">${
-                                record.from_location
-                              }</div>
-                              <div class="time"> ${formatDateTime(
-                                record.date_and_time_start
-                              )}</div>
-                            </div>
-                            <div class="col-4 center">
-                              <div>${record.mode_of_transport}</div>
-                      
-                              <img
-                                class="arrow-icon"
-                                src="/files/arrows (1).png"
-                                alt="user"
-                              />
-                      
-                              <div class="amount">₹${record.total}</div>
-                            </div>
-                            <div class="col-4 right">
-                              <div>To</div>
-                              <div class="location">${record.to_location}</div>
-                              <div class="time"> ${formatDateTime(
-                                record.date_and_time_end
-                              )}</div>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div class="purpose"> 
-                          <img
-                          class="text-icon"
-                          src="/files/chat.png"
-                          alt="user" width="20"/> ${record.purpose}
-                        </div>
-
-                        <div class="card-footer">
-                          <div class="footer-title"> 
-                            Allowances
-                          </div>
-                          <div class="Allowances">
-                            <div>Local
-                            <div>₹${
-                              record.local_conveyance_other_expenses_amount
-                            }</div></div>
-                            <div>DA
-                            <div>₹${record.daily_allowance}</div></div>
-                            <div>Halt
-                            <div>₹${record.halting_amount}</div></div>
-                            <div>Lodge
-                            <div>₹${record.lodging_amount}</div></div>
-                            <div>KM
-                            <div>${record.kilometer_of_travelling}km</div></div>
-                            <div>Fare
-                            <div>₹${record.fare_amount}</div></div>
-                            <div>Total
-                            <div>₹${record.total}</div></div>
-                          </div>  
-                        </div>
-                      </div>
-                    </div>
-                    `
-                          )
-                          .join("")
-                  }
+                            }">
+                          </td>
+                          <td>${record.employee_name}</td>
+                          <td>
+                            ${record.status}
+                            <!--<span>
+                              <img class="action" onclick="get_approve_btn('${
+                                record.name
+                              }')" src="/files/dots.png" alt="user" width="20">
+                            </span>-->
+                          </td>
+                          <td>${record.from_location}</td>
+                          <td>${formatDate(record.from_date)}</td>
+                          <td>${record.from_time}</td>
+                          <td>${record.to_location}</td>
+                          <td>${formatDate(record.to_date)}</td>
+                          <td>${record.to_time}</td>
+                          <td>${record.total_time}</td>
+                          <td>${record.purpose}</td>
+                          <td>${record.travel_mode}</td>
+                          <td>${record.total_km}</td>
+                          <td>${record.ticket_amount}</td>
+                          <td>
+                            ${
+                              record.upload_ticket
+                                ? `<a href="${record.upload_ticket}" target="_blank">View Ticket</a>`
+                                : "No file"
+                            }
+                          </td>
+                          <td>${record.fare_amount}</td>
+                          <td>${record.allowance_type}</td>
+                          <td>${record.final_da_amount}</td>
+                          <td>${record.final_halt_amount}</td>
+                          <td>${record.final_lodge_amount}</td>
+                          <td>
+                            ${
+                              record.upload_lodging
+                                ? `<a href="${record.upload_lodging}" target="_blank">View Lodging Bill</a>`
+                                : "No file"
+                            }
+                          </td>
+                          <td>₹${record.total_amount}</td>
+                          
+                         <!--<td>
+                            <button class="btn btn-success approve-btn" id="approve-${
+                              record.name
+                            }" onclick="approveRecord('${
+                            record.name
+                          }')">Approve</button>
+                          </td>-->
+                        </tr>
+                        `
+                        )
+                        .join("")}
+                    </tbody>
+                  </table>
                 </div>
 
+                  
                 <!-- No records message -->
                 <div class="no-records-message">No Request found for the selected employee.</div>
               </div>
@@ -453,10 +460,13 @@ frappe.ui.form.on("TA Approval", {
               <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha384-ZvpUoO/+PqeF8UOrRtvNLU7mKxOj7cMwp7o+6g0Pj5tyJf6cFOksdRMtrzmQe1Rj" crossorigin="anonymous"></script>
 
               <script>
-            
+
+
+              
               // handle select all button
               function toggleSelectAll() {
                 // Get the "Select All" button element
+                
                 const selectAllButton = document.getElementById('selectAllButton');
                 // Get all the checkboxes
                 const checkboxes = document.querySelectorAll('.approve-checkbox');
@@ -470,7 +480,11 @@ frappe.ui.form.on("TA Approval", {
                 
                 // Update the bulk approve button visibility
                 handleCheckboxChange();
+
+                 // Count the number of selected checkboxes
+                const selectedCount = Array.from(checkboxes).filter(checkbox => checkbox.checked).length;
               
+                console.log("Count of selected Records:",selectedCount );
                 // Update the "Select All" button text
                 if (allChecked) {
                   selectAllButton.textContent = 'Select All';
@@ -485,165 +499,263 @@ frappe.ui.form.on("TA Approval", {
                 checkbox.addEventListener('change', handleCheckboxChange);
               });
 
-              // Handle checkboxes function for bulk approved records
+              // Handle checkboxes function for displaying action menu
               function handleCheckboxChange() {
-                const bulkApproveButton = document.querySelector('.btn_bulk_approve');
 
+                const actionMenu=document.getElementById("action-menu");
                 // Check if any checkbox is checked
                 const isAnyChecked = Array.from(document.querySelectorAll('.approve-checkbox'))
                   .some(checkbox => checkbox.checked);
 
-                // Toggle the bulk approve button's visibility
-                bulkApproveButton.style.display = isAnyChecked ? 'block' : 'none';
-
+                  actionMenu.style.display = isAnyChecked ? 'block' : 'none';
+                
                 // Log the record name of the checked checkbox
                 if (this.checked) {
                   console.log('Checked record name:', this.dataset.recordName);
                 }
               }
               
-              // handle for nav tabs filter by employee name
+              // Handle tab click to filter by employee name
               function handleTabClick(employee, element) {
-                // Log the clicked employee name to the console
-                console.log("Selected Employee: ", employee);
-              
-                // Remove 'active' class from all buttons
-                const buttons = document.querySelectorAll(".ta-nav-link");
-                buttons.forEach((button) => {
-                  button.classList.remove("active");
-                });
-              
-                // Add 'active' class to the clicked button
-                element.classList.add("active");
-              
-                // Filter the cards based on the active tab
-                filterCardsByEmployee(employee);
+                  console.log("Selected Employee: ", employee);
+
+                  // Remove 'active' class from all buttons
+                  const buttons = document.querySelectorAll(".ta-nav-link");
+                  buttons.forEach((button) => {
+                      button.classList.remove("active");
+                  });
+
+                  // Add 'active' class to the clicked button
+                  element.classList.add("active");
+
+                  // Filter the table rows based on the active tab
+                  filterTableByEmployee(employee);
               }
-              
-              // handle cards for filter by employee name
-              function filterCardsByEmployee(employee) {
-                const cards = document.querySelectorAll(".card-column");
-                let hasVisibleCards = false; // Track if there are any visible cards
-    
-                cards.forEach((card) => {
-                    const empNameElement = card.querySelector(".emp-name");
-                    const empNameText = empNameElement ? empNameElement.textContent.trim() : '';
-                    const employeeName = empNameText.replace(/^\s*\S+\s+/, '').trim();
-    
-                    if (employee === "all" || employeeName === employee) {
-                        card.style.display = "block";
-                        hasVisibleCards = true; // At least one card is visible
-                    } else {
-                        card.style.display = "none";
-                    }
+
+              // Handle filtering of table rows based on employee name
+               function filterTableByEmployee(employee) {
+                const rows = document.querySelectorAll("#travelAllowancesTable tbody tr");
+                const table = document.getElementById("travelAllowancesTable");
+                const actionMenu = document.getElementById("action-menu");
+                let hasVisibleRows = false; // Track if there are any visible rows
+
+                rows.forEach((row) => {
+                  const empNameCell = row.querySelector("td:nth-child(2)");
+                  const empNameText = empNameCell ? empNameCell.textContent.trim() : '';
+                  if (employee === "all" || empNameText === employee) {
+                    row.style.display = "";
+                    hasVisibleRows = true; // At least one row is visible
+                  } else {
+                    row.style.display = "none";
+                  }
                 });
-    
-                // Display message if no cards are visible
+
+                // Show or hide the no records message and table
                 const noRecordsMessage = document.querySelector(".no-records-message");
-                const noAllRecordsMessage = document.querySelector(".no-records");
-
-                // Check if employee is 'all' and handle separately
-                if (employee === "all") {
-                    // Check if there are no cards at all
-                    if (hasVisibleCards) {
-                      noRecordsMessage.style.display = "none";
-                        noAllRecordsMessage.style.display = "flex"; // Show "You have no Request" for all employees
-
-                    } else {
-                        noAllRecordsMessage.style.display = "none"; // Hide the message if cards are visible
-                    }
+                if (hasVisibleRows) {
+                  noRecordsMessage.style.display = "none";
+                  table.style.display = ""; // Show table when there are visible rows
+                  //actionMenu.style.display = "block"; // Show action menu when there are visible rows
                 } else {
-                    if (!hasVisibleCards) {
-
-                        noRecordsMessage.style.display = "flex";
-                        noAllRecordsMessage.style.display = "none";
-                    } else {
-                        noRecordsMessage.style.display = "none"; // Hide the message if cards are visible
-                    }
+                  noRecordsMessage.style.display = "block";
+                  table.style.display = "none"; // Hide table when no rows are visible
+                  actionMenu.style.display = "none"; // Hide action menu when no rows are visible
                 }
-              }           
-
-              
+              }
+                     
               document.addEventListener("DOMContentLoaded", function () {
                 // Initially display all cards
                 filterCardsByEmployee("all");
               });
 
+              
+              // Function to approve bulk records
+              async function bulkApprove() {
+                  // Get all checked records
+                  // Initialize the array to store checked records
+                  const checkedRecords = [];
 
-              // handle to display approve button when click on three dots of each records
-              function get_approve_btn(recordName) {
-                console.log("Toggle button for record:", recordName);
-                var approveButton = document.getElementById('approve-' + recordName);
-                if (approveButton) {
-                    // Toggle the display style
-                    if (approveButton.style.display === "none" || approveButton.style.display === "") {
-                        approveButton.style.display = "block";
-                    } else {
-                        approveButton.style.display = "none";
-                    }
-                }
-              }
-          
-              // funtion to approved records individually
-              function approveRecord(recordName) {
-                console.log("Approve button clicked for record:", recordName);
-              
-                // Define the status and approved_by values
-                const status = 'Approved';
-                const approvedBy = frappe.session.user;
-                console.log(approvedBy);
-              
-                // Call the server-side method to update the record status
-                frappe.call({
-                  method:"travel_allowance.travel_allowance.doctype.travel_allowance.travel_allowance.update_approved_record_status",
-                  args: {
-                    record_name: recordName,
-                    status: status,
-                    approved_by: approvedBy,
-                  },
-                  callback: function(response) {
-                    if (response.message === 'Record status updated successfully.') {
-                      // Handle the successful response
-                      console.log('Record approved successfully.');
-                      // // Optionally hide the approve button or update the UI
-                      // var approveButton = document.getElementById('approve-' + recordName);
-                      // if (approveButton) {
-                      //   approveButton.style.display = 'none';
-                      // }
-                      // Refresh the page
-                      location.reload();
-                    } else {
-                      // Handle the failure response
-                      console.error('Failed to approve record:', response.message);
-                    }
-                  }
+                  // Get all checked records and push them to the array
+                  document.querySelectorAll(".approve-checkbox:checked").forEach((checkbox) => {
+                      checkedRecords.push(checkbox.dataset.recordName);
+                  });
 
-                });
-              }
-          
-              // funtion to approved bulk records 
-              function bulkApprove() {
-                // Get all checked records
-                const checkedRecords = Array.from(
-                  document.querySelectorAll(".approve-checkbox:checked")
-                ).map((checkbox) => checkbox.dataset.recordName);
-              
-                console.log("Bulk approving records:", checkedRecords);
-              
-                if (checkedRecords.length > 0) {
-                  // Confirm the bulk approval action
-                  if (confirm("Are you sure you want to approve these records?")) {
-                    // Approve each record using the existing approveRecord function
-                    checkedRecords.forEach((recordName) => {
-                      approveRecord(recordName);
-                    });
-                  
-                    // Optionally, provide feedback once all are approved
-                    alert("All selected records have been processed for approval.");
+                  console.log("Bulk approving records:", checkedRecords);
+                  if (checkedRecords.length > 0) {
+                      // Confirm the bulk approval action using SweetAlert2
+                      const result = await Swal.fire({
+                          title: 'Are you sure you want to approve these record(s)?',
+                          icon: 'warning',
+                          showCancelButton: true,
+                          confirmButtonText: 'Yes, approve them!',
+                          cancelButtonText: 'No, cancel',
+                      });
+
+                      if (result.isConfirmed) {
+                          try {
+                              // Send a request to the server to approve the records
+                              const response = await fetch('/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.bulk_approve_records', {
+                                  method: 'POST',
+                                  headers: {
+                                      'Content-Type': 'application/json'
+                                  },
+                                  body: JSON.stringify({ names: checkedRecords }) // Send the array of selected record names wrapped in an object
+                              });
+
+                              // Check for response status
+                              if (!response.ok) {
+                                  throw new Error('HTTP error! Status: ${
+                                    response.status
+                                  }');
+                              }
+
+                              // Log and process the response
+                              const result = await response.json();
+                              console.log(result);
+
+                              if (result.message.message === 'Records approved successfully.') {
+                                Swal.fire({
+                                    title: 'Approved!',
+                                    text: 'All selected records have been processed for approval.',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK' // Show the confirm button with 'OK' text
+                                }).then(() => {
+                                    Swal.fire({
+                                        title: 'Please wait',
+                                        text: 'Refreshing the page...',
+                                        allowOutsideClick: false, // Prevent users from closing the alert
+                                        allowEscapeKey: false, // Prevent closing by pressing the escape key
+                                        didOpen: () => {
+                                            Swal.showLoading(); // Show loading spinner
+                                        }
+                                    });
+                                    // Set a delay before reloading the page
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 2000); // 2 seconds delay
+                                });
+                              } else {
+                                  Swal.fire({
+                                      title: 'Error',
+                                      text: result.message || 'Failed to approve records. Please try again.',
+                                      icon: 'error',
+                                      confirmButtonText: 'Try Again'
+                                  });
+                              }
+                          } catch (error) {
+                              console.error('Error approving records:', error);
+                              Swal.fire({
+                                  title: 'Error',
+                                  text: 'An unexpected error occurred while approving records. Please try again.',
+                                  icon: 'error',
+                                  confirmButtonText: 'Try Again'
+                              });
+                          }
+                      }
+                  } else {
+                      // Inform the user that no records are selected
+                      Swal.fire({
+                          title: 'No Records Selected',
+                          text: 'Please select at least one record to approve.',
+                          icon: 'warning',
+                          confirmButtonText: 'OK'
+                      });
                   }
-                } else {
-                  alert("Please select at least one record to approve.");
-                }
+              }
+
+
+              // Function to approve bulk records
+              async function bulkReject() {
+                  // Get all checked records
+                  // Initialize the array to store checked records
+                  const checkedRecords = [];
+              
+                  // Get all checked records and push them to the array
+                  document.querySelectorAll(".approve-checkbox:checked").forEach((checkbox) => {
+                      checkedRecords.push(checkbox.dataset.recordName);
+                  });
+              
+                  console.log("Bulk Reject records:", checkedRecords);
+                  if (checkedRecords.length > 0) {
+                      // Confirm the bulk approval action using SweetAlert2
+                      const result = await Swal.fire({
+                          title: 'Are you sure you want to reject these record(s)?',
+                          icon: 'warning',
+                          showCancelButton: true,
+                          confirmButtonText: 'Yes, Reject them!',
+                          cancelButtonText: 'No, cancel',
+                      });
+              
+                      if (result.isConfirmed) {
+                          try {
+                              // Send a request to the server to approve the records
+                              const response = await fetch('/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.bulk_reject_records', {
+                                  method: 'POST',
+                                  headers: {
+                                      'Content-Type': 'application/json'
+                                  },
+                                  body: JSON.stringify({ names: checkedRecords }) // Send the array of selected record names wrapped in an object
+                              });
+              
+                              // Check for response status
+                              if (!response.ok) {
+                                  throw new Error('HTTP error! Status: ${
+                                    response.status
+                                  }');
+                              }
+              
+                              // Log and process the response
+                              const result = await response.json();
+                              console.log(result);
+              
+                              if (result.message.message === 'Records Rejected successfully.') {
+                                Swal.fire({
+                                    title: 'Rejected!',
+                                    text: 'All selected records have been Rejected.',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK' // Show the confirm button with 'OK' text
+                                }).then(() => {
+                                    Swal.fire({
+                                        title: 'Please wait',
+                                        text: 'Refreshing the page...',
+                                        allowOutsideClick: false, // Prevent users from closing the alert
+                                        allowEscapeKey: false, // Prevent closing by pressing the escape key
+                                        didOpen: () => {
+                                            Swal.showLoading(); // Show loading spinner
+                                        }
+                                    });
+                                    // Set a delay before reloading the page
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 2000); // 2 seconds delay
+                                });
+                              } else {
+                                  Swal.fire({
+                                      title: 'Error',
+                                      text: result.message || 'Failed to Reject records. Please try again.',
+                                      icon: 'error',
+                                      confirmButtonText: 'Try Again'
+                                  });
+                              }
+                          } catch (error) {
+                              console.error('Error rejecting records:', error);
+                              Swal.fire({
+                                  title: 'Error',
+                                  text: 'An unexpected error occurred while rejecting records. Please try again.',
+                                  icon: 'error',
+                                  confirmButtonText: 'Try Again'
+                              });
+                          }
+                      }
+                  } else {
+                      // Inform the user that no records are selected
+                      Swal.fire({
+                          title: 'No Records Selected',
+                          text: 'Please select at least one record to reject.',
+                          icon: 'warning',
+                          confirmButtonText: 'OK'
+                      });
+                  }
               }
 
               document.addEventListener("DOMContentLoaded", function () {

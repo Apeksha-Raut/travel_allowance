@@ -6,71 +6,139 @@
     <title>Travel Allowance</title>
     <script src="https://unpkg.com/htmx.org@2.0.1"></script>
     <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/handsontable@10.0.0/dist/handsontable.full.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/handsontable@10.0.0/dist/handsontable.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-      .ta-form-container {
+      body {
+        font-family: Arial, sans-serif;
+        /*  overflow: hidden; Prevent the page from having a scrollbar */
+      }
+
+      .ta-container {
+        margin: 0;
+        padding: 0;
+      }
+      /*.ta-form-container {
         background-color: #fff;
-        padding: 20px;
+        padding: 22px 0px 0 0px;
         border-radius: 8px;
-        overflow-x: auto; /* Enable horizontal scrolling */
       }
 
       .ta-form-container h2 {
         text-align: center;
         margin-bottom: 20px;
+      }*/
+      .ta-row-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
-
-      .ta-form-row {
+      .ta-from-row {
         display: flex;
         align-items: center; /* Align items vertically */
         flex-wrap: wrap; /* Ensure single row */
         gap: 10px; /* Space between fields */
-
+        border: 1px solid #d0d7de;
+        border-radius: 4px;
         font-size: 14px;
+        padding: 5px;
+      }
+      .ta-to-row {
+        display: flex;
+        align-items: center; /* Align items vertically */
+        flex-wrap: wrap; /* Ensure single row */
+        gap: 10px; /* Space between fields */
+        border: 1px solid #d0d7de;
+        border-radius: 4px;
+        font-size: 14px;
+        padding: 5px;
+      }
+
+      .ta-time-and-purpose {
+        display: flex;
+        justify-content: center;
+        align-items: center; /* Align items vertically */
+        flex-wrap: wrap; /* Ensure single row */
+        gap: 10px; /* Space between fields */
+        border: 1px solid #d0d7de;
+        border-radius: 4px;
+        font-size: 14px;
+        padding: 14px 5px;
+      }
+      .ta-allowances-row {
+        display: flex;
+        align-items: center; /* Align items vertically */
+        flex-wrap: wrap; /* Ensure single row */
+        gap: 10px; /* Space between fields */
+        border: 1px solid #d0d7de;
+        border-radius: 4px;
+        font-size: 14px;
+        padding: 10px;
+        margin-top: 20px;
       }
 
       .ta-form-group {
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        padding: 0 5px;
       }
+
+      
 
       .ta-form-group label {
         font-size: 14px;
-        font-weight: bold;
-        margin-bottom: 5px;
       }
 
       .ta-form-group input,
       .ta-form-group select,
       .ta-form-group textarea {
+        
         padding: 8px 5px;
         font-size: 11px;
         border: 1px solid #ccc;
         border-radius: 4px;
+        
+      }
+      .field-error {
+        border: 1px solid red;
+        color: red;
+        background-color: #fff5f5;
       }
 
-      .ta-form-group textarea {
-        resize: vertical;
-        min-height: 50px; /* Adjust height as needed */
+      .field-error::placeholder {
+        color: red; /* Ensure the placeholder text also turns red */
       }
 
-      .ta-form-group button {
-        padding: 10px 20px;
-        background-color: #4caf50;
+      .ta-form-btn {
+        display: flex;
+        justify-content: center;
+        padding: 0 5px;
+      }
+
+      .add-button {
+        padding: 5px 18px;
+        background:linear-gradient(to right, rgba(0, 128, 222, 1), rgba(97, 202, 255, 1));
         color: #fff;
         border: none;
-        border-radius: 4px;
+        border-radius: 40px;
         cursor: pointer;
         font-size: 16px;
-        margin-top: 20px;
+        font-weight: 700;
+        margin-top: 12px;
+        float: right;
       }
 
-      .ta-form-group button:hover {
-        background-color: #45a049;
+      .add-button:hover {
+        background: linear-gradient(to right, rgba(0, 128, 222, 1), rgba(97, 202, 255, 1));
       }
 
       /* Responsive Design */
@@ -89,12 +157,6 @@
         }
       }
 
-      #excel-canvas {
-        margin-top: 20px;
-        width: 100%;
-        height: 300px;
-      }
-
       /* Hide fields by default */
       .hidden {
         display: none;
@@ -103,197 +165,669 @@
         margin: 20px;
         width: 100%;
       }
+      
+
+      .ta-nav {
+        position: sticky;
+        top: 0; /* Ensures it sticks to the top of the viewport */
+        background: linear-gradient(to right, rgba(0, 128, 222, 1), rgba(97, 202, 255, 1));
+        color: #ffffff;
+        padding: 8px 20px;
+        margin: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000; /* Ensures it stays above other content */
+      }
+      a.ta-home {
+        font-size: larger;
+        font-weight: bold;
+        padding: 0 10px;
+        text-decoration: none;
+        color: #fff;
+      }
+      a.ta-heading {
+        font-size: 20px;
+        font-weight: bold;
+        text-decoration: none;
+        color: #fff;
+      }
+      a.user-details {
+        display: flex;
+        text-decoration: none;
+        color: #fff;
+      }
+      .user-icon {
+        margin: 0 5px;
+      }
+      .current-user {
+        font-size: 16px;
+        padding: 0;
+        margin: 0;
+      }
+      .user-designation {
+        padding: 0;
+        margin: 0;
+      }
+      .description {
+        font-size: 12px;
+      }
+
+      .page-content {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      
+
+      .excel-container {
+        padding: auto;
+      }
+     
+      .content {
+        margin-left: 0;
+        padding: 10px 2rem;
+        overflow: auto;
+      }
+      /*.handsontable th {
+         font-weight: bold;
+        border: 1px solid #78b9f4;
+      }*/
+
+      /* Scrollbar styling */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      #excel-canvas {
+        margin-top: 12px;
+    }
+    
+    .ht_master .wtHolder {
+        overflow-x: auto; /* Ensure horizontal scrolling */
+    }
+    
+    .handsontable td, .handsontable th {
+      border-top-width: 0;
+      border-left-width: 0;
+      height: 22px;
+      empty-cells: show;
+      line-height: 21px;
+      padding: 0 4px;
+      background-color: #fff;
+      vertical-align: middle;
+      overflow: hidden;
+      outline-width: 0;
+      white-space: nowrap;
+      text-align: center; 
+  }
+  .handsontable .htRight {
+     text-align: center; 
+}
+.htAutocompleteArrow{
+  display: none;
+}
+    
+      .footer {
+        background-color: #f8f9fa;
+       
+        position: fixed;
+        width: 100%;
+        z-index: 1000;
+        bottom: 0;
+    }
+
+      a.tab {
+        padding: 5px 0px;
+        cursor: pointer;
+
+        transition: background-color 0.3s ease;
+      }
+
+      a.tab img {
+        vertical-align: middle;
+        margin-right: 5px;
+      }
+
+
+      a.tab p{
+        text-align: center;
+        text-decoration: none;
+        color: rgb(1, 111, 190);
+        margin-bottom: 0;
+      }
+
+      @media (max-width: 600px) {
+        .tab {
+          font-size: 14px;
+          padding: 8px 12px;
+        }
+      }
+      p.user-designation {
+        font-size: 14px;
+      }
+      /* table Button Styles */
+      .submit-btn,
+      .delete-btn,
+      .select-all-btn {
+        padding: 5px 20px;
+        border: none;
+        border-radius: 40px;
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        margin-right: 10px;
+        transition: background 0.3s ease;
+        display: none;
+      }
+
+      /* Delete Button Gradient */
+      .delete-btn {
+        background: #ff0000;
+      }
+
+      .delete-btn:hover {
+        background: #fb2c2c;
+        color: #fff;
+      }
+
+      /* Select All Button Gradient */
+      .select-all-btn {
+        background: #007486;
+      }
+
+      .select-all-btn:hover {
+        background: #35aaac;
+        color: #fff;
+      }
+      .submit-btn {
+        background:#388E3C;
+        color: #fff;
+      }
+
+      .submit-btn:hover {
+        background: #3faa44;
+        color: #fff;
+      }
+
+     .htColumn0{
+        display: none;
+     }
+
+     /* CSS for the overlay */
+#please-wait-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.overlay-content {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+
     </style>
   </head>
   <body>
-    <div class="current-user" id="current_user">{{ frappe.session.user }}</div>
-    <div class="ta-form-container">
-      <h2>Travel Allowance Form</h2>
-      <form
-        id="travel-form"
-        action=""
-        method="POST"
-        hx-post="/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.create_record"
-        hx-target="#response-message"
-        hx-trigger="submit"
-        hx-swap="none"
-      >
-        <div class="ta-form-row">
-          <div class="ta-form-group">
-            <label for="from_date">Date(Start)</label>
-            <input type="date" id="from_date" name="from_date" required />
+    <div class="ta-container container-fluid">
+      <nav class="nav ta-nav">
+        <a href="/app" class="ta-home">&lt; Home</a>
+        <a class="ta-heading">Travel Allowance</a>
+        <a class="user-details">
+          <span class="user-icon"
+            ><img src="/files/user (5).png" alt="" width="40"
+          /></span>
+          <div>
+            <h4
+              class="current-user"
+              hx-get="/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.get_employee_name"
+              hx-trigger="load"
+              hx-target="this"
+              hx-vals='js:{"email": "{{ frappe.session.user }}"}'
+            ></h4>
+
+            <p
+              class="user-designation"
+              hx-get="/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.get_employee_designation"
+              hx-trigger="load"
+              hx-target="this"
+              hx-vals='js:{"email":  "{{ frappe.session.user }}"}'
+            ></p>
           </div>
-          <div class="ta-form-group">
-            <label for="from_time">Time(Start)</label>
-            <input type="time" id="from_time" name="from_time" required />
-          </div>
-          <div class="ta-form-group">
-            <label for="from_location">From</label>
-            <select id="from_location" name="from_location" required>
-              <option value="">Select a city...</option>
-            </select>
-          </div>
-          <div class="ta-form-group hidden" id="from_location_other_group">
-            <label for="from_location_other">Other Location</label>
-            <input
-              type="text"
-              id="from_location_other"
-              name="from_location_other"
-            />
+        </a>
+      </nav>
+    <main class="content" id="main-content">
+      <div class="container-fluid">
+        <!--<h2>Travel Allowance Form</h2>-->
+        <form id="travel-form" onsubmit="handleFormSubmit(event)">
+          <div class="ta-row-container">
+            <div class="ta-from-row">
+              <div class="ta-form-group">
+                <label for="from_location">From</label>
+                <select id="from_location" name="from_location" required>
+                  <option value="">Select a city...</option>
+                </select>
+              </div>
+              <div class="ta-form-group" id="from_location_other_group">
+                <label for="from_location_other">Other Location</label>
+                <input
+                  type="text"
+                  id="from_location_other"
+                  name="from_location_other"
+                  readonly
+                />
+                <span class="description">Enter location for 'Other'.</span>
+              </div>
+              <div class="ta-form-group">
+                <label for="from_date">Date(Start)</label>
+                <input type="date" id="from_date" name="from_date" required />
+              </div>
+              <div class="ta-form-group">
+                <label for="from_time">Time(Start)</label>
+                <input type="time" id="from_time" name="from_time" required />
+              </div>
+            </div>
+            <div class="ta-to-row">
+              <div class="ta-form-group">
+                <label for="to_location">To</label>
+                <select
+                  id="to_location"
+                  name="to_location"
+                  required
+                  hx-get="/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.check_submit"
+                  hx-trigger="change"
+                  hx-target="#return-response"
+                  hx-include="[name='allowance_type']"
+                >
+                  <option value="">Select a city...</option>
+                </select>
+              </div>
+              <div class="ta-form-group" id="to_location_other_group">
+                <label for="to_location_other">Other Location</label>
+                <input
+                  type="text"
+                  id="to_location_other"
+                  name="to_location_other"
+                  readonly
+                />
+                <span class="description">Enter location for 'Other'.</span>
+              </div>
+              <div class="ta-form-group">
+                <label for="to_date">Date(End)</label>
+                <input type="date" id="to_date" name="to_date" required />
+              </div>
+              <div class="ta-form-group">
+                <label for="to_time">Time(End)</label>
+                <input type="time" id="to_time" name="to_time" required />
+              </div>
+            </div>
+            <div class="ta-time-and-purpose">
+              <div class="ta-form-group">
+                <label for="total_time">Total Time (in hours)</label>
+                <input class="total_time" id="total_time" readonly/>
+              </div>
+            </div>
           </div>
 
-          <div class="ta-form-group">
-            <label for="to_date">Date(End)</label>
-            <input type="date" id="to_date" name="to_date" required />
-          </div>
-          <div class="ta-form-group">
-            <label for="to_time">Time(End)</label>
-            <input type="time" id="to_time" name="to_time" required />
-          </div>
-          <div class="ta-form-group">
-            <label for="to_location">To</label>
-            <select
-              id="to_location"
-              name="to_location"
-              required
-              hx-get="/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.check_submit"
-              hx-trigger="change"
-              hx-target="#return-response"
-              hx-include="[name='allowance_type']"
-            >
-              <option value="">Select a city...</option>
-            </select>
-          </div>
-          <div class="ta-form-group hidden" id="to_location_other_group">
-            <label for="to_location_other">Other Location</label>
-            <input
-              type="text"
-              id="to_location_other"
-              name="to_location_other"
-            />
-          </div>
-          <div class="ta-form-group">
-            <label for="total_time">Total Duration (in hours)</label>
-            <input id="total_time" name="total_time" readonly />
-          </div>
+          <div class="ta-allowances-row">
+            <div class="ta-form-group">
+              <label for="purpose">Purpose of Travel</label>
+              <input id="purpose" name="purpose" required />
+            </div>
 
-          <div class="ta-form-group">
-            <label for="purpose">Purpose of Travel</label>
-            <input id="purpose" name="purpose" required />
-          </div>
+            <div class="ta-form-group">
+              <label for="travel_mode">Mode of Travel</label>
+              <select id="travel_mode" name="travel_mode" required>
+                <option value="">Select Travel mode</option>
+                <option value="Bike">Bike</option>
+                <option value="Train">Train</option>
+                <option value="Bus">Bus</option>
+                <option value="Car">Car</option>
+                <option value="Auto">Auto</option>
+                <option value="Cab">Cab</option>
+              </select>
+            </div>
 
-          <div class="ta-form-group">
-            <label for="travel_mode">Mode of Travel</label>
-            <select id="travel_mode" name="travel_mode" required>
-              <option value="">Select...</option>
-              <option value="Bike">Bike</option>
-              <option value="Train">Train</option>
-              <option value="Bus">Bus</option>
-              <option value="Car">Car</option>
-            </select>
-          </div>
+            <!-- Total km field (hidden by default) -->
+            <div class="ta-form-group hidden" id="total_km_group">
+              <label for="total_km">Total km</label>
+              <input type="number" id="total_km" name="total_km" />
+            </div>
 
-          <!-- Total km field (hidden by default) -->
-          <div class="ta-form-group hidden" id="total_km_group">
-            <label for="total_km">Total km</label>
-            <input type="number" id="total_km" name="total_km" />
-          </div>
+            <!-- Ticket Amount field (hidden by default) -->
+            <div class="ta-form-group hidden" id="ticket_amount_group">
+              <label for="ticket"> Ticket Amount</label>
+              <input type="number" id="ticket_amount" name="ticket_amount" />
+            </div>
 
-          <!-- Ticket Amount field (hidden by default) -->
-          <div class="ta-form-group hidden" id="ticket_amount_group">
-            <label for="ticket"> Ticket Amount</label>
-            <input type="number" id="ticket_amount" name="ticket_amount" />
-          </div>
+            <div class="ta-form-group hidden"  id="upload_ticket_group">
+              <label for="attachment">Upload Ticket </label>
+              <input type="file" id="upload_ticket" name="upload_ticket" accept=".pdf,.jpg,.jpeg,.png">
+            </div>
 
-          <div class="ta-form-group" id="fare_amount_group">
-            <label for="fare_amount"> Fare Amount</label>
-            <input type="number" id="fare_amount" name="fare_amount" readonly />
-          </div>
+            <div class="ta-form-group" id="fare_amount_group">
+              <label for="fare_amount"> Fare Amount</label>
+              <input
+                type="number"
+                id="fare_amount"
+                name="fare_amount"
+                readonly
+              />
+            </div>
 
-          <div class="ta-form-group">
-            <label for="allowance">Allowance Type</label>
-            <select id="allowance_type" name="allowance_type" required>
-              <option value="">Select...</option>
-              <option value="DA">DA</option>
-              <option value="Halting">Halting</option>
-              <option value="Lodging">Lodging</option>
-              <option value="DA_lodging">DA and Lodging</option>
-            </select>
-          </div>
+            <div class="ta-form-group">
+              <label for="allowance">Allowance Type</label>
+              <select id="allowance_type" name="allowance_type" required>
+                <option value="">Select Allowances</option>
+                <option value="DA">DA</option>
+                <option value="Halting">Halting</option>
+                <option value="Lodging">Lodging</option>
+                <option value="DA and Lodging">DA and Lodging</option>
+              </select>
+            </div>
+          
+            <!-- Add a placeholder to show the final DA amount -->
+            <div class="ta-form-group hidden" id="da_amount_group">
+              <label for="final_da_amount">Final DA Amount</label>
+              <input id="final_da_amount" name="final_da_amount" readonly />
+            </div>
 
-          <!-- Add a placeholder to show the final DA amount -->
-          <div class="ta-form-group" id="da_amount_group">
-            <label for="final_da_amount">Final DA Amount</label>
-            <input id="final_da_amount" name="final_da_amount" />
-          </div>
+            <!-- Lodging Amount field (hidden by default) -->
+            <div class="ta-form-group hidden" id="lodging_amount_group">
+              <label for="Lodging">Enter Lodging Amount</label>
+              <input type="number" id="lodging_amount" name="lodging_amount" />
+            </div>
 
-          <!-- Lodging Amount field (hidden by default) -->
-          <div class="ta-form-group hidden" id="lodging_amount_group">
-            <label for="Lodging">Lodging</label>
-            <input type="number" id="lodging_amount" name="lodging_amount" />
-          </div>
+            <!-- Total Days Stay in Lodge field (hidden by default) -->
+            <div class="ta-form-group hidden" id="day_stay_lodge_group">
+              <label for="day_stay_lodge">Total days stay in lodge</label>
+              <input type="number" id="day_stay_lodge" name="day_stay_lodge" />
+            </div>
 
-          <!-- Total Days Stay in Lodge field (hidden by default) -->
-          <div class="ta-form-group hidden" id="day_stay_lodge_group">
-            <label for="day_stay_lodge">Total days stay in lodge</label>
-            <input type="number" id="day_stay_lodge" name="day_stay_lodge" />
-          </div>
-          <!-- Total Days Stay in halt field (hidden by default) -->
-          <div class="ta-form-group hidden" id="day_stay_halt_group">
-            <label for="day_stay_halt">Total days stay in Halt</label>
-            <input type="number" id="day_stay_halt" name="day_stay_halt" />
-          </div>
+            <div class="ta-form-group hidden"  id="upload_lodging_group">
+              <label for="attachment">Upload Lodging Bill</label>
+              <input type="file" id="upload_lodging" name="upload_lodging" accept=".pdf,.jpg,.jpeg,.png">
+            </div>
 
-          <!-- Final Lodging Amount field (hidden by default) -->
-          <div class="ta-form-group" id="final_lodge_amount_group">
-            <label for="final_lodge_amount">Final Lodging Amount</label>
-            <input
-              type="number"
-              id="final_lodge_amount"
-              name="final_lodge_amount"
-            />
-          </div>
+            <!-- Total Days Stay in halt field (hidden by default) -->
+            <div class="ta-form-group hidden" id="day_stay_halt_group">
+              <label for="day_stay_halt">Total days stay in Halt</label>
+              <input type="number" id="day_stay_halt" name="day_stay_halt" />
+            </div>
 
-          <!-- Final Halting Amount field (hidden by default) -->
-          <div class="ta-form-group" id="final_halt_amount_group">
-            <label for="final_halt_amount">Final Halting Amount</label>
-            <input
-              type="number"
-              id="final_halt_amount"
-              name="final_halt_amount"
-            />
+            <!-- Final Lodging Amount field (hidden by default) -->
+            <div class="ta-form-group hidden" id="final_lodge_amount_group">
+              <label for="final_lodge_amount">Final Lodging Amount</label>
+              <input
+                type="number"
+                id="final_lodge_amount"
+                name="final_lodge_amount"
+                readonly
+              />
+            </div>
+
+            <!-- Final Halting Amount field (hidden by default) -->
+            <div class="ta-form-group hidden" id="final_halt_amount_group">
+              <label for="final_halt_amount">Final Halting Amount</label>
+              <input
+                type="number"
+                id="final_halt_amount"
+                name="final_halt_amount"
+                readonly
+              />
+            </div>
+            <div class="ta-form-group hidden" id="tatal_amount_group">
+              <label for="total_amount">Total Amount</label>
+              <input type="" id="total_amount" name="total_amount" readonly />
+            </div>
           </div>
-          <div class="ta-form-group" id="tatal_amount_group">
-            <label for="total_amount">Total Amount</label>
-            <input type="" id="total_amount" name="total_amount" readonly />
+          <div class="ta-form-btn">
+            <button type="submit" class="add-button" id="add-button">
+              Save
+            </button>
           </div>
-          <div class="ta-form-group">
-            <button type="submit">Add</button>
-          </div>
+        </form>
+
+        <button>Add Local</button>
+      </div>
+
+      <!--<p id="response-message"></p>-->
+
+      <!--For user info only-->
+      <p id="total_duration" class="hidden"></p>
+      <p id="fare" class="hidden"></p>
+      <p id="da"></p>
+      <p id="halt"></p>
+      <p id="lodge"></p>
+
+      <!-- Display Total Amount -->
+      <div id="total-amount" class="hidden">Total Amount: 0</div>
+
+      <!--for calculations hidden for end user-->
+      <p id="da-amount" class="hidden"></p>
+      <p id="lodging-amount" class="hidden"></p>
+      <p id="halting-amount" class="hidden"></p>
+      <div id="return-response" class="hidden"></div>
+
+
+      <!-- Response Container for Feedback -->
+      <div id="response-container"></div>
+
+      <!-- Overlay HTML -->
+<div id="please-wait-overlay" style="display: none;">
+  <div class="overlay-content">
+      <p>Please wait...</p>
+  </div>
+</div>
+
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col">
+            <div id="table-heading" hx-get="/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.get_current_month" 
+                 hx-trigger="load"
+                 hx-target="#current-month">
+                 Expense Report of <span id="current-month"></span>
+            </div>
         </div>
-      </form>
+        <div class="col d-flex justify-content-end">
+          <div class="btn submit-btn">Submit</div>
+          <div class="btn delete-btn">Delete</div>
+          <div class="btn select-all-btn">Select All</div>
+        </div>
+      </div>
+      <div id="excel-canvas" class="excel-container">
+        
+      </div>
+      <div id="no-records-message" style="display: none;">No records.</div>
     </div>
-
-    <p id="response-message"></p>
-    <!--For user info only-->
-    <p id="total_duration"></p>
-    <p id="fare"></p>
-    <p id="da"></p>
-    <p id="halt"></p>
-    <p id="lodge"></p>
-
-    <!-- Display Total Amount -->
-    <div id="total-amount">Total Amount: 0</div>
-
-    <!--for calculations hidden for end user-->
-    <p id="da-amount" class="hidden"></p>
-    <p id="lodging-amount" class="hidden"></p>
-    <p id="halting-amount" class="hidden"></p>
-    <div id="return-response"></div>
-
-    <div id="excel-canvas"></div>
-
+    
+    </div>
+  </main>
+  <div id="no-reports" style="display: none;">
+    <h2>You don't have any reports.</h2>
+  </div>
+  <footer class="footer">
+    <nav class="nav justify-content-center">
+        <a class="nav-link tab active px-5 text-center" href="#" id="my-travel">
+          <img src="/files/profile (2).png" width="30" />
+          <p>My Travel</p>
+        </a>
+        <a class="nav-link tab px-5 text-center" href="/app/ta-approval" id="requests">
+          <img src="/files/notification.png" alt="" width="30" />
+          <p>Requests</p>
+        </a>
+        <a class="nav-link tab px-5 text-center" href="#" id="report"> 
+          <img src="/files/test.png" alt="" width="30" />
+          <p>Reports</p></a>
+    </nav>
+  </footer>
+    
     <script>
+
+      async function handleFormSubmit(event) {
+        event.preventDefault(); // Prevent default form submission behavior
+    
+        const form = event.target;
+        const submitButton = document.getElementById("add-button");
+        submitButton.disabled = true; // Disable the button to prevent multiple submissions
+        const formData = new FormData();
+    
+        // Append text fields
+        formData.append("from_location", document.getElementById("from_location").value);
+        formData.append("to_location", document.getElementById("to_location").value);
+        formData.append("from_date", document.getElementById("from_date").value);
+        formData.append("from_time", document.getElementById("from_time").value);
+        formData.append("to_date", document.getElementById("to_date").value);
+        formData.append("to_time", document.getElementById("to_time").value);
+        formData.append("total_time", document.getElementById("total_time").value);
+        formData.append("purpose", document.getElementById("purpose").value);
+        formData.append("travel_mode", document.getElementById("travel_mode").value);
+        formData.append("total_km", document.getElementById("total_km").value);
+        formData.append("ticket_amount", document.getElementById("ticket_amount").value);
+        formData.append("fare_amount", document.getElementById("fare_amount").value);
+        formData.append("allowance_type", document.getElementById("allowance_type").value);
+        formData.append("final_da_amount", document.getElementById("final_da_amount").value);
+        formData.append("lodging_amount", document.getElementById("lodging_amount").value);
+        formData.append("day_stay_lodge", document.getElementById("day_stay_lodge").value);
+       // formData.append("day_stay_halt", document.getElementById("day_stay_halt").value);
+        formData.append("final_lodge_amount", document.getElementById("final_lodge_amount").value);
+        formData.append("final_halt_amount", document.getElementById("final_halt_amount").value);
+        formData.append("total_amount", document.getElementById("total_amount").value);
+        
+        // Append file inputs
+        const uploadTicketFile = document.getElementById("upload_ticket").files[0];
+        if (uploadTicketFile) {
+            formData.append("upload_ticket", uploadTicketFile);
+        }
+    
+        const uploadLodgingFile = document.getElementById("upload_lodging").files[0];
+        if (uploadLodgingFile) {
+            formData.append("upload_lodging", uploadLodgingFile);
+        }
+    
+        try {
+            // Log formData entries for debugging
+            for (const [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+    
+            // Get the total amount from the form
+            const totalAmount = formData.get('total_amount');
+    
+            // Show confirmation dialog
+            const confirmation = await Swal.fire({
+                title: "Confirm Submission",
+                text: `Total Amount: ${totalAmount}. Do you want to proceed?`,
+                icon: "info",
+                showCancelButton: true,
+                confirmButtonText: "Yes, submit",
+                cancelButtonText: "No, cancel",
+            });
+    
+            if (confirmation.isConfirmed) {
+                // Make the POST request using Fetch API
+                const response = await fetch(
+                    "/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.create_record",
+                    {
+                        method: "POST",
+                        body: formData, // Use FormData object
+                    }
+                );
+                // Log the response
+                const result = await response.json();
+                console.log("Server response:", result);
+    
+                // Handle the response
+                if (result.message.status === "success") {
+                    await Swal.fire({
+                        title: "Success",
+                        text: "Your TA has been added successfully!",
+                        icon: "success",
+                    });
+    
+                    form.reset(); // Clear the form
+                    fetchData(); // Fetch updated data
+                    resetSelectElements(); // Reset select elements to default
+                    hideConditionalElements(); // Hide elements that were conditionally shown
+    
+                    // Show "Please wait" overlay
+                    document.getElementById("please-wait-overlay").style.display = 'flex';
+    
+                    // Wait for 2 seconds before refreshing the page
+                    setTimeout(() => {
+                        location.reload(); // Refresh the page
+                    }, 2000); // Delay of 2000 milliseconds (2 seconds)
+                } else {
+                    await Swal.fire({
+                        title: "Error",
+                        text: result.message || "Submission failed. Please try again.",
+                        icon: "error",
+                    });
+                }
+            } else {
+                await Swal.fire({
+                    title: "Cancelled",
+                    text: "Your submission has been cancelled.",
+                    icon: "info",
+                });
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            await Swal.fire({
+                title: "Error",
+                text: "Submission failed. Please try again.",
+                icon: "error",
+            });
+        } finally {
+            submitButton.disabled = false; // Re-enable the button
+        }
+    }
+    
+
+      // Reset select elements to their default option
+      function resetSelectElements() {
+        document.querySelectorAll("#travel-form select").forEach((select) => {
+          select.selectedIndex = 0;
+        });
+      }
+
+      // Hide conditionally shown elements
+      function hideConditionalElements() {
+        document.querySelectorAll(".hidden").forEach((element) => {
+          element.style.display = "none";
+        });
+      }
+    
+
       document.addEventListener("DOMContentLoaded", async function () {
         const cityNames = await fetchCityCategories();
         console.log("City Names:", cityNames); // Log the city names
@@ -305,6 +839,7 @@
           .getElementById("from_location")
           .addEventListener("change", function () {
             handleOtherOption(this, "from_location_other_group");
+            validateLocations(); // Call validation when from_location changes
           });
 
         // Handle changes to the 'to_location' dropdown
@@ -312,6 +847,7 @@
           .getElementById("to_location")
           .addEventListener("change", function () {
             handleOtherOption(this, "to_location_other_group");
+            validateLocations(); // Call validation when to_location changes
           });
 
         // Attach event listeners to date and time fields for calculation
@@ -324,15 +860,67 @@
         });
       });
 
+      function validateLocations() {
+        const fromLocation = document.getElementById("from_location");
+        const toLocation = document.getElementById("to_location");
+        const submitButton = document.querySelector('button[type="submit"]');
+
+        // Check if both locations are the same and not 'Other'
+        if (
+          fromLocation.value === toLocation.value &&
+          fromLocation.value !== "Other"
+        ) {
+          alert("From and To locations cannot be the same.");
+          document.getElementById("to_location").value = "";
+          //toLocation.classList.add("field-error"); // Apply error styling to To location
+          submitButton.disabled = true; // Disable the submit button
+        } else {
+          //toLocation.classList.remove("field-error"); // Remove error styling
+          submitButton.disabled = false; // Enable the submit button
+        }
+      }
+
       function handleOtherOption(selectElement, otherFieldGroupId) {
         const otherFieldGroup = document.getElementById(otherFieldGroupId);
+        const inputField = otherFieldGroup.querySelector("input"); // Find the input field within the group
         const selectedValue = selectElement.value;
 
-        // Show or hide the other field based on selection
+        // Make the input field readonly or editable based on selection
         if (selectedValue === "Other") {
-          otherFieldGroup.classList.remove("hidden");
+          inputField.removeAttribute("readonly"); // Make it editable
         } else {
-          otherFieldGroup.classList.add("hidden");
+          inputField.value = ""; // Clear the input field
+          inputField.setAttribute("readonly", "readonly"); // Make it readonly
+        }
+      }
+      document
+        .getElementById("from_location_other")
+        .addEventListener("change", function () {
+          validateOtherLocations(); // Call validation when to_location changes
+        });
+
+      document
+        .getElementById("to_location_other")
+        .addEventListener("change", function () {
+          validateOtherLocations(); // Call validation when to_location changes
+        });
+
+      function validateOtherLocations() {
+        const fromLocationOther = document.getElementById(
+          "from_location_other"
+        ).value;
+        const toLocationOther =
+          document.getElementById("to_location_other").value;
+
+        if (fromLocationOther === toLocationOther) {
+          alert(
+            "From and To locations cannot be the same when 'Other' is selected."
+          );
+          document.getElementById("to_location_other").value = "";
+          submitButton.disabled = true; // Disable the submit button
+        } else {
+          //removeTooltip(toLocation); // Remove error styling
+          submitButton.disabled = false; // Enable the submit button
         }
       }
 
@@ -386,45 +974,73 @@
         }
       }
 
-      // Function for calculating total duration
-      function calculateTotalDuration() {
-        const fromDate = document.getElementById("from_date").value;
-        const fromTime = document.getElementById("from_time").value;
-        const toDate = document.getElementById("to_date").value;
-        const toTime = document.getElementById("to_time").value;
-
-        if (fromDate && fromTime && toDate && toTime) {
-          const startDateTime = new Date(`${fromDate}T${fromTime}`);
-          const endDateTime = new Date(`${toDate}T${toTime}`);
-
-          if (startDateTime > endDateTime) {
-            alert("Start date-time should not be greater than end date-time.");
+     // Function for calculating total duration
+     async function calculateTotalDuration() {
+      const fromDate = document.getElementById("from_date").value;
+      const fromTime = document.getElementById("from_time").value;
+      const toDate = document.getElementById("to_date").value;
+      const toTime = document.getElementById("to_time").value;
+    
+      if (fromDate && fromTime && toDate && toTime) {
+        const startDateTime = new Date(`${fromDate}T${fromTime}`);
+        const endDateTime = new Date(`${toDate}T${toTime}`);
+    
+        // Client-side validation
+        if (startDateTime > endDateTime) {
+          alert("Start date-time should not be greater than end date-time.");
+          document.getElementById("to_time").value = ""; // Reset the to_time field
+          document.getElementById("to_date").value = "";
+          return;
+        }
+    
+        // Check if the start and end times are the same
+        if (startDateTime.getTime() === endDateTime.getTime()) {
+          alert("Start time and end time should not be the same.");
+          document.getElementById("to_time").value = ""; // Reset the to_time field
+          document.getElementById("to_date").value = "";
+          return;
+        }
+    
+        try {
+          // Send data to the server for further validation and calculation
+          const response = await fetch('/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.calculate_total_duration', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              from_date: fromDate,
+              from_time: fromTime,
+              to_date: toDate,
+              to_time: toTime
+            })
+          });
+    
+          const data = await response.json();
+    
+          // Check if response contains the expected structure
+          if (response.ok && data.message) {
+            if (data.message.status === "success") {
+              document.getElementById("total_time").value = data.message.total_hours || "N/A";
+              document.getElementById("total_duration").textContent = `Total Duration: ${data.total_duration || "N/A"}`;
+            } else {
+              // Display error message from the server
+              alert(data.message.error || "An error occurred during calculation.");
+              document.getElementById("to_time").value = ""; // Reset the to_time field
+            }
           } else {
-            const durationMs = endDateTime - startDateTime;
-            const durationDays = Math.floor(durationMs / (1000 * 60 * 60 * 24));
-            const durationHours = Math.floor(
-              (durationMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-            );
-
-            // Calculate total hours and remaining hours
-            const totalHours = durationDays * 24 + durationHours;
-
-            document.getElementById("total_time").value = totalHours;
-            // Format as "X days Y hours"
-            const totalDuration = `${durationDays} days ${durationHours} hours`;
-
-            // Log the total duration and hours
-            console.log(`Total Duration: ${totalDuration}`);
-            console.log(`Total Hours: ${totalHours}`);
-            document.getElementById(
-              "total_duration"
-            ).textContent = `Total Duration: ${totalDuration}`;
-
-            // Calculate DA based on the duration
-            //calculateDAAmount(durationDays, durationHours, totalHours);
+            alert("Unexpected response from server.");
+            document.getElementById("to_time").value = ""; // Reset the to_time field
           }
+        } catch (error) {
+          console.error('Error:', error);
+          alert("An error occurred while calculating the total duration.");
+          document.getElementById("to_time").value = ""; // Reset the to_time field
         }
       }
+    }
+  
+
 
       // Function to fetch and update allowance amounts
       function fetchAndUpdateAllowances() {
@@ -462,6 +1078,7 @@
                 document.getElementById(
                   "halting-amount"
                 ).textContent = `Halting Amount: ${haltingAmount}`;
+                allowanceTypeSelect();
               } else {
                 console.error("Error fetching allowances:", data.error);
               }
@@ -477,9 +1094,238 @@
         .getElementById("to_location")
         .addEventListener("change", fetchAndUpdateAllowances);
 
-      /* document
-                .getElementById("allowance_type")
-                .addEventListener("change", fetchAndUpdateAllowances);*/
+        document.addEventListener("DOMContentLoaded", function () {
+          // Get references to dropdowns and fields
+          const travelMode = document.getElementById("travel_mode");
+          const allowanceType = document.getElementById("allowance_type");
+          const fromLocation = document.getElementById("from_location");
+          const toLocation = document.getElementById("to_location");
+  
+          const fromDate = document.getElementById('from_date');
+          const fromTime = document.getElementById('from_time');
+          const toDate = document.getElementById('to_date');
+          const toTime = document.getElementById('to_time');
+  
+          const totalKmGroup = document.getElementById("total_km_group");
+          const ticketAmountGroup = document.getElementById(
+            "ticket_amount_group"
+          );
+          const totalKmInput = document.getElementById("total_km");
+          const ticketAmountInput = document.getElementById("ticket_amount");
+  
+          const lodgingAmountGroup = document.getElementById(
+            "lodging_amount_group"
+          );
+          const dayStayLodgeGroup = document.getElementById(
+            "day_stay_lodge_group"
+          );
+          const finalLodgingAmount = document.getElementById(
+            "final_lodge_amount_group"
+          );
+  
+          const finalHaltingAmount = document.getElementById(
+            "final_halt_amount_group"
+          );
+         // const dayStayHaltGroup = document.getElementById("day_stay_halt_group");
+  
+          const finalDaAmount = document.getElementById("da_amount_group");
+
+          const uploadTicketGroup = document.getElementById("upload_ticket_group");
+          
+          const uploadLodgingGroup = document.getElementById("upload_lodging_group");
+
+          // Add event listener to travel mode dropdown
+          travelMode.addEventListener("change", function () {
+            const selectedValue = this.value;
+  
+            // Check if locations and dates are filled
+            if (!fromLocation.value || !toLocation.value) {
+                alert("Please select the locations first.");
+                travelMode.value = ""; // Reset the dropdown selection
+                return;
+            }
+            if (!fromDate.value || !fromTime.value || !toDate.value || !toTime.value) {
+                // If any of the date or time fields are empty, show an alert and reset the dropdown
+                alert("Please fill in all date and time fields before selecting a travel mode.");
+                travelMode.value = ""; // Reset the dropdown selection
+                return;
+            }
+  
+            // Show/hide fields based on travel mode
+            if (selectedValue === "Bike" || selectedValue === "Car") {
+              document.getElementById("ticket_amount").value = 0;
+              totalKmGroup.classList.remove("hidden");
+              ticketAmountGroup.classList.add("hidden");
+              uploadTicketGroup.classList.add("hidden");
+              totalKmInput.required = true; // Make total km input mandatory
+              ticketAmountInput.required = false; // Remove requirement from ticket amount
+            } else if (selectedValue === "Train" || selectedValue === "Bus") {
+              document.getElementById("total_km").value = 0;
+              ticketAmountGroup.classList.remove("hidden");
+              uploadTicketGroup.classList.remove("hidden");
+              totalKmGroup.classList.add("hidden");
+              ticketAmountInput.required = true; // Make ticket amount input mandatory
+              totalKmInput.required = false; // Remove requirement from total km
+            } else {
+              document.getElementById("ticket_amount").value = 0;
+              document.getElementById("total_km").value = 0;
+              totalKmGroup.classList.add("hidden");
+              ticketAmountGroup.classList.add("hidden");
+              uploadTicketGroup.classList.add("hidden");
+              totalKmInput.required = false; // Remove requirement
+              ticketAmountInput.required = false; // Remove requirement
+            }
+            // Calculate fare amount based on mode of travel
+            calculateFareAmount(selectedValue);
+           
+          });
+  
+          // Add event listener to input fields for recalculation
+          totalKmInput.addEventListener("input", function () {
+            calculateFareAmount(travelMode.value);
+          });
+  
+          ticketAmountInput.addEventListener("input", function () {
+            calculateFareAmount(travelMode.value);
+          });
+  
+          // Function to calculate fare amount
+          function calculateFareAmount(mode) {
+            let fareAmount = 0;
+  
+            if (mode === "Bike" || mode === "Car") {
+              const totalKm = parseFloat(totalKmInput.value);
+              if (!isNaN(totalKm)) {
+                if (mode === "Bike") {
+                  fareAmount = totalKm * 4; // 4 Rs per km for bike
+                } else if (mode === "Car") {
+                  fareAmount = totalKm * 10; // 10 Rs per km for car
+                }
+              }
+            } else if (mode === "Train" || mode === "Bus") {
+              const ticketAmount = parseFloat(ticketAmountInput.value);
+              if (!isNaN(ticketAmount)) {
+                fareAmount = ticketAmount; // Use ticket amount as fare
+              }
+            }
+  
+            // Display fare amount
+            console.log(`Fare Amount: ${fareAmount} Rs`);
+            document.getElementById("fare_amount").value = fareAmount;
+            document.getElementById(
+              "fare"
+            ).textContent = `Fare Amount: ${fareAmount}`;
+  
+            calculateTotalAmount();
+          }
+  
+          // Add event listener to allowance type dropdown
+          allowanceType.addEventListener("change", function () {
+            const selectedValue = this.value;
+
+            const lodgingAmount = document.getElementById("lodging_amount");
+            //const dayStayHalt = document.getElementById("day_stay_halt");
+            const dayStayLodge = document.getElementById("day_stay_lodge");
+
+           
+            // Check if locations and dates are filled
+            if (!fromLocation.value || !toLocation.value) {
+              alert("Please select the locations first.");
+              allowanceType.value = ""; // Reset the dropdown selection
+              return;
+            }
+            if (!fromDate.value || !fromTime.value || !toDate.value || !toTime.value) {
+              // If any of the date or time fields are empty, show an alert and reset the dropdown
+              alert("Please fill in all date and time fields before selecting an allowance type.");
+              allowanceType.value = ""; // Reset the dropdown selection
+              return;
+            }
+  
+            // Show/hide fields based on allowance type
+            if (selectedValue === "Lodging") {
+              lodgingAmountGroup.classList.remove("hidden");
+              uploadLodgingGroup.classList.remove("hidden");
+              dayStayLodgeGroup.classList.remove("hidden");
+              finalLodgingAmount.classList.remove("hidden");
+              finalHaltingAmount.classList.add("hidden");
+             // dayStayHaltGroup.classList.add("hidden");
+              finalDaAmount.classList.add("hidden");
+              lodgingAmount.required = true;
+              dayStayLodge.required = true;
+              //dayStayHalt.required = false;
+            } else if (selectedValue === "DA and Lodging") {
+              lodgingAmountGroup.classList.remove("hidden");
+              uploadLodgingGroup.classList.remove("hidden");
+              dayStayLodgeGroup.classList.remove("hidden");
+              finalLodgingAmount.classList.remove("hidden");
+              finalDaAmount.classList.remove("hidden");
+             // dayStayHaltGroup.classList.add("hidden");
+              finalHaltingAmount.classList.add("hidden");
+              lodgingAmount.required = true;
+              dayStayLodge.required = true;
+              //dayStayHalt.required = false;
+            } else if (selectedValue === "DA") {
+              finalDaAmount.classList.remove("hidden");
+              lodgingAmountGroup.classList.add("hidden");
+              uploadLodgingGroup.classList.add("hidden");
+              dayStayLodgeGroup.classList.add("hidden");
+              finalLodgingAmount.classList.add("hidden");
+              finalHaltingAmount.classList.add("hidden");
+            //  dayStayHaltGroup.classList.add("hidden");
+              lodgingAmount.required = false;
+              dayStayLodge.required = false;
+             // dayStayHalt.required = false;
+            } else if (selectedValue === "Halting") {
+              lodgingAmountGroup.classList.add("hidden");
+              uploadLodgingGroup.classList.add("hidden");
+             // dayStayHaltGroup.classList.remove("hidden");
+              dayStayLodgeGroup.classList.add("hidden");
+              finalDaAmount.classList.add("hidden");
+              finalLodgingAmount.classList.add("hidden");
+              finalHaltingAmount.classList.remove("hidden");
+             // dayStayHalt.required = true;
+              lodgingAmount.required = false;
+              dayStayLodge.required = false;
+            } else {
+              lodgingAmountGroup.classList.add("hidden");
+              uploadLodgingGroup.classList.add("hidden");
+              dayStayLodgeGroup.classList.add("hidden");
+              finalDaAmount.classList.add("hidden");
+              finalLodgingAmount.classList.add("hidden");
+              finalHaltingAmount.classList.add("hidden");
+             // dayStayHaltGroup.classList.add("hidden");
+              lodgingAmount.required = false;
+              dayStayLodge.required = false;
+             // dayStayHalt.required = false;
+            }
+            allowanceTypeSelect();
+          });
+        });
+  
+        // Attach the calculateTotalAmount function to relevant events
+        document.addEventListener("DOMContentLoaded", function () {
+          const fields = [
+            "from_date",
+            "from_time",
+            "to_date",
+            "to_time",
+            "to_location",
+            "allowance_type",
+            "final_da_amount",
+            "travel_mode",
+            "total_km",
+            "ticket_amount",
+            "lodging_amount", //user input amount
+            "day_stay_lodge",
+            //"day_stay_halt",
+          ];
+  
+          fields.forEach((field) => {
+            document
+              .getElementById(field)
+              .addEventListener("change", allowanceTypeSelect);
+          });
+        });
 
       // Main function to handle allowance type selection
       function allowanceTypeSelect() {
@@ -487,21 +1333,33 @@
         const allowanceType = document.getElementById("allowance_type").value;
 
         if (allowanceType === "DA") {
+          document.getElementById("lodging_amount").value = 0;
           document.getElementById("final_lodge_amount").value = 0;
           document.getElementById("final_halt_amount").value = 0;
+          document.getElementById("day_stay_lodge").value = 0;
+         // document.getElementById("day_stay_halt").value = 0;
+          
           calculateDAAmount();
+          
         } else if (allowanceType === "Lodging") {
           document.getElementById("final_da_amount").value = 0;
           document.getElementById("final_halt_amount").value = 0;
+         // document.getElementById("day_stay_halt").value = 0;
           calculateLodgingAmount();
+         
         } else if (allowanceType === "Halting") {
           document.getElementById("final_da_amount").value = 0;
+          document.getElementById("lodging_amount").value = 0;
           document.getElementById("final_lodge_amount").value = 0;
+          document.getElementById("day_stay_lodge").value = 0;
           calculateHaltingAmount();
-        } else if (allowanceType === "DA_lodging") {
+          
+        } else if (allowanceType === "DA and Lodging") {
           document.getElementById("final_halt_amount").value = 0;
+         // document.getElementById("day_stay_halt").value = 0;
           calculateDAAmount();
           calculateLodgingAmount();
+          
         }
       }
 
@@ -551,6 +1409,9 @@
               document.getElementById(
                 "total-amount"
               ).textContent = `Total Amount: ${data.message}`;
+              document
+                .getElementById("tatal_amount_group")
+                .classList.remove("hidden");
               document.getElementById("total_amount").value = data.message;
             } else {
               // Handle case where response does not contain the expected data
@@ -599,6 +1460,7 @@
               document.getElementById("final_da_amount").value = data.message;
               calculateTotalAmount();
             } else {
+              document.getElementById("final_da_amount").value = 0;
               handleError("Error fetching final DA amount", 0);
             }
           })
@@ -625,7 +1487,8 @@
           parseFloat(document.getElementById("day_stay_lodge").value) || 0;
 
         // Retrieve total time duration in hours from the input field
-        const totalTimeContent = document.getElementById("total_time").value;
+        const totalTimeContent =
+          document.getElementById("total_time").value;
         const totalHours = parseFloat(totalTimeContent) || 0;
         const totalDurationInDays = totalHours / 24; // Convert hours to days
 
@@ -679,20 +1542,19 @@
           ? parseFloat(HaltingAmountMatch[1])
           : 0;
 
-        const inputStayDays =
-          parseFloat(document.getElementById("day_stay_halt").value) || 0;
+        // const inputStayDays = parseFloat(document.getElementById("day_stay_halt").value) || 0;
 
         // Retrieve total time duration in hours from the input field
-        const totalTimeContent = document.getElementById("total_time").value;
+        const totalTimeContent =
+          document.getElementById("total_time").value;
         const totalHours = parseFloat(totalTimeContent) || 0;
         const totalDurationInDays = totalHours / 24; // Convert hours to days
 
         // Check if inputStayDays exceeds totalDurationDays
-        if (inputStayDays > totalDurationInDays) {
+        if ( totalHours < 4 ) {
           alert(
-            "Total days stay in halt cannot exceed the total duration of your journey."
+            "You are not eligible for DA because your total travel duration is less than 4 hours."
           );
-          document.getElementById("day_stay_halt").value = 0; // Reset lodging amount
           document.getElementById("final_halt_amount").value = 0;
         } else {
           // Construct URL with parameters
@@ -700,7 +1562,7 @@
             "/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.calculate_halting_amount",
             window.location.origin
           );
-          url.searchParams.append("stay_days", inputStayDays);
+          url.searchParams.append("total_time", totalTimeContent);
           url.searchParams.append("halting_limit", HaltingLimit); // Send the limit if needed
 
           // Make the request using fetch
@@ -717,7 +1579,7 @@
               }
             })
             .catch((error) => handleError("Fetch error", error));
-        }
+          }
       }
 
       // Handles error logging and updating the final DA amount
@@ -725,256 +1587,42 @@
         console.error(message);
         document.getElementById("final_da_amount").value = defaultValue;
         document.getElementById("final_lodge_amount").value = defaultValue;
+        document.getElementById("final_halt_amount").value=defaultValue;
       }
 
-      document.addEventListener("DOMContentLoaded", function () {
-        // Get references to dropdowns and fields
-        const travelMode = document.getElementById("travel_mode");
-        const allowanceType = document.getElementById("allowance_type");
-        const toLocation = document.getElementById("to_location");
+     
+     // Initialize Handsontable
+     const container = document.getElementById("excel-canvas");
 
-        const totalKmGroup = document.getElementById("total_km_group");
-        const ticketAmountGroup = document.getElementById(
-          "ticket_amount_group"
-        );
-        const totalKmInput = document.getElementById("total_km");
-        const ticketAmountInput = document.getElementById("ticket_amount");
-
-        const lodgingAmountGroup = document.getElementById(
-          "lodging_amount_group"
-        );
-        const dayStayLodgeGroup = document.getElementById(
-          "day_stay_lodge_group"
-        );
-        const finalLodgingAmount = document.getElementById(
-          "final_lodge_amount_group"
-        );
-
-        const finalHaltingAmount = document.getElementById(
-          "final_halt_amount_group"
-        );
-        const dayStayHaltGroup = document.getElementById("day_stay_halt_group");
-
-        const finalDaAmount = document.getElementById("da_amount_group");
-
-        // Add event listener to travel mode dropdown
-        travelMode.addEventListener("change", function () {
-          const selectedValue = this.value;
-
-          // Show/hide fields based on travel mode
-          if (selectedValue === "Bike" || selectedValue === "Car") {
-            totalKmGroup.classList.remove("hidden");
-            ticketAmountGroup.classList.add("hidden");
-          } else if (selectedValue === "Train" || selectedValue === "Bus") {
-            ticketAmountGroup.classList.remove("hidden");
-            totalKmGroup.classList.add("hidden");
-          } else {
-            totalKmGroup.classList.add("hidden");
-            ticketAmountGroup.classList.add("hidden");
-          }
-
-          // Calculate fare amount based on mode of travel
-          calculateFareAmount(selectedValue);
-        });
-
-        // Add event listener to input fields for recalculation
-        totalKmInput.addEventListener("input", function () {
-          calculateFareAmount(travelMode.value);
-        });
-
-        ticketAmountInput.addEventListener("input", function () {
-          calculateFareAmount(travelMode.value);
-        });
-
-        // Function to calculate fare amount
-        function calculateFareAmount(mode) {
-          let fareAmount = 0;
-
-          if (mode === "Bike" || mode === "Car") {
-            const totalKm = parseFloat(totalKmInput.value);
-            if (!isNaN(totalKm)) {
-              if (mode === "Bike") {
-                fareAmount = totalKm * 4; // 4 Rs per km for bike
-              } else if (mode === "Car") {
-                fareAmount = totalKm * 10; // 10 Rs per km for car
-              }
-            }
-          } else if (mode === "Train" || mode === "Bus") {
-            const ticketAmount = parseFloat(ticketAmountInput.value);
-            if (!isNaN(ticketAmount)) {
-              fareAmount = ticketAmount; // Use ticket amount as fare
-            }
-          }
-
-          // Display fare amount
-          console.log(`Fare Amount: ${fareAmount} Rs`);
-          document.getElementById("fare_amount").value = fareAmount;
-          document.getElementById(
-            "fare"
-          ).textContent = `Fare Amount: ${fareAmount}`;
-
-          calculateTotalAmount();
-        }
-
-        // Add event listener to allowance type dropdown
-        allowanceType.addEventListener("change", function () {
-          const selectedValue = this.value;
-
-          // Check if to_location is selected
-          if (!toLocation.value) {
-            alert("Please select the destination location first.");
-            allowanceType.value = ""; // Reset the dropdown selection
-            return;
-          }
-
-          // Show/hide fields based on allowance type
-          if (selectedValue === "Lodging") {
-            lodgingAmountGroup.classList.remove("hidden");
-            dayStayLodgeGroup.classList.remove("hidden");
-            finalLodgingAmount.classList.remove("hidden");
-            finalHaltingAmount.classList.add("hidden");
-            dayStayHaltGroup.classList.add("hidden");
-            finalDaAmount.classList.add("hidden");
-          } else if (selectedValue === "DA_lodging") {
-            lodgingAmountGroup.classList.remove("hidden");
-            dayStayLodgeGroup.classList.remove("hidden");
-            finalLodgingAmount.classList.remove("hidden");
-            finalDaAmount.classList.remove("hidden");
-            dayStayHaltGroup.classList.add("hidden");
-            finalHaltingAmount.classList.add("hidden");
-          } else if (selectedValue === "DA") {
-            finalDaAmount.classList.remove("hidden");
-            lodgingAmountGroup.classList.add("hidden");
-            dayStayLodgeGroup.classList.add("hidden");
-            finalLodgingAmount.classList.add("hidden");
-            finalHaltingAmount.classList.add("hidden");
-            dayStayHaltGroup.classList.add("hidden");
-          } else if (selectedValue === "Halting") {
-            lodgingAmountGroup.classList.add("hidden");
-            dayStayHaltGroup.classList.remove("hidden");
-            finalDaAmount.classList.add("hidden");
-            finalLodgingAmount.classList.add("hidden");
-            finalHaltingAmount.classList.remove("hidden");
-          } else {
-            lodgingAmountGroup.classList.add("hidden");
-            dayStayLodgeGroup.classList.add("hidden");
-            finalDaAmount.classList.add("hidden");
-            finalLodgingAmount.classList.add("hidden");
-            finalHaltingAmount.classList.add("hidden");
-            dayStayHaltGroup.classList.add("hidden");
-          }
-        });
-      });
-
-      // Attach the calculateTotalAmount function to relevant events
-      document.addEventListener("DOMContentLoaded", function () {
-        const fields = [
-          "from_date",
-          "from_time",
-          "to_date",
-          "to_time",
-          "to_location",
-          "allowance_type",
-          "final_da_amount",
-          "travel_mode",
-          "total_km",
-          "ticket_amount",
-          "lodging_amount", //user input amount
-          "day_stay_lodge",
-          "day_stay_halt",
-        ];
-
-        fields.forEach((field) => {
-          document
-            .getElementById(field)
-            .addEventListener("change", allowanceTypeSelect);
-        });
-      });
-
-      document
-        .getElementById("travel-form")
-        .addEventListener("submit", function (event) {
-          event.preventDefault(); // Prevent the default form submission
-
-          // Collect form data
-          const formData = new FormData(event.target);
-          const data = {};
-          formData.forEach((value, key) => {
-            data[key] = value;
-          });
-
-          // Build a summary of the form data, conditionally including fields
-          let summary = "";
-
-          if (data.fare_amount && data.fare_amount != 0) {
-            summary += `<strong>Fare Amount:</strong> ${data.fare_amount}<br>`;
-          }
-
-          if (data.final_da_amount && data.final_da_amount != 0) {
-            summary += `<strong>DA Amount:</strong> ${data.final_da_amount}<br>`;
-          }
-
-          if (data.final_lodge_amount && data.final_lodge_amount != 0) {
-            summary += `<strong>Lodging Amount:</strong> ${data.final_lodge_amount}<br>`;
-          }
-          if (data.day_stay_lodge && data.day_stay_lodge != 0) {
-            summary += `<strong>Total Days Stay in Lodge:</strong> ${data.day_stay_lodge}<br>`;
-          }
-          if (data.final_halt_amount && data.final_halt_amount != 0) {
-            summary += `<strong>Halting Amount:</strong> ${data.final_halt_amount}<br>`;
-          }
-          if (data.day_stay_halt && data.day_stay_halt != 0) {
-            summary += `<strong>Total Days Stay in Halt:</strong> ${data.day_stay_halt}<br>`;
-          }
-
-          if (data.total_amount && data.total_amount != 0) {
-            summary += `<strong>Total Amount:</strong> ${data.total_amount}<br>`;
-          }
-
-          // Show confirmation dialog
-          Swal.fire({
-            title: "Confirm Your Submission",
-            html: summary || "No data to display.",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonText: "Submit",
-            cancelButtonText: "Cancel",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              event.target.submit(); // Proceed with form submission
-            }
-          });
-        });
-
-      // Initialize Handsontable
-      const container = document.getElementById("excel-canvas");
-      const hot = new Handsontable(container, {
-        data: [],
-        colHeaders: [
-          // "User",
-          "Month",
-          "Year",
-          "From",
-          "Date From",
-          "Time From",
-          "To",
-          "Date To",
-          "Time To",
-          "Total Duration",
-          "Purpose",
-          "Mode of Travel",
-          "Total km",
-          "Fare Amount",
-          "Allowance Type",
-          "DA",
-          "Halting",
-          "Lodging",
-          "Total Amount",
-        ],
-        columns: [
-          //{ data: "user", type: "text" },
-          { data: "month", type: "text" },
-          { data: "year", type: "text" },
+     const hot = new Handsontable(container, {
+      data: [],
+      colHeaders: [
+          "Status",     // index 0
+          "Action",     // index 1
+          "From",       // 2
+          "Date From",  // 3
+          "Time From",  // 4
+          "To",         //5
+          "Date To", //6
+          "Time To",  //7
+          "Total Time", // 8
+          "Purpose", //9
+          "Travel Mode", // 10 
+          "Total km", // 11
+          "Ticket Amt",  //12
+          "Fare Amount",  // 13 
+          "Allowance Type", //14
+          "DA", //15
+          "Halting",//16
+          "Lodging", //17 
+          "Total", // 18
+          "Upload Ticket", // 19
+          "Upload Lodging", // 20
+          "name",       //21
+      ],
+      columns: [
+          { data: "status", type: "text" },
+          { data: "selected", type: "checkbox", className: "htCenter" },
           { data: "from_location", type: "text" },
           { data: "from_date", type: "date", dateFormat: "DD-MM-YYYY" },
           { data: "from_time", type: "time", timeFormat: "HH:mm" },
@@ -985,41 +1633,388 @@
           { data: "purpose", type: "text" },
           { data: "travel_mode", type: "text" },
           { data: "total_km", type: "numeric" },
+          { data: "ticket_amount", type: "numeric", format: "0,0.00" },
           { data: "fare_amount", type: "numeric", format: "0,0.00" },
           { data: "allowance_type", type: "text" },
           { data: "final_da_amount", type: "numeric", format: "0,0.00" },
           { data: "final_halt_amount", type: "numeric", format: "0,0.00" },
           { data: "final_lodge_amount", type: "numeric", format: "0,0.00" },
           { data: "total_amount", type: "numeric", format: "0,0.00" },
-        ],
-        licenseKey: "non-commercial-and-evaluation",
-      });
+          
+          { 
+            data: "upload_ticket", 
+            type: "text", 
+            renderer: function(instance, td, row, col, prop, value, cellProperties) {
+              if (value) {
+                var link = document.createElement('a');
+                link.href = value;
+                link.textContent = 'View Ticket';
+                link.target = '_blank';
+                td.innerHTML = '';
+                td.appendChild(link);
+              } else {
+                td.textContent = '-';
+              }
+              return td;
+            }
+          },
+          { 
+            data: "upload_lodging", 
+            type: "text", 
+            renderer: function(instance, td, row, col, prop, value, cellProperties) {
+              if (value) {
+                var link = document.createElement('a');
+                link.href = value;
+                link.textContent = 'View Lodging';
+                link.target = '_blank';
+                td.innerHTML = '';
+                td.appendChild(link);
+              } else {
+                td.textContent = '-';
+              }
+              return td;
+            }
+          },
+          { data: "name", type: "text"}
+      ],
+      rowHeaders: true,
+      stretchH: "all",
+      autoColumnSize: true,
+      manualColumnResize: true,
+      manualRowResize: true,
+      filters: false,
+      dropdownMenu: false,
+      contextMenu: false, // Disable right-click context menu
+      sortIndicator: true,
+      columnHeaderHeight: 40,
+      height: 240,
+      licenseKey: "non-commercial-and-evaluation",
+      cells: function(row, col) {
+          const cellProperties = {};
+          const rowData = this.instance.getDataAtRow(row);
+    
+          // Check if the status is "Pending"
+          if (rowData[0] === "Pending" || rowData[0] === "Approved" ) {
+              if (col === 2) {
+                  cellProperties.readOnly = true;
+              }
+              cellProperties.renderer = function(hotInstance, td, row, col, prop, value, cellProperties) {
+                  Handsontable.renderers.TextRenderer.apply(this, arguments);
+                  td.style.background = rowData[0] === "Pending" ? '#add8e6' : '#90ee90'; // Blue for Pending, Green for Approved
 
-      // Fetch data from server
-      async function fetchData() {
-        try {
-          const response = await fetch(
-            "/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.get_list"
-          );
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+              };
           }
-          const data = await response.json();
+          return cellProperties;
+      },
+      readOnly: false, // Ensure table cells are not readonly
+    });
+
+// Fetch data from server
+async function fetchData() {
+  try {
+      const response = await fetch(
+          "/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.get_list"
+      );
+      if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("getlist data:", data);
+      const tableData = document.getElementById("excel-canvas");
+      const tableHeading = document.getElementById("table-heading");
+      // Check if there are records
+      if (data.message.length === 0) {
+          // No data, display appropriate message
+          tableData.style.display="none";
+          tableHeading.style.display="none";
+      } else {
+          // Data exists, load it into Handsontable
           hot.loadData(data.message);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
+
+          // Optionally clear any previous messages
+         
+          if (tableData) {
+            tableData.style.display="block";
+            tableHeading.style.display="block";
+          }
+      }
+  } catch (error) {
+      console.error("Error fetching data:", error);
+
+      // Optionally display an error message
+      document.getElementById("main-content").innerHTML = "<p>There was an error fetching the data. Please try again later.</p>";
+  }
+}
+
+// Initial data fetch
+fetchData();
+
+     
+     // Function to show/hide buttons and get selected record names
+     function toggleButtons() {
+         const data = hot.getData(); // Get all table data
+         const selectedRows = []; // Array to store selected row data
+     
+         data.forEach((row, index) => {
+             if (row[1] === true) { // Check if the checkbox (second column, index 1) is selected
+                 selectedRows.push(row); // Add the entire row data to the selectedRows array
+             }
+         });
+     
+         // Select the buttons
+         const submitBtn = document.querySelector('.submit-btn');
+         const deleteBtn = document.querySelector('.delete-btn');
+         const selectAllBtn = document.querySelector('.select-all-btn');
+     
+         // Show or hide buttons
+         if (selectedRows.length > 0) {
+          submitBtn.style.display = 'inline-block';
+             deleteBtn.style.display = 'inline-block';
+             selectAllBtn.style.display = 'inline-block';
+     
+             // Log the currently selected rows' names
+        console.log("Currently Selected Records:");
+
+             // Log or process the selected rows (record names or any specific data)
+             selectedRows.forEach(row => {
+                console.log("Selected Record Name: ", row[21]); // The record name is in the last column (index 21)
+             });
+     
+         } else {
+          submitBtn.style.display = 'none';
+             deleteBtn.style.display = 'none';
+             selectAllBtn.style.display = 'none';
+         }
+     }
+     
+     // Monitor changes in the Handsontable data
+     hot.addHook('afterChange', function(changes, source) {
+         if (source === 'edit' || source === 'checkbox') {
+             toggleButtons();
+         }
+     });
+    
+      // Function to delete selected records
+      async function deleteSelectedRecords() {
+        const data = hot.getData(); // Get all table data
+        const selectedRecords = []; // Array to store selected record names (or IDs)
+      
+        // Gather the names (or IDs) of selected records
+        data.forEach(row => {
+            if (row[1] === true) { // Check if the checkbox (second column, index 1) is selected
+                selectedRecords.push(row[21]); // Assume that 'name' (index 0) is unique and can be used to identify the record
+            }
+        });
+      
+        if (selectedRecords.length > 0) {
+            // Confirm deletion with the user using SweetAlert
+            Swal.fire({
+                title: `Are you sure you want to delete ${selectedRecords.length} record(s)?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete them!',
+                cancelButtonText: 'No, keep them',
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        // Log the selected records to be sent to the server
+                        console.log("Selected records to delete:", selectedRecords);
+                    
+                        // Send a request to the server to delete the records
+                        const response = await fetch('/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.delete_records', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ names: selectedRecords }) // Send the array of selected record names wrapped in an object
+                        });
+                      
+                        // Log the response
+                        const result = await response.json();
+                        console.log("Server response:", result);
+                      
+                        if (result.message.status === "success") {
+                            // Filter out deleted records from the Handsontable data
+                            const updatedData = data.filter(row => !selectedRecords.includes(row[0]));
+                            hot.loadData(updatedData); // Reload the table with updated data
+                        
+                            // Hide buttons if no records are selected anymore
+                            toggleButtons();
+                        
+                            // Show success message using SweetAlert
+                            Swal.fire(
+                                'Deleted!',
+                                `${selectedRecords.length} record(s) have been deleted.`,
+                                'success'
+                            );
+                            fetchData(); 
+                        } else if (result.message.status === "partial") {
+                            Swal.fire(
+                                'Partial Success',
+                                `Some records were deleted: ${result.message}.`,
+                                'warning'
+                            );
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                'Failed to delete records. Please try again.',
+                                'error'
+                            );
+                        }
+                      
+                    } catch (error) {
+                        console.error("Error deleting records:", error);
+                        Swal.fire(
+                            'Error!',
+                            'An unexpected error occurred. Please try again.',
+                            'error'
+                        );
+                    }
+                }
+            });
+        } else {
+            Swal.fire(
+                'No Selection',
+                'No records selected for deletion.',
+                'info'
+            );
+        } 
       }
 
-      fetchData(); // Initial data fetch
+       // Attach the delete function to the delete button
+       document.querySelector('.delete-btn').addEventListener('click', deleteSelectedRecords);
 
-      // Handle form submission and update table
-      document.addEventListener("htmx:afterRequest", function (event) {
-        if (event.detail.xhr.response) {
-          // If the response is successful, refresh the table data
-          fetchData();
-        }
+// Function to handle record submission
+async function submitRecords() {
+  const data = hot.getData(); // Assuming you're using Handsontable
+
+  const recordsToUpdate = [];
+  data.forEach(row => {
+      if (row[1] === true) { // Check if the checkbox (second column, index 1) is selected
+          recordsToUpdate.push(row[21]); // Assume that 'name' (index 0) is unique and can be used to identify the record
+      }
+  });
+
+  if (recordsToUpdate.length > 0) {
+      Swal.fire({
+          title: `Are you sure you want to submit ${recordsToUpdate.length} record(s)?`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, submit them!',
+          cancelButtonText: 'No, keep them',
+      }).then(async (result) => {
+          if (result.isConfirmed) {
+              try {
+                  const response = await fetch('/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.update_status', {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({ names: recordsToUpdate }) // Only send the record names
+                  });
+
+                  if (!response.ok) {
+                      throw new Error(`HTTP error! status: ${response.status}`);
+                  }
+
+                  const result = await response.json();
+                  console.log("Server response:", result);
+
+                  if (result.message.status === "success") {
+                      const updatedData = data.map(row => {
+                          if (recordsToUpdate.includes(row[0])) {
+                              row[0] = 'Pending'; // Assuming status is at index 2
+                          }
+                          return row;
+                      });
+                      hot.loadData(updatedData);
+
+                      Swal.fire(
+                          'Submitted!',
+                          `${recordsToUpdate.length} record(s) have been updated to "Pending".`,
+                          'success'
+                      );
+                      fetchData(); 
+                  } else {
+                      Swal.fire(
+                          'Error!',
+                          'Failed to update records. Please try again.',
+                          'error'
+                      );
+                  }
+
+              } catch (error) {
+                  console.error("Error updating records:", error);
+                  Swal.fire(
+                      'Error!',
+                      'An unexpected error occurred. Please try again.',
+                      'error'
+                  );
+              }
+          }
       });
+  } else {
+      Swal.fire(
+          'No Selection',
+          'No records selected for submission.',
+          'info'
+      );
+  }
+}
+      // Attach the delete function to the delete button
+      document.querySelector('.submit-btn').addEventListener('click', submitRecords);
+
+// Function to toggle selection of all rows except those with status 'Pending' and log the count
+function toggleSelectAll() {
+  const data = hot.getData(); // Get all table data
+  const selectAllButton = document.querySelector('.select-all-btn');
+  let selectedCount = 0; // Initialize the count
+
+  if (selectAllButton.textContent === 'Select All') {
+    // Select all rows except those with status 'Pending'
+    data.forEach((row, index) => {
+        if (row[0] !== 'Pending' && row[0]!== 'Approved') { // Check if the status is not 'Pending'
+            hot.setDataAtCell(index, 1, true); // Set the checkbox column to true
+            selectedCount++; // Increment the count for each selected row
+        }
+    });
+    selectAllButton.textContent = 'Unselect All'; // Change button text to "Unselect All"
+  } else {
+    // Unselect all rows
+    data.forEach((row, index) => {
+        if (row[0] !== 'Pending') {
+            hot.setDataAtCell(index, 1, false); // Set the checkbox column to false
+        }
+    });
+    selectAllButton.textContent = 'Select All'; // Change button text back to "Select All"
+  }
+
+  // Log the count of selected rows
+  console.log("Selected Rows Count: ", selectedCount);
+
+  // Refresh the table display
+  hot.render();
+}
+
+// Attach the toggleSelectAll function to the button
+document.querySelector('.select-all-btn').addEventListener('click', toggleSelectAll);
+
+ // Tab navigation
+ document.getElementById("requests").addEventListener("click", function () {
+  document.getElementById("main-content").style.display = "none";
+  
+});
+document.getElementById("my-travel").addEventListener("click", function () {
+  document.getElementById("main-content").style.display = "block";
+  document.getElementById("no-reports").style.display = "none";
+  
+});
+
+document.getElementById("report").addEventListener("click", function () {
+  document.getElementById("main-content").style.display = "none";
+  document.getElementById("no-reports").style.display = "block";
+  
+});
     </script>
   </body>
 </html>

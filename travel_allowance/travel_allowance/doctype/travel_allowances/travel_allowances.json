@@ -11,6 +11,9 @@
   "employee_details_section",
   "user",
   "ta_category",
+  "reporting_person_user_id",
+  "first_name",
+  "last_name",
   "column_break_pz44l",
   "employee_id",
   "designation",
@@ -44,6 +47,7 @@
   "ticket_amount",
   "column_break_mhumb",
   "fare_amount",
+  "upload_ticket",
   "allowance_section",
   "allowance_type",
   "section_break_s5y6b",
@@ -53,9 +57,13 @@
   "day_stay_halt",
   "column_break_fn4zr",
   "final_lodge_amount",
+  "upload_lodging",
   "day_stay_lodge",
   "column_break_y7okx",
-  "total_amount"
+  "total_amount",
+  "status",
+  "approved_by",
+  "rejected_by"
  ],
  "fields": [
   {
@@ -284,11 +292,52 @@
    "fieldname": "final_lodge_amount",
    "fieldtype": "Data",
    "label": "Lodging Amount"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nPending\nApproved\nReject"
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Data",
+   "label": "Approved By"
+  },
+  {
+   "fieldname": "reporting_person_user_id",
+   "fieldtype": "Data",
+   "label": "Reporting Person User ID"
+  },
+  {
+   "fieldname": "first_name",
+   "fieldtype": "Data",
+   "label": "First Name"
+  },
+  {
+   "fieldname": "last_name",
+   "fieldtype": "Data",
+   "label": "Last Name"
+  },
+  {
+   "fieldname": "rejected_by",
+   "fieldtype": "Data",
+   "label": "Rejected By"
+  },
+  {
+   "fieldname": "upload_lodging",
+   "fieldtype": "Attach",
+   "label": "Upload Lodging Bill"
+  },
+  {
+   "fieldname": "upload_ticket",
+   "fieldtype": "Attach",
+   "label": "Upload Ticket "
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-08-05 14:09:02.973985",
+ "modified": "2024-08-16 12:29:18.374598",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowances",

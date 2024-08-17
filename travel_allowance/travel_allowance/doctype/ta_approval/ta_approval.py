@@ -39,17 +39,26 @@ class TAApproval(Document):
 def get_employee_ta_records(user_id):
     try:
         # SQL query to get travel allowance records
-        ta_query = """
-            SELECT ta.*, tac.*
-            FROM `tabTravel Allowance` ta
-            JOIN `tabTA Chart` tac ON ta.name = tac.parent
-            WHERE ta.reporting_person_user_id = %s
-            AND tac.status = 'Pending'
-            ORDER BY tac.idx
+        ta_pending_query = """
+            SELECT *
+            FROM `tabTravel Allowances` 
+            WHERE reporting_person_user_id = %s
+            AND status = 'Pending'
+            ORDER BY modified desc
         """
 
-        # Execute the query
-        ta_result = frappe.db.sql(ta_query, user_id, as_dict=True)
+        # Execute the queries
+        ta_pending_result = frappe.db.sql(ta_pending_query, user_id, as_dict=True)
+        
+        # SQL query to get travel allowance records with status 'Approved'
+        ta_approved_query = """
+            SELECT *
+            FROM `tabTravel Allowances` 
+            WHERE reporting_person_user_id = %s
+            AND status = 'Approved'
+            ORDER BY modified desc
+        """
+        ta_approved_result = frappe.db.sql(ta_approved_query, user_id, as_dict=True)
 
         # SQL query to get employee names
         employee_query = """
@@ -62,25 +71,26 @@ def get_employee_ta_records(user_id):
         # Execute the query
         employee_result = frappe.db.sql(employee_query, user_id, as_dict=True)
 
-        # Replace null values in TA records with default values
-        for record in ta_result:
+       # Replace null values in TA records with default values
+        for record in ta_pending_result:
             record["employee_name"] = f"{record.get('first_name', '')} {record.get('last_name', '')}".strip()
 
-            # Replace null or None values with default values
-            record["total"] = record.get("total") if record.get("total") is not None else 0
-            record["local_conveyance_other_expenses_amount"] = record.get("local_conveyance_other_expenses_amount") if record.get("local_conveyance_other_expenses_amount") is not None else 0
-            record["daily_allowance"] = record.get("daily_allowance") if record.get("daily_allowance") is not None else 0
-            record["halting_amount"] = record.get("halting_amount") if record.get("halting_amount") is not None else 0
-            record["lodging_amount"] = record.get("lodging_amount") if record.get("lodging_amount") is not None else 0
-            record["kilometer_of_travelling"] = record.get("kilometer_of_travelling") if record.get("kilometer_of_travelling") is not None else 0
-            record["fare_amount"] = record.get("fare_amount") if record.get("fare_amount") is not None else 0
+        #     # Replace null or None values with default values
+        #     record["total"] = record.get("total") if record.get("total") is not None else 0
+        #     record["local_conveyance_other_expenses_amount"] = record.get("local_conveyance_other_expenses_amount") if record.get("local_conveyance_other_expenses_amount") is not None else 0
+        #     record["daily_allowance"] = record.get("daily_allowance") if record.get("daily_allowance") is not None else 0
+        #     record["halting_amount"] = record.get("halting_amount") if record.get("halting_amount") is not None else 0
+        #     record["lodging_amount"] = record.get("lodging_amount") if record.get("lodging_amount") is not None else 0
+        #     record["kilometer_of_travelling"] = record.get("kilometer_of_travelling") if record.get("kilometer_of_travelling") is not None else 0
+        #     record["fare_amount"] = record.get("fare_amount") if record.get("fare_amount") is not None else 0
 
         # Replace null values in employee names with empty strings
         for employee in employee_result:
             employee["full_name"] = employee.get("full_name") if employee.get("full_name") is not None else ""
 
         return {
-            "travel_allowance_records": ta_result,
+            "approved_records": ta_approved_result,
+            "travel_allowance_records": ta_pending_result,
             "employee_names": employee_result
         }
     except Exception as e:
