@@ -63,7 +63,11 @@
   "total_amount",
   "status",
   "approved_by",
-  "rejected_by"
+  "rejected_by",
+  "section_break_a7ads",
+  "local_conveyance",
+  "final_local_amount",
+  "rejection_remark"
  ],
  "fields": [
   {
@@ -297,7 +301,7 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "\nPending\nApproved\nReject"
+   "options": "\nDraft\nPending\nApproved\nReject"
   },
   {
    "fieldname": "approved_by",
@@ -333,11 +337,31 @@
    "fieldname": "upload_ticket",
    "fieldtype": "Attach",
    "label": "Upload Ticket "
+  },
+  {
+   "fieldname": "local_conveyance",
+   "fieldtype": "Table",
+   "label": "Local Conveyance",
+   "options": "Local Conveyance"
+  },
+  {
+   "fieldname": "section_break_a7ads",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "final_local_amount",
+   "fieldtype": "Data",
+   "label": "Total Local Amount"
+  },
+  {
+   "fieldname": "rejection_remark",
+   "fieldtype": "Data",
+   "label": "Reject Reason"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-08-16 12:29:18.374598",
+ "modified": "2024-08-29 13:03:22.324326",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowances",

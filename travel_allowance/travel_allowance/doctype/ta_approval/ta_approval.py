@@ -34,6 +34,28 @@ class TAApproval(Document):
 #         frappe.log_error(f"Error in populate_employee_ta_status: {str(e)}")
 #         frappe.throw("An error occurred while fetching data.")
 
+@frappe.whitelist()
+def get_pending_taRecords(user_id):
+    try:
+       # SQL query to get travel allowance records
+       ta_pending_query = """
+           SELECT *
+           FROM `tabTravel Allowances` 
+           WHERE reporting_person_user_id = %s
+           AND status = 'Pending'
+           ORDER BY modified desc
+       """
+
+       # Execute the queries
+       ta_pending_result = frappe.db.sql(ta_pending_query, user_id, as_dict=True)
+       
+       return ta_pending_result
+    
+    except Exception as e:
+       frappe.log_error(f"Error in get_employee_ta_records: {str(e)}")
+       frappe.throw("An error occurred while fetching data.")
+
+    
 
 @frappe.whitelist()
 def get_employee_ta_records(user_id):

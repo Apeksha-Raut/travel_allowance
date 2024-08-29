@@ -10,7 +10,6 @@
   "ta_chart_table_summary",
   "ta_chart",
   "local_conveyance_tab",
-  "local_conveyance_tbl",
   "employee_details_tab",
   "employee_details_section",
   "employee_id",
@@ -529,12 +528,6 @@
    "label": "Local Conveyance & Other Expenses"
   },
   {
-   "fieldname": "local_conveyance_tbl",
-   "fieldtype": "Table",
-   "label": "Local Conveyance & Other Expenses",
-   "options": "Local Conveyance"
-  },
-  {
    "fieldname": "section_break_osomx",
    "fieldtype": "Section Break"
   },
@@ -627,7 +620,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-29 15:03:25.722972",
+ "modified": "2024-08-20 11:10:20.098737",
  "modified_by": "Administrator",
  "module": "Travel Allowance",
  "name": "Travel Allowance",
