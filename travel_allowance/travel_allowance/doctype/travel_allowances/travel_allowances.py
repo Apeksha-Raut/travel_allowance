@@ -506,7 +506,20 @@ def delete_records(names):
             "status": "error",
             "message": f"An unexpected error occurred: {str(e)}"
         }
-        
+
+# Edit TA record function
+@frappe.whitelist()
+def get_record_details(name):
+    try:
+        # Fetch the record details based on the name
+        record = frappe.get_doc("Travel Allowances", name)
+        # Convert the document to a dictionary and return all fields
+        return record.as_dict()
+    except Exception as e:
+        frappe.throw(_("Error fetching record details: {0}").format(str(e)))
+
+    
+     
 # function to update status as 'Pending' on submit
 # @frappe.whitelist()
 # def update_status(names):
@@ -744,6 +757,7 @@ def findAllowance(city_class, ta_category):
 
     return results
 
+
 @frappe.whitelist(allow_guest=True)
 def check_submit():
     user = frappe.session.user
@@ -768,6 +782,31 @@ def check_submit():
         return allowances if allowances else {"error": "No details found"}
     else:
         return {"error": "Incomplete information"}
+
+# check ta_category is set or not
+@frappe.whitelist(allow_guest=True)
+def check_ta_category():
+    user = frappe.session.user
+    employee_id = user.split('@')[0]
+
+    # Retrieve the designation from the Employee doctype
+    designation = frappe.db.get_value('Employee', employee_id, 'designation')
+
+    # Retrieve the ta_category from the Designation doctype based on the designation
+    ta_category = frappe.db.get_value('Designation', designation, 'ta_category') 
+    
+    if not ta_category:
+        # Handle case where ta_category is null or empty
+        return {
+            "error": "TA Category is not set for your designation. Please contact your administrator."
+        }
+
+    return {
+        "success": "TA Category is set."
+    }
+
+    
+
 
 
 @frappe.whitelist()
@@ -1045,50 +1084,119 @@ def bulk_reject(ids, remark):
 
     
     
-# For Reporting person fetch pending records for approval       
-@frappe.whitelist()
-def get_pending_taRecords(user_id):
-    try:
-       # SQL query to get travel allowance records
-       ta_pending_query = """
-           SELECT *
-           FROM `tabTravel Allowances` 
-           WHERE reporting_person_user_id = %s
-           AND status = 'Pending'
-           ORDER BY modified desc
-       """
+# # For Reporting person fetch pending records for approval       
+# @frappe.whitelist()
+# def get_pending_taRecords(user_id):
+#     try:
+#        # SQL query to get travel allowance records
+#        ta_pending_query = """
+#            SELECT *
+#            FROM `tabTravel Allowances` 
+#            WHERE reporting_person_user_id = %s
+#            AND status = 'Pending'
+#            ORDER BY modified desc
+#        """
 
-       # Execute the queries
-       ta_pending_result = frappe.db.sql(ta_pending_query, user_id, as_dict=True)
+#        # Execute the queries
+#        ta_pending_result = frappe.db.sql(ta_pending_query, user_id, as_dict=True)
        
-       return ta_pending_result
+#        return ta_pending_result
     
-    except Exception as e:
-       frappe.log_error(f"Error in get_employee_ta_records: {str(e)}")
-       frappe.throw("An error occurred while fetching data.")
+#     except Exception as e:
+#        frappe.log_error(f"Error in get_employee_ta_records: {str(e)}")
+#        frappe.throw("An error occurred while fetching data.")
        
-# For Reporting person fetch pending records for approval       
-@frappe.whitelist()
-def get_pending_taRecords(user_id):
-    try:
-       # SQL query to get travel allowance records
-       ta_pending_query = """
-           SELECT *
-           FROM `tabTravel Allowances` 
-           WHERE reporting_person_user_id = %s
-           AND status = 'Pending'
-           ORDER BY modified desc
-       """
+# # For Reporting person fetch approval records 
+# @frappe.whitelist()
+# def get_approved_taRecords(user_id):
+#     try:
+#        # SQL query to get travel allowance records
+#        ta_approved_query = """
+#           SELECT *
+#             FROM `tabTravel Allowances`
+#             WHERE reporting_person_user_id = %s
+#             AND status = 'Approved'
+#             AND approved_by = %s
+#             ORDER BY modified DESC
+#        """
 
-       # Execute the queries
-       ta_pending_result = frappe.db.sql(ta_pending_query, user_id, as_dict=True)
+#        # Execute the queries
+#        ta_approved_result = frappe.db.sql(ta_approved_query, (user_id, user_id), as_dict=True)
        
-       return ta_pending_result
+#        return ta_approved_result
     
-    except Exception as e:
-       frappe.log_error(f"Error in get_employee_ta_records: {str(e)}")
-       frappe.throw("An error occurred while fetching data.")
+#     except Exception as e:
+#        frappe.log_error(f"Error in get_employee_ta_records: {str(e)}")
+#        frappe.throw("An error occurred while fetching data.")
        
+# # For Reporting person fetch rejected records 
+# @frappe.whitelist()
+# def get_rejected_taRecords(user_id):
+#     try:
+#        # SQL query to get travel allowance records
+#        ta_rejected_query = """
+#           SELECT *
+#             FROM `tabTravel Allowances`
+#             WHERE reporting_person_user_id = %s
+#             AND status = 'Reject'
+#             AND rejected_by = %s
+#             ORDER BY modified DESC
+#        """
+
+#        # Execute the queries
+#        ta_rejected_result = frappe.db.sql(ta_rejected_query, (user_id, user_id), as_dict=True)
+       
+#        return ta_rejected_result
+    
+#     except Exception as e:
+#        frappe.log_error(f"Error in get_employee_ta_records: {str(e)}")
+#        frappe.throw("An error occurred while fetching data.")
+
+@frappe.whitelist()
+def get_ta_records(user_id):
+    try:
+        # Query for pending travel allowance records
+        ta_pending_query = """
+            SELECT *
+            FROM `tabTravel Allowances` 
+            WHERE reporting_person_user_id = %s
+            AND status = 'Pending'
+            ORDER BY modified desc
+        """
+        ta_pending_result = frappe.db.sql(ta_pending_query, user_id, as_dict=True)
+        
+        # Query for approved travel allowance records
+        ta_approved_query = """
+            SELECT *
+            FROM `tabTravel Allowances`
+            WHERE reporting_person_user_id = %s
+            AND status = 'Approved'
+            AND approved_by = %s
+            ORDER BY modified DESC
+        """
+        ta_approved_result = frappe.db.sql(ta_approved_query, (user_id, user_id), as_dict=True)
+
+        # Query for rejected travel allowance records
+        ta_rejected_query = """
+            SELECT *
+            FROM `tabTravel Allowances`
+            WHERE reporting_person_user_id = %s
+            AND status = 'Reject'
+            AND rejected_by = %s
+            ORDER BY modified DESC
+        """
+        ta_rejected_result = frappe.db.sql(ta_rejected_query, (user_id, user_id), as_dict=True)
+
+        # Return all records as a dictionary with separate keys
+        return {
+            "pending": ta_pending_result,
+            "approved": ta_approved_result,
+            "rejected": ta_rejected_result
+        }
+
+    except Exception as e:
+        frappe.log_error(f"Error in get_ta_records: {str(e)}")
+        frappe.throw("An error occurred while fetching data.")
 
 @frappe.whitelist()
 def get_employee_names(user_id):

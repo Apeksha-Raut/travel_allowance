@@ -10,6 +10,7 @@
   }
   ul.navbar-nav .nav-item {
     padding: 0 10px;
+    cursor: pointer;
   }
   ul.navbar-nav .nav-item .nav-link {
     background: aliceblue;
@@ -140,6 +141,11 @@
     font-weight: bold;
     margin-left: 5px;
   }
+  .approved-count {
+    color: green;
+    font-weight: bold;
+    margin-left: 5px;
+  }
 
   /* Count span styles */
   .count {
@@ -217,6 +223,9 @@
   table#travelAllowancesTable td:first-child {
     text-align: center;
     width: 50px;
+    font-weight: bold;
+    color: #000;
+    background-color: #e6e7e7;
   }
 
   /* Highlighting total column */
@@ -233,6 +242,177 @@
 
   /* Styling for no records row */
   table#travelAllowancesTable .text-center {
+    text-align: center;
+    font-weight: bold;
+    color: #999;
+  }
+
+  /* Table styles for approved records */
+  table#travelAllowancesApprovedTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  table#travelAllowancesApprovedTable th,
+  table#travelAllowancesApprovedTable td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    white-space: nowrap; /* Prevent line wrapping */
+    text-align: center;
+  }
+
+  /* Header styling for approved records */
+  table#travelAllowancesApprovedTable thead th {
+    background-color: #d4edda; /* Light green header to indicate approved status */
+    color: #155724; /* Dark green text color */
+    font-weight: bold;
+    text-align: center;
+  }
+
+  /* Zebra striping for approved records */
+  table#travelAllowancesApprovedTable tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  table#travelAllowancesApprovedTable tbody tr:nth-child(odd) {
+    background-color: #fff;
+  }
+
+  /* Hover effects for approved records */
+  table#travelAllowancesApprovedTable tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+
+  /* Center align specific columns for approved records */
+  table#travelAllowancesApprovedTable td:nth-child(4),
+  table#travelAllowancesApprovedTable td:nth-child(5),
+  table#travelAllowancesApprovedTable td:nth-child(6),
+  table#travelAllowancesApprovedTable td:nth-child(7),
+  table#travelAllowancesApprovedTable td:nth-child(8),
+  table#travelAllowancesApprovedTable td:nth-child(9),
+  table#travelAllowancesApprovedTable td:nth-child(10),
+  table#travelAllowancesApprovedTable td:nth-child(13),
+  table#travelAllowancesApprovedTable td:nth-child(14),
+  table#travelAllowancesApprovedTable td:nth-child(15),
+  table#travelAllowancesApprovedTable td:nth-child(16),
+  table#travelAllowancesApprovedTable td:nth-child(17),
+  table#travelAllowancesApprovedTable td:nth-child(18),
+  table#travelAllowancesApprovedTable td:nth-child(19) {
+    text-align: center;
+  }
+
+  /* Checkbox column for approved records */
+  table#travelAllowancesApprovedTable td:first-child {
+    text-align: center;
+    width: 50px;
+    font-weight: bold;
+    color: #000;
+    background-color: #e6e7e7;
+  }
+
+  /* Highlighting total column for approved records */
+  table#travelAllowancesApprovedTable td:last-child {
+    font-weight: bold;
+    color: #000;
+    background-color: #c3e6cb; /* Light green background for totals */
+  }
+
+  /* Table header alignment */
+  table#travelAllowancesApprovedTable th {
+    text-align: center;
+  }
+
+  /* Styling for no records row in approved table */
+  table#travelAllowancesApprovedTable .text-center {
+    text-align: center;
+    font-weight: bold;
+    color: #999;
+  }
+
+  /* Table styles for rejected records */
+  table#travelAllowancesRejectTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  /* Rejected table headers and cells */
+  table#travelAllowancesRejectTable th,
+  table#travelAllowancesRejectTable td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    white-space: nowrap; /* Prevent line wrapping */
+    text-align: center;
+  }
+
+  /* Header styling for rejected records */
+  table#travelAllowancesRejectTable thead th {
+    background-color: #f8d7da; /* Light red header to indicate rejected status */
+    color: #721c24; /* Dark red text color */
+    font-weight: bold;
+    text-align: center;
+  }
+
+  /* Zebra striping for rejected records */
+  table#travelAllowancesRejectTable tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  table#travelAllowancesRejectTable tbody tr:nth-child(odd) {
+    background-color: #fff;
+  }
+
+  /* Hover effects for rejected records */
+  table#travelAllowancesRejectTable tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+
+  /* Center align specific columns for rejected records */
+  table#travelAllowancesRejectTable td:nth-child(4),
+  table#travelAllowancesRejectTable td:nth-child(5),
+  table#travelAllowancesRejectTable td:nth-child(6),
+  table#travelAllowancesRejectTable td:nth-child(7),
+  table#travelAllowancesRejectTable td:nth-child(8),
+  table#travelAllowancesRejectTable td:nth-child(9),
+  table#travelAllowancesRejectTable td:nth-child(10),
+  table#travelAllowancesRejectTable td:nth-child(13),
+  table#travelAllowancesRejectTable td:nth-child(14),
+  table#travelAllowancesRejectTable td:nth-child(15),
+  table#travelAllowancesRejectTable td:nth-child(16),
+  table#travelAllowancesRejectTable td:nth-child(17),
+  table#travelAllowancesRejectTable td:nth-child(18),
+  table#travelAllowancesRejectTable td:nth-child(19) {
+    text-align: center;
+  }
+
+  /* Checkbox column for rejected records */
+  table#travelAllowancesRejectTable td:first-child {
+    text-align: center;
+    width: 50px;
+    font-weight: bold;
+    color: #000;
+    background-color: #e6e7e7;
+  }
+
+  /* Highlighting total column for rejected records */
+  table#travelAllowancesRejectTable td:last-child {
+    font-weight: bold;
+    color: #000;
+    background-color: #f5c6cb; /* Light red background for totals */
+  }
+
+  /* Table header alignment */
+  table#travelAllowancesRejectTable th {
+    text-align: center;
+  }
+
+  /* Styling for no records row in rejected table */
+  table#travelAllowancesRejectTable .text-center {
     text-align: center;
     font-weight: bold;
     color: #999;
@@ -299,11 +479,7 @@
     background-color: #302727; /* Adjust based on your design */
     z-index: 2;
   }
-  table#travelAllowancesTable td:first-child {
-    font-weight: bold;
-    color: #000;
-    background-color: #e6e7e7;
-  }
+
   /* Fixed Total Column */
   .fixed-total {
     position: sticky;
@@ -394,15 +570,25 @@
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#"
-                  >Pending <span class="pending-count" id="pendingCount"></span
-                ></a>
+                <a
+                  class="nav-link active"
+                  aria-current="page"
+                  id="pendingTab"
+                  data-tab-type="pending"
+                >
+                  Pending <span class="pending-count" id="pendingCount"></span>
+                </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#" id="approveTab">Approved</a>
+                <a class="nav-link" id="approveTab" data-tab-type="approved">
+                  Approved
+                  <span class="approved-count" id="approvedCount"></span>
+                </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Rejected</a>
+                <a class="nav-link" id="rejectTab" data-tab-type="rejected">
+                  Reject <span class="reject-count" id="rejectCount"></span>
+                </a>
               </li>
             </ul>
           </div>
@@ -443,6 +629,7 @@
     </div>
   </div>
 
+  <!--Employee Tabs -->
   <div class="container-fluid main-container">
     <div class="row">
       <ul class="nav nav-tabs ta_navbar" id="employeeTabs" role="tablist">
@@ -462,8 +649,8 @@
       </ul>
     </div>
 
-    <!-- Table for travel allowances -->
-    <div class="table-responsive">
+    <!-- Table for travel allowances fetch pending record request-->
+    <div class="table-responsive" id="travelPendingTable">
       <table class="table table-bordered" id="travelAllowancesTable">
         <thead>
           <tr>
@@ -471,6 +658,76 @@
             <th>
               <input type="checkbox" id="selectAll" />
             </th>
+            <th class="d-none">Name</th>
+            <th>Employee Name</th>
+            <th>Status</th>
+            <th>From Location</th>
+            <th>Start Date</th>
+            <th>Start Time</th>
+            <th>To Location</th>
+            <th>End Date</th>
+            <th>End Time</th>
+            <th>Total Time</th>
+            <th>Purpose</th>
+            <th>Mode of Transport</th>
+            <th>Total KM</th>
+            <th>Ticket Amount</th>
+            <th>Uploaded Ticket</th>
+            <th>Fare Amount</th>
+            <th>Allowance Type</th>
+            <th>DA</th>
+            <th>Halting</th>
+            <th>Lodging</th>
+            <th>Uploaded Lodging Bill</th>
+            <th>Local Conveyance</th>
+            <th class="fixed-total">Total</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Table for travel allowances fetch approved record -->
+    <div class="table-responsive" id="travelApprovedTable">
+      <table class="table table-bordered" id="travelAllowancesApprovedTable">
+        <thead>
+          <tr>
+            <th class="fixed-serial">Sr. No.</th>
+            <th class="d-none">Name</th>
+            <th>Employee Name</th>
+            <th>Status</th>
+            <th>From Location</th>
+            <th>Start Date</th>
+            <th>Start Time</th>
+            <th>To Location</th>
+            <th>End Date</th>
+            <th>End Time</th>
+            <th>Total Time</th>
+            <th>Purpose</th>
+            <th>Mode of Transport</th>
+            <th>Total KM</th>
+            <th>Ticket Amount</th>
+            <th>Uploaded Ticket</th>
+            <th>Fare Amount</th>
+            <th>Allowance Type</th>
+            <th>DA</th>
+            <th>Halting</th>
+            <th>Lodging</th>
+            <th>Uploaded Lodging Bill</th>
+            <th>Local Conveyance</th>
+            <th class="fixed-total">Total</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Table for travel allowances fetch Rejected record -->
+    <div class="table-responsive" id="travelRejectTable">
+      <table class="table table-bordered" id="travelAllowancesRejectTable">
+        <thead>
+          <tr>
+            <th class="fixed-serial">Sr. No.</th>
             <th class="d-none">Name</th>
             <th>Employee Name</th>
             <th>Status</th>
@@ -523,17 +780,113 @@
 </div>
 
 <script>
-  // Event listener for the approve button
-  /*document
-    .getElementById("approveTab")
-    .addEventListener("click", fetchApprovedRecords);
+  /*document.getElementById("pendingTab").addEventListener("click", function () {
+    // Hide other tables and show the pending table
+    document.getElementById("travelAllowancesTable").style.display = "block"; // Show pending table
+    document.getElementById("travelAllowancesApprovedTable").style.display =
+      "none"; // Hide approved table
+    document.getElementById("travelAllowancesRejectTable").style.display =
+      "none"; // Hide rejected table
 
-  async function fetchApprovedRecords() {
-    console.log("approved");
+    // Add active class to the pending tab, and remove from others
+    document.getElementById("pendingTab").classList.add("active");
+    document.getElementById("approveTab").classList.remove("active");
+    document.getElementById("rejectTab").classList.remove("active");
+
+    // Fetch pending records
+    fetchPendingRecords();
+  });
+
+  document.getElementById("approveTab").addEventListener("click", function () {
+    // Hide other tables and show the approved table
+    document.getElementById("travelAllowancesTable").style.display = "none"; // Hide pending table
+    document.getElementById("travelAllowancesApprovedTable").style.display =
+      "block"; // Show approved table
+    document.getElementById("travelAllowancesRejectTable").style.display =
+      "none"; // Hide rejected table
+
+    // Add active class to the approved tab, and remove from others
+    document.getElementById("approveTab").classList.add("active");
+    document.getElementById("pendingTab").classList.remove("active");
+    document.getElementById("rejectTab").classList.remove("active");
+
+    // Fetch approved records
+    fetchApprovedRecords();
+  });
+
+  document.getElementById("rejectTab").addEventListener("click", function () {
+    // Hide other tables and show the rejected table
+    document.getElementById("travelAllowancesTable").style.display = "none"; // Hide pending table
+    document.getElementById("travelAllowancesApprovedTable").style.display =
+      "none"; // Hide approved table
+    document.getElementById("travelAllowancesRejectTable").style.display =
+      "block"; // Show rejected table
+
+    // Add active class to the rejected tab, and remove from others
+    document.getElementById("rejectTab").classList.add("active");
+    document.getElementById("pendingTab").classList.remove("active");
+    document.getElementById("approveTab").classList.remove("active");
+
+    // Fetch rejected records
+    fetchRejectedRecords();
+  });*/
+
+  document.getElementById("pendingTab").addEventListener("click", function () {
+    // Hide other tables and show the pending table
+    document.getElementById("travelPendingTable").style.display = "block"; // Show pending table
+    document.getElementById("travelApprovedTable").style.display = "none"; // Hide approved table
+    document.getElementById("travelRejectTable").style.display = "none"; // Hide rejected table
+
+    // Add active class to the pending tab, and remove from others
+    document.getElementById("pendingTab").classList.add("active");
+    document.getElementById("approveTab").classList.remove("active");
+    document.getElementById("rejectTab").classList.remove("active");
+
+    // Fetch pending records
+    fetchPendingRecords();
+  });
+
+  document.getElementById("approveTab").addEventListener("click", function () {
+    // Hide other tables and show the approved table
+    document.getElementById("travelPendingTable").style.display = "none"; // Hide pending table
+    document.getElementById("travelApprovedTable").style.display = "block"; // Show approved table
+    document.getElementById("travelRejectTable").style.display = "none"; // Hide rejected table
+
+    // Add active class to the approved tab, and remove from others
+    document.getElementById("approveTab").classList.add("active");
+    document.getElementById("pendingTab").classList.remove("active");
+    document.getElementById("rejectTab").classList.remove("active");
+
+    // Fetch approved records
+    fetchApprovedRecords();
+  });
+
+  document.getElementById("rejectTab").addEventListener("click", function () {
+    // Hide other tables and show the rejected table
+    document.getElementById("travelPendingTable").style.display = "none"; // Hide pending table
+    document.getElementById("travelApprovedTable").style.display = "none"; // Hide approved table
+    document.getElementById("travelRejectTable").style.display = "block"; // Show rejected table
+
+    // Add active class to the rejected tab, and remove from others
+    document.getElementById("rejectTab").classList.add("active");
+    document.getElementById("pendingTab").classList.remove("active");
+    document.getElementById("approveTab").classList.remove("active");
+
+    // Fetch rejected records
+    fetchRejectedRecords();
+  });
+
+  // Function to fetch and display pending records
+  window.addEventListener("DOMContentLoaded", (event) => {
+    fetchTabCounts();
+    fetchPendingRecords(); // Ensure tables are loaded before fetching data
+  });
+
+  async function fetchTabCounts() {
     try {
-      // Fetch pending records
+      // Fetch counts from the server
       const response = await fetch(
-        `/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.get_pending_taRecords?user_id={{ frappe.session.user }}`
+        `/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.get_ta_records?user_id={{ frappe.session.user }}`
       );
 
       // Check if the response is ok (status code 200-299)
@@ -544,8 +897,68 @@
       // Parse the JSON data from the response
       const data = await response.json();
 
+      console.log(data);
+      // Update the counts on the page
+      document.getElementById("pendingCount").textContent =
+        data.message.pending.length;
+      document.getElementById("approvedCount").textContent =
+        data.message.approved.length;
+      document.getElementById("rejectCount").textContent =
+        data.message.rejected.length;
+    } catch (error) {
+      console.error("Error fetching tab counts:", error);
+    }
+  }
+
+  //Fetch pending records
+  async function fetchPendingRecords() {
+    const pendingTab = document.getElementById("pendingTab");
+    pendingTab.classList.add("active");
+    const approvedTab = document.getElementById("approveTab");
+    const employeeTabsContainer = document.getElementById("employeeTabs");
+    approvedTab.classList.remove("active");
+    console.log("pending");
+    const approvedTable = document.querySelector(
+      "#travelAllowancesApprovedTable"
+    );
+    approvedTable.style.display = "none";
+
+    const actionSection = document.querySelector(".action");
+
+    // Hide the action section when approved tab is selected
+    if (actionSection) {
+      actionSection.style.display = "block";
+    }
+    // unhide employee tabs
+    const tabs = employeeTabsContainer.querySelectorAll(".ta-nav-link");
+    tabs.forEach((tab) => {
+      if (tab.id !== "all-tab") {
+        tab.style.display = "block";
+      }
+    });
+
+    try {
+      // Fetch pending records
+      const response = await fetch(
+        `/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.get_ta_records?user_id={{ frappe.session.user }}`
+      );
+
+      // Check if the response is ok (status code 200-299)
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      // Parse the JSON data from the response
+      const data = await response.json();
+
+      const pendingRecord = data.message.pending;
+      console.log("Get ta records", pendingRecord);
+
+      const tableContainer = document.querySelector("#travelAllowancesTable");
       const tableBody = document.querySelector("#travelAllowancesTable tbody");
       const noRecordsMessage = document.querySelector(".no-records");
+
+      tableContainer.style.display = "block";
 
       const mainContent = document.querySelector(".main_content");
 
@@ -559,71 +972,72 @@
       // Clear existing rows
       tableBody.innerHTML = "";
 
-      if (data.message.length === 0) {
+      if (pendingRecord.length === 0) {
         noRecordsMessage.style.display = "block";
         mainContent.style.display = "none";
       } else {
         noRecordsMessage.style.display = "none";
-
-        data.message.forEach((record, index) => {
+        // const pendingCount = pendingRecord.length;
+        // document.getElementById("pendingCount").textContent = pendingCount;
+        pendingRecord.forEach((record, index) => {
           const row = document.createElement("tr");
 
           row.innerHTML = `
-            <td class="fixed-serial">${index + 1}</td>
-            <td><input type="checkbox" class="rowCheckbox" onclick="handleCheckboxClick(this, '${
-              record.name
-            }')" /></td>
+                <td class="fixed-serial">${index + 1}</td>
+                <td><input type="checkbox" class="rowCheckbox" onclick="handleCheckboxClick(this, '${
+                  record.name
+                }')" /></td>
 
-            <td class="d-none" data-record-name="${record.name}">${
+                <td class="d-none" data-record-name="${record.name}">${
             record.name
           }</td>
-            <td>${record.first_name} ${record.last_name}</td>
-            <td>${record.status}</td>
-            <td>${record.from_location}</td>
-            <td>${record.from_date}</td>
-            <td>${record.from_time}</td>
-            <td>${record.to_location}</td>
-            <td>${record.to_date}</td>
-            <td>${record.to_time}</td>
-            <td>${record.total_time}</td>
-            <td>${record.purpose}</td>
-            <td>${record.travel_mode}</td>
-            <td>${record.total_km}</td>
-            <td>${record.ticket_amount}</td>
-            <td>${
-              record.upload_ticket
-                ? `<a href="${record.upload_ticket}" target="_blank">View</a>`
-                : "-"
-            }</td>
-            <td>${record.fare_amount}</td>
-            <td>${record.allowance_type}</td>
-            <td>${record.final_da_amount}</td>
-            <td>${record.final_halt_amount}</td>
-            <td>${record.final_lodge_amount}</td>
-            <td>${
-              record.upload_lodging
-                ? `<a href="${record.upload_lodging}" target="_blank">View</a>`
-                : "-"
-            }</td>
-            <td class="${
-              record.final_local_amount &&
-              record.final_local_amount.trim() !== "-" &&
-              parseFloat(record.final_local_amount) !== 0
-                ? "clickable"
-                : ""
-            }"
-              data-record-id="${record.name}"
-              ${
-                record.final_local_amount &&
-                record.final_local_amount.trim() !== "-" &&
-                parseFloat(record.final_local_amount) !== 0
-                  ? `title="Click for Local details"`
-                  : ""
-              }>
-              ${record.final_local_amount || "-"}
-            </td>
-            <td class="fixed-total">${record.total_amount}</td>
-          `;
+                <td>${record.first_name} ${record.last_name}</td>
+                <td>${record.status}</td>
+                <td>${record.from_location}</td>
+                <td>${record.from_date}</td>
+                <td>${record.from_time}</td>
+                <td>${record.to_location}</td>
+                <td>${record.to_date}</td>
+                <td>${record.to_time}</td>
+                <td>${record.total_time}</td>
+                <td>${record.purpose}</td>
+                <td>${record.travel_mode}</td>
+                <td>${record.total_km}</td>
+                <td>${record.ticket_amount}</td>
+                <td>${
+                  record.upload_ticket
+                    ? `<a href="${record.upload_ticket}" target="_blank">View</a>`
+                    : "-"
+                }</td>
+                <td>${record.fare_amount}</td>
+                <td>${record.allowance_type}</td>
+                <td>${record.final_da_amount}</td>
+                <td>${record.final_halt_amount}</td>
+                <td>${record.final_lodge_amount}</td>
+                <td>${
+                  record.upload_lodging
+                    ? `<a href="${record.upload_lodging}" target="_blank">View</a>`
+                    : "-"
+                }</td>
+                <td class="${
+                  record.final_local_amount &&
+                  record.final_local_amount.trim() !== "-" &&
+                  parseFloat(record.final_local_amount) !== 0
+                    ? "clickable"
+                    : ""
+                }"
+                  data-record-id="${record.name}"
+                  ${
+                    record.final_local_amount &&
+                    record.final_local_amount.trim() !== "-" &&
+                    parseFloat(record.final_local_amount) !== 0
+                      ? `title="Click for Local details"`
+                      : ""
+                  }>
+                  ${record.final_local_amount || "-"}
+                </td>
+                <td class="fixed-total">${record.total_amount}</td>
+              `;
 
           tableBody.appendChild(row);
         });
@@ -631,361 +1045,418 @@
     } catch (error) {
       console.error("Error:", error);
     }
-  }*/
+  }
 
-  document.addEventListener("DOMContentLoaded", function () {
-    // Function to fetch and display pending records
-    async function fetchPendingRecords() {
+  //fetch approved records
+  async function fetchApprovedRecords() {
+    const approvedTab = document.getElementById("approveTab");
+
+    const pendingTab = document.getElementById("pendingTab");
+    const employeeTabsContainer = document.getElementById("employeeTabs");
+    approvedTab.classList.add("active");
+    pendingTab.classList.remove("active");
+    console.log("approved");
+    const actionSection = document.querySelector(".action");
+
+    // Hide the action section when approved tab is selected
+    if (actionSection) {
+      actionSection.style.display = "none";
+    }
+
+    // Hide the pending table if displayed
+    const pendingTable = document.querySelector("#travelAllowancesTable");
+    pendingTable.style.display = "none";
+
+    // Hide employee tabs except for the "All" tab
+    const tabs = employeeTabsContainer.querySelectorAll(".ta-nav-link");
+    tabs.forEach((tab) => {
+      if (tab.id !== "all-tab") {
+        tab.style.display = "none";
+      }
+    });
+
+    try {
+      // Fetch approved records
+      const response = await fetch(
+        `/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.get_ta_records?user_id={{ frappe.session.user }}`
+      );
+
+      // Check if the response is ok (status code 200-299)
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      // Parse the JSON data from the response
+      const data = await response.json();
+      const approvedRecords = data.message.approved;
+
+      const approvedTableContainer = document.querySelector(
+        "#travelAllowancesApprovedTable"
+      );
+      const approvedTableBody = document.querySelector(
+        "#travelAllowancesApprovedTable tbody"
+      );
+      const noRecordsMessage = document.querySelector(".no-records");
+      const mainContent = document.querySelector(".main_content");
+
+      approvedTableContainer.style.display = "block";
+
+      // Clear existing rows in tbody
+      approvedTableBody.innerHTML = "";
+
+      if (approvedRecords.length === 0) {
+        noRecordsMessage.style.display = "block";
+        mainContent.style.display = "none";
+      } else {
+        noRecordsMessage.style.display = "none";
+        mainContent.style.display = "block";
+
+        // const approvedCount = approvedRecords.length;
+        // document.getElementById("approvedCount").textContent = approvedCount;
+
+        // Populate table rows with the approved records
+        approvedRecords.forEach((record, index) => {
+          const row = document.createElement("tr");
+
+          row.innerHTML = `
+                <td class="fixed-serial">${index + 1}</td>
+                <td class="d-none" data-record-name="${record.name}">${
+            record.name
+          }</td>
+                <td>${record.first_name} ${record.last_name}</td>
+                <td>${record.status}</td>
+                <td>${record.from_location}</td>
+                <td>${record.from_date}</td>
+                <td>${record.from_time}</td>
+                <td>${record.to_location}</td>
+                <td>${record.to_date}</td>
+                <td>${record.to_time}</td>
+                <td>${record.total_time}</td>
+                <td>${record.purpose}</td>
+                <td>${record.travel_mode}</td>
+                <td>${record.total_km}</td>
+                <td>${record.ticket_amount}</td>
+                <td>${
+                  record.upload_ticket
+                    ? `<a href="${record.upload_ticket}" target="_blank">View</a>`
+                    : "-"
+                }</td>
+                <td>${record.fare_amount}</td>
+                <td>${record.allowance_type}</td>
+                <td>${record.final_da_amount}</td>
+                <td>${record.final_halt_amount}</td>
+                <td>${record.final_lodge_amount}</td>
+                <td>${
+                  record.upload_lodging
+                    ? `<a href="${record.upload_lodging}" target="_blank">View</a>`
+                    : "-"
+                }</td>
+                <td class="${
+                  record.final_local_amount &&
+                  record.final_local_amount.trim() !== "-" &&
+                  parseFloat(record.final_local_amount) !== 0
+                    ? "clickable"
+                    : ""
+                }"
+                  data-record-id="${record.name}"
+                  ${
+                    record.final_local_amount &&
+                    record.final_local_amount.trim() !== "-" &&
+                    parseFloat(record.final_local_amount) !== 0
+                      ? `title="Click for Local details"`
+                      : ""
+                  }>
+                  ${record.final_local_amount || "-"}
+                </td>
+                <td class="fixed-total">${record.total_amount}</td>
+              `;
+
+          // Append the row to the approved table body
+          approvedTableBody.appendChild(row);
+        });
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+  //fetch rejected records
+  async function fetchRejectedRecords() {
+    const rejectTab = document.getElementById("rejectTab");
+    const pendingTab = document.getElementById("pendingTab");
+    const approvedTab = document.getElementById("approveTab");
+    const employeeTabsContainer = document.getElementById("employeeTabs");
+
+    rejectTab.classList.add("active");
+    pendingTab.classList.remove("active");
+    approvedTab.classList.remove("active");
+
+    // Hide the action section when rejected tab is selected
+    const actionSection = document.querySelector(".action");
+    if (actionSection) {
+      actionSection.style.display = "none";
+    }
+
+    // Hide the pending and approved tables if displayed
+    const pendingTable = document.querySelector("#travelAllowancesTable");
+    pendingTable.style.display = "none";
+    const approvedTable = document.querySelector(
+      "#travelAllowancesApprovedTable"
+    );
+    approvedTable.style.display = "none";
+
+    // Hide employee tabs except for the "All" tab
+    const tabs = employeeTabsContainer.querySelectorAll(".ta-nav-link");
+    tabs.forEach((tab) => {
+      if (tab.id !== "all-tab") {
+        tab.style.display = "none";
+      }
+    });
+
+    try {
+      // Fetch rejected records
+      const response = await fetch(
+        `/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.get_ta_records?user_id={{ frappe.session.user }}`
+      );
+
+      // Check if the response is ok (status code 200-299)
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      // Parse the JSON data from the response
+      const data = await response.json();
+      const rejectedRecords = data.message.rejected;
+
+      const rejectedTableContainer = document.querySelector(
+        "#travelAllowancesRejectTable"
+      );
+      const rejectedTableBody = document.querySelector(
+        "#travelAllowancesRejectTable tbody"
+      );
+      const noRecordsMessage = document.querySelector(".no-records-message");
+      const mainContent = document.querySelector(".main_content");
+
+      rejectedTableContainer.style.display = "block";
+
+      // Clear existing rows in tbody
+      rejectedTableBody.innerHTML = "";
+
+      if (rejectedRecords.length === 0) {
+        noRecordsMessage.style.display = "block";
+        mainContent.style.display = "none";
+      } else {
+        noRecordsMessage.style.display = "none";
+        mainContent.style.display = "block";
+
+        // const rejectCount = rejectedRecords.length;
+        // document.getElementById("rejectCount").textContent = rejectCount;
+
+        // Populate table rows with the rejected records
+        rejectedRecords.forEach((record, index) => {
+          const row = document.createElement("tr");
+
+          row.innerHTML = `
+                <td class="fixed-serial">${index + 1}</td>
+                <td class="d-none" data-record-name="${record.name}">${
+            record.name
+          }</td>
+                <td>${record.first_name} ${record.last_name}</td>
+                <td>${record.status}</td>
+                <td>${record.from_location}</td>
+                <td>${record.from_date}</td>
+                <td>${record.from_time}</td>
+                <td>${record.to_location}</td>
+                <td>${record.to_date}</td>
+                <td>${record.to_time}</td>
+                <td>${record.total_time}</td>
+                <td>${record.purpose}</td>
+                <td>${record.travel_mode}</td>
+                <td>${record.total_km}</td>
+                <td>${record.ticket_amount}</td>
+                <td>${
+                  record.upload_ticket
+                    ? `<a href="${record.upload_ticket}" target="_blank">View</a>`
+                    : "-"
+                }</td>
+                <td>${record.fare_amount}</td>
+                <td>${record.allowance_type}</td>
+                <td>${record.final_da_amount}</td>
+                <td>${record.final_halt_amount}</td>
+                <td>${record.final_lodge_amount}</td>
+                <td>${
+                  record.upload_lodging
+                    ? `<a href="${record.upload_lodging}" target="_blank">View</a>`
+                    : "-"
+                }</td>
+                <td class="${
+                  record.final_local_amount &&
+                  record.final_local_amount.trim() !== "-" &&
+                  parseFloat(record.final_local_amount) !== 0
+                    ? "clickable"
+                    : ""
+                }"
+                  data-record-id="${record.name}"
+                  ${
+                    record.final_local_amount &&
+                    record.final_local_amount.trim() !== "-" &&
+                    parseFloat(record.final_local_amount) !== 0
+                      ? `title="Click for Local details"`
+                      : ""
+                  }>
+                  ${record.final_local_amount || "-"}
+                </td>
+                <td class="fixed-total">${record.total_amount}</td>
+              `;
+
+          // Append the row to the rejected table body
+          rejectedTableBody.appendChild(row);
+        });
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+  // Function to handle checkbox click
+  window.handleCheckboxClick = function (checkbox, recordName) {
+    if (checkbox.checked) {
+      console.log("Selected Record Name: ", recordName);
+      checkbox.dataset.recordId = recordName; // Store record ID in checkbox dataset
+    }
+  };
+
+  // Function to get selected rows
+  function getSelectedRows() {
+    const selectedRows = [];
+
+    // Get all checkboxes and filter those that are checked
+    const checkboxes = document.querySelectorAll(".rowCheckbox");
+    checkboxes.forEach((checkbox) => {
+      if (checkbox.checked) {
+        const recordId = checkbox.dataset.recordId;
+        if (recordId) {
+          selectedRows.push(recordId);
+        }
+      }
+    });
+
+    console.log("Selected rows:", selectedRows); // Log the selected rows
+    return selectedRows;
+  }
+
+  // Function to handle the approval process
+  async function approveSelectedRecords() {
+    const selectedRows = getSelectedRows();
+    console.log("selected rows:", selectedRows);
+
+    if (selectedRows.length === 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "No records selected",
+        text: "Please select at least one record to approve.",
+      });
+      return;
+    }
+
+    // Ask for confirmation before proceeding with approval
+    const { value: confirm } = await Swal.fire({
+      title: "Are you sure?",
+      text: `You are about to approve ${selectedRows.length} record(s).`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, approve!",
+      cancelButtonText: "Cancel",
+    });
+
+    if (confirm) {
       try {
-        // Fetch pending records
+        // Show the "Please wait" message during the approval process
+        Swal.fire({
+          title: "Please wait...",
+          text: "Approving records...",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+
+        // Pass the record names to your server in the fetch call
         const response = await fetch(
-          `/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.get_pending_taRecords?user_id={{ frappe.session.user }}`
+          "/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.bulk_approve",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ ids: selectedRows }),
+          }
         );
 
-        // Check if the response is ok (status code 200-299)
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        // Parse the JSON data from the response
-        const data = await response.json();
+        const result = await response.json();
 
-        const tableBody = document.querySelector(
-          "#travelAllowancesTable tbody"
-        );
-        const noRecordsMessage = document.querySelector(".no-records");
+        // Close the previous "Please wait" message
+        Swal.close();
 
-        const mainContent = document.querySelector(".main_content");
-
-        //const noRecordsMessage = document.querySelector(".ta_navbar");
-
-        if (!tableBody) {
-          console.error("Error: Table body element not found.");
-          return;
-        }
-
-        // Clear existing rows
-        tableBody.innerHTML = "";
-
-        if (data.message.length === 0) {
-          noRecordsMessage.style.display = "block";
-          mainContent.style.display = "none";
-        } else {
-          noRecordsMessage.style.display = "none";
-          const pendingCount = data.message.length;
-          document.getElementById("pendingCount").textContent = pendingCount;
-          data.message.forEach((record, index) => {
-            const row = document.createElement("tr");
-
-            row.innerHTML = `
-              <td class="fixed-serial">${index + 1}</td>
-              <td><input type="checkbox" class="rowCheckbox" onclick="handleCheckboxClick(this, '${
-                record.name
-              }')" /></td>
-
-              <td class="d-none" data-record-name="${record.name}">${
-              record.name
-            }</td>
-              <td>${record.first_name} ${record.last_name}</td>
-              <td>${record.status}</td>
-              <td>${record.from_location}</td>
-              <td>${record.from_date}</td>
-              <td>${record.from_time}</td>
-              <td>${record.to_location}</td>
-              <td>${record.to_date}</td>
-              <td>${record.to_time}</td>
-              <td>${record.total_time}</td>
-              <td>${record.purpose}</td>
-              <td>${record.travel_mode}</td>
-              <td>${record.total_km}</td>
-              <td>${record.ticket_amount}</td>
-              <td>${
-                record.upload_ticket
-                  ? `<a href="${record.upload_ticket}" target="_blank">View</a>`
-                  : "-"
-              }</td>
-              <td>${record.fare_amount}</td>
-              <td>${record.allowance_type}</td>
-              <td>${record.final_da_amount}</td>
-              <td>${record.final_halt_amount}</td>
-              <td>${record.final_lodge_amount}</td>
-              <td>${
-                record.upload_lodging
-                  ? `<a href="${record.upload_lodging}" target="_blank">View</a>`
-                  : "-"
-              }</td>
-              <td class="${
-                record.final_local_amount &&
-                record.final_local_amount.trim() !== "-" &&
-                parseFloat(record.final_local_amount) !== 0
-                  ? "clickable"
-                  : ""
-              }"
-                data-record-id="${record.name}"
-                ${
-                  record.final_local_amount &&
-                  record.final_local_amount.trim() !== "-" &&
-                  parseFloat(record.final_local_amount) !== 0
-                    ? `title="Click for Local details"`
-                    : ""
-                }>
-                ${record.final_local_amount || "-"}
-              </td>
-              <td class="fixed-total">${record.total_amount}</td>
-            `;
-
-            tableBody.appendChild(row);
-          });
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    }
-
-    // Function to handle checkbox click
-    window.handleCheckboxClick = function (checkbox, recordName) {
-      if (checkbox.checked) {
-        console.log("Selected Record Name: ", recordName);
-        checkbox.dataset.recordId = recordName; // Store record ID in checkbox dataset
-      }
-    };
-
-    // Function to get selected rows
-    function getSelectedRows() {
-      const selectedRows = [];
-
-      // Get all checkboxes and filter those that are checked
-      const checkboxes = document.querySelectorAll(".rowCheckbox");
-      checkboxes.forEach((checkbox) => {
-        if (checkbox.checked) {
-          const recordId = checkbox.dataset.recordId;
-          if (recordId) {
-            selectedRows.push(recordId);
-          }
-        }
-      });
-
-      console.log("Selected rows:", selectedRows); // Log the selected rows
-      return selectedRows;
-    }
-
-    // Function to handle the approval process
-    async function approveSelectedRecords() {
-      const selectedRows = getSelectedRows();
-      console.log("selected rows:", selectedRows);
-
-      if (selectedRows.length === 0) {
+        // Show the success message and then a "Please wait" message while refreshing
         Swal.fire({
-          icon: "warning",
-          title: "No records selected",
-          text: "Please select at least one record to approve.",
-        });
-        return;
-      }
-
-      // Ask for confirmation before proceeding with approval
-      const { value: confirm } = await Swal.fire({
-        title: "Are you sure?",
-        text: `You are about to approve ${selectedRows.length} record(s).`,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes, approve!",
-        cancelButtonText: "Cancel",
-      });
-
-      if (confirm) {
-        try {
-          // Show the "Please wait" message during the approval process
+          title: "Approved!",
+          text: "All records have been processed for approval.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() => {
           Swal.fire({
-            title: "Please wait...",
-            text: "Approving records...",
+            title: "Please wait",
+            text: "Refreshing the page...",
             allowOutsideClick: false,
+            allowEscapeKey: false,
             didOpen: () => {
               Swal.showLoading();
             },
           });
 
-          // Pass the record names to your server in the fetch call
-          const response = await fetch(
-            "/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.bulk_approve",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ ids: selectedRows }),
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-
-          const result = await response.json();
-
-          // Close the previous "Please wait" message
-          Swal.close();
-
-          // Show the success message and then a "Please wait" message while refreshing
-          Swal.fire({
-            title: "Approved!",
-            text: "All records have been processed for approval.",
-            icon: "success",
-            confirmButtonText: "OK",
-          }).then(() => {
-            Swal.fire({
-              title: "Please wait",
-              text: "Refreshing the page...",
-              allowOutsideClick: false,
-              allowEscapeKey: false,
-              didOpen: () => {
-                Swal.showLoading();
-              },
-            });
-
-            // Add a delay before refreshing the table
-            setTimeout(() => {
-              // Refresh the table
-              fetchPendingRecords();
-
-              // Close the loading message after the refresh
-              Swal.close();
-            }, 1500); // Adjust the delay time as needed
-          });
-        } catch (error) {
-          console.error("Error:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "An error occurred while approving records.",
-          });
-        }
+          // Add a delay before refreshing the table
+          setTimeout(() => {
+            // Refresh the table
+            fetchPendingRecords();
+            fetchTabCounts();
+            // Close the loading message after the refresh
+            Swal.close();
+          }, 1500); // Adjust the delay time as needed
+        });
+      } catch (error) {
+        console.error("Error:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "An error occurred while approving records.",
+        });
       }
     }
+  }
 
-    // Event listener for the approve button
-    document
-      .getElementById("approveButton")
-      .addEventListener("click", approveSelectedRecords);
+  // Event listener for the approve button
+  document
+    .getElementById("approveButton")
+    .addEventListener("click", approveSelectedRecords);
 
-    // Function to handle the rejection process
-    /*async function rejectSelectedRecords() {
-      const selectedRows = getSelectedRows();
-      console.log("selected rows:", selectedRows);
-      if (selectedRows.length === 0) {
-        Swal.fire({
-          icon: "warning",
-          title: "No records selected",
-          text: "Please select at least one record to reject.",
-        });
-        return;
-      }
-
-      // Ask for confirmation before proceeding with rejection
-      const { value: confirm } = await Swal.fire({
-        title: "Are you sure?",
-        text: `You are about to reject ${selectedRows.length} record(s).`,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes, reject!",
-        cancelButtonText: "Cancel",
-      });
-
-      if (confirm) {
-        try {
-          // Pass these record names to your server in the fetch call
-          const response = await fetch(
-            "/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.bulk_reject",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ ids: selectedRows }), // 'ids' contains record names
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-
-          const result = await response.json();
-
+  // Function to handle the rejection process
+  /*async function rejectSelectedRecords() {
+        const selectedRows = getSelectedRows();
+        console.log("selected rows:", selectedRows);
+        if (selectedRows.length === 0) {
           Swal.fire({
-            title: "Rejected!",
-            text: "Selected records have been rejected.",
-            icon: "success",
-            confirmButtonText: "OK", // Show the confirm button with 'OK' text
-          }).then(() => {
-            Swal.fire({
-              title: "Please wait",
-              text: "Refreshing the page...",
-              allowOutsideClick: false, // Prevent users from closing the alert
-              allowEscapeKey: false, // Prevent closing by pressing the escape key
-              didOpen: () => {
-                Swal.showLoading(); // Show loading spinner
-              },
-            });
-            // Add a delay before refreshing the table
-            setTimeout(() => {
-              // Refresh the table
-              fetchPendingRecords();
-
-              // Close the loading message after the refresh
-              Swal.close();
-            }, 1500); // Adjust the delay time as needed
+            icon: "warning",
+            title: "No records selected",
+            text: "Please select at least one record to reject.",
           });
-        } catch (error) {
-          console.error("Error:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "An error occurred while rejecting records.",
-          });
+          return;
         }
-      }
-    }*/
-    // Event listener for the approve button
-    /* document
-      .getElementById("rejectButton")
-      .addEventListener("click", rejectSelectedRecords);*/
 
-    // Function to handle the rejection process
-    async function rejectSelectedRecords() {
-      const selectedRows = getSelectedRows();
-      console.log("selected rows:", selectedRows);
-
-      if (selectedRows.length === 0) {
-        Swal.fire({
-          icon: "warning",
-          title: "No records selected",
-          text: "Please select at least one record to reject.",
-        });
-        return;
-      }
-
-      // Ask for a remark before confirming rejection
-      const { value: remark } = await Swal.fire({
-        title: "Enter Reason",
-        input: "textarea",
-        inputLabel: "",
-        inputPlaceholder: "Enter Reason of Reject...",
-        inputAttributes: {
-          "aria-label": "Type your Reason here",
-        },
-        showCancelButton: true,
-        confirmButtonText: "Reject",
-        cancelButtonText: "Cancel",
-        preConfirm: (inputValue) => {
-          if (!inputValue) {
-            Swal.showValidationMessage("Please enter a remark");
-          }
-          return inputValue;
-        },
-      });
-
-      // Proceed with rejection if remark is provided
-      if (remark) {
         // Ask for confirmation before proceeding with rejection
         const { value: confirm } = await Swal.fire({
           title: "Are you sure?",
@@ -998,7 +1469,7 @@
 
         if (confirm) {
           try {
-            // Pass these record names and remark to your server in the fetch call
+            // Pass these record names to your server in the fetch call
             const response = await fetch(
               "/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.bulk_reject",
               {
@@ -1006,7 +1477,7 @@
                 headers: {
                   "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ ids: selectedRows, remark: remark }), // Include remark
+                body: JSON.stringify({ ids: selectedRows }), // 'ids' contains record names
               }
             );
 
@@ -1020,21 +1491,24 @@
               title: "Rejected!",
               text: "Selected records have been rejected.",
               icon: "success",
-              confirmButtonText: "OK",
+              confirmButtonText: "OK", // Show the confirm button with 'OK' text
             }).then(() => {
               Swal.fire({
                 title: "Please wait",
                 text: "Refreshing the page...",
-                allowOutsideClick: false,
-                allowEscapeKey: false,
+                allowOutsideClick: false, // Prevent users from closing the alert
+                allowEscapeKey: false, // Prevent closing by pressing the escape key
                 didOpen: () => {
-                  Swal.showLoading();
+                  Swal.showLoading(); // Show loading spinner
                 },
               });
               // Add a delay before refreshing the table
               setTimeout(() => {
-                fetchPendingRecords(); // Refresh the table
-                Swal.close(); // Close the loading message
+                // Refresh the table
+                fetchPendingRecords();
+
+                // Close the loading message after the refresh
+                Swal.close();
               }, 1500); // Adjust the delay time as needed
             });
           } catch (error) {
@@ -1046,67 +1520,172 @@
             });
           }
         }
-      }
+      }*/
+  // Event listener for the approve button
+  /* document
+        .getElementById("rejectButton")
+        .addEventListener("click", rejectSelectedRecords);*/
+
+  // Function to handle the rejection process
+  async function rejectSelectedRecords() {
+    const selectedRows = getSelectedRows();
+    console.log("selected rows:", selectedRows);
+
+    if (selectedRows.length === 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "No records selected",
+        text: "Please select at least one record to reject.",
+      });
+      return;
     }
 
-    // Event listener for the reject button
-    document
-      .getElementById("rejectButton")
-      .addEventListener("click", rejectSelectedRecords);
-
-    // Fetch pending records on page load
-    fetchPendingRecords();
-
-    // Event listener for the select all checkbox
-    document.getElementById("selectAll").addEventListener("click", function () {
-      toggleSelectAll(this.checked);
+    // Ask for a remark before confirming rejection
+    const { value: remark } = await Swal.fire({
+      title: "Enter Reason",
+      input: "textarea",
+      inputLabel: "",
+      inputPlaceholder: "Enter Reason of Reject...",
+      inputAttributes: {
+        "aria-label": "Type your Reason here",
+      },
+      showCancelButton: true,
+      confirmButtonText: "Reject",
+      cancelButtonText: "Cancel",
+      preConfirm: (inputValue) => {
+        if (!inputValue) {
+          Swal.showValidationMessage("Please enter a remark");
+        }
+        return inputValue;
+      },
     });
 
-    // Toggle Select All functionality
-    // Toggle Select All functionality
-    function toggleSelectAll(isChecked) {
-      const checkboxes = document.querySelectorAll(".rowCheckbox");
-      checkboxes.forEach((checkbox) => {
-        checkbox.checked = isChecked;
-
-        // Set or remove the recordId data attribute based on selection status
-        if (isChecked) {
-          const row = checkbox.closest("tr");
-          if (row) {
-            const recordName = row.querySelector(".d-none").textContent; // Retrieve the record name from the hidden column
-            checkbox.dataset.recordId = recordName;
-          }
-        } else {
-          delete checkbox.dataset.recordId;
-        }
+    // Proceed with rejection if remark is provided
+    if (remark) {
+      // Ask for confirmation before proceeding with rejection
+      const { value: confirm } = await Swal.fire({
+        title: "Are you sure?",
+        text: `You are about to reject ${selectedRows.length} record(s).`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, reject!",
+        cancelButtonText: "Cancel",
       });
 
-      updateSelectAllCheckboxState(); // Update the state of the "Select All" checkbox
+      if (confirm) {
+        try {
+          // Pass these record names and remark to your server in the fetch call
+          const response = await fetch(
+            "/api/method/travel_allowance.travel_allowance.doctype.travel_allowances.travel_allowances.bulk_reject",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ ids: selectedRows, remark: remark }), // Include remark
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const result = await response.json();
+
+          Swal.fire({
+            title: "Rejected!",
+            text: "Selected records have been rejected.",
+            icon: "success",
+            confirmButtonText: "OK",
+          }).then(() => {
+            Swal.fire({
+              title: "Please wait",
+              text: "Refreshing the page...",
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+            });
+            // Add a delay before refreshing the table
+            setTimeout(() => {
+              fetchPendingRecords(); // Refresh the table
+              fetchTabCounts();
+              Swal.close(); // Close the loading message
+            }, 1500); // Adjust the delay time as needed
+          });
+        } catch (error) {
+          console.error("Error:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "An error occurred while rejecting records.",
+          });
+        }
+      }
     }
+  }
 
-    // Update the "Select All" checkbox state based on individual checkboxes
-    function updateSelectAllCheckboxState() {
-      const checkboxes = document.querySelectorAll(".rowCheckbox");
-      const selectAllCheckbox = document.getElementById("selectAll");
+  // Event listener for the reject button
+  document
+    .getElementById("rejectButton")
+    .addEventListener("click", rejectSelectedRecords);
 
-      // Determine if all checkboxes are checked
-      const allChecked = Array.from(checkboxes).every(
-        (checkbox) => checkbox.checked
-      );
-      const noneChecked = Array.from(checkboxes).every(
-        (checkbox) => !checkbox.checked
-      );
-
-      // Update "Select All" checkbox state
-      selectAllCheckbox.checked = allChecked;
-      selectAllCheckbox.indeterminate = !allChecked && !noneChecked; // Indeterminate state if some but not all are checked
-    }
-
-    // Event listeners for individual checkboxes
-    document.querySelectorAll(".rowCheckbox").forEach((checkbox) => {
-      checkbox.addEventListener("change", updateSelectAllCheckboxState);
-    });
+  // Event listener for the select all checkbox
+  document.getElementById("selectAll").addEventListener("click", function () {
+    toggleSelectAll(this.checked);
   });
+
+  // Toggle Select All functionality
+  // Toggle Select All functionality
+  function toggleSelectAll(isChecked) {
+    const checkboxes = document.querySelectorAll(".rowCheckbox");
+    checkboxes.forEach((checkbox) => {
+      checkbox.checked = isChecked;
+
+      // Set or remove the recordId data attribute based on selection status
+      if (isChecked) {
+        const row = checkbox.closest("tr");
+        if (row) {
+          const recordName = row.querySelector(".d-none").textContent; // Retrieve the record name from the hidden column
+          checkbox.dataset.recordId = recordName;
+        }
+      } else {
+        delete checkbox.dataset.recordId;
+      }
+    });
+
+    updateSelectAllCheckboxState(); // Update the state of the "Select All" checkbox
+  }
+
+  // Update the "Select All" checkbox state based on individual checkboxes
+  function updateSelectAllCheckboxState() {
+    const checkboxes = document.querySelectorAll(".rowCheckbox");
+    const selectAllCheckbox = document.getElementById("selectAll");
+
+    // Determine if all checkboxes are checked
+    const allChecked = Array.from(checkboxes).every(
+      (checkbox) => checkbox.checked
+    );
+    const noneChecked = Array.from(checkboxes).every(
+      (checkbox) => !checkbox.checked
+    );
+
+    // Update "Select All" checkbox state
+    selectAllCheckbox.checked = allChecked;
+    selectAllCheckbox.indeterminate = !allChecked && !noneChecked; // Indeterminate state if some but not all are checked
+  }
+
+  // Event listeners for individual checkboxes
+  document.querySelectorAll(".rowCheckbox").forEach((checkbox) => {
+    checkbox.addEventListener("change", updateSelectAllCheckboxState);
+  });
+
+  // Call the function to fetch employees and generate tabs
+  fetchAndGenerateEmployeeTabs();
+
+  // Variable to keep track of the selected status
+  let selectedStatus = "Pending"; // Default status, you can set this to "approved" or other status as needed
 
   // Fetch and generate employee tabs
   async function fetchAndGenerateEmployeeTabs() {
@@ -1132,16 +1711,16 @@
           tabItem.className = "ta-nav-item";
 
           tabItem.innerHTML = `
-        <button
-          class="ta-nav-link"
-          id="employee-tab-${employee.employee_id}"
-          data-bs-toggle="tab"
-          data-employee-name="${employee.employee_id}"
-          onclick="handleTabClick('${employee.full_name}', this)"
-        >
-          ${employee.full_name}<!--<span class="employee-pending-count" id="pendingCount-${employee.employee_id}"></span>-->
-        </button>
-      `;
+          <button
+            class="ta-nav-link"
+            id="employee-tab-${employee.employee_id}"
+            data-bs-toggle="tab"
+            data-employee-name="${employee.employee_id}"
+            onclick="handleTabClick('${employee.full_name}', this)"
+          >
+            ${employee.full_name}<!--<span class="employee-pending-count" id="pendingCount-${employee.employee_id}"></span>-->
+          </button>
+        `;
 
           employeeTabsContainer.appendChild(tabItem);
         });
@@ -1201,9 +1780,6 @@
       }
     });
   }
-
-  // Call the function to fetch employees and generate tabs
-  fetchAndGenerateEmployeeTabs();
 
   // Handle tab click to filter by employee name
   function handleTabClick(employeeName, element) {
